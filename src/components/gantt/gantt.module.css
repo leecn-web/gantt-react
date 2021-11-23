@@ -1,0 +1,40 @@
+.ganttVerticalContainer {
+  overflow: hidden;
+  font-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 1px solid #e6e4e4;
+}
+
+.horizontalContainer {
+  width: 440px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.wrapper {
+  display: flex;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  outline: none;
+  position: relative;
+}
+.ganttToolsContainer {
+  display: flex;
+  align-items: center;
+  height: 40px;
+}
+.toolsBar {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  width: 100%;
+  height: 40px;
+  right: 6px;
+  background: transparent;
+  text-align: right;
+  border-top: 1px solid #e6e4e4;
+}

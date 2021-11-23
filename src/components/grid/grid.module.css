@@ -1,0 +1,27 @@
+.gridRow {
+  fill: #fff;
+}
+
+.gridRowSelect {
+  fill: rgba(61, 84, 253, 0.1);
+}
+
+.gridRowLine {
+  stroke: #ebeff2;
+}
+
+.gridTick {
+  stroke: #e6e4e4;
+}
+
+.today {
+  position: relative;
+}
+
+.todayLine {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2px;
+  height: 100%;
+}
