@@ -1,6 +1,5 @@
 .scroll {
   position: absolute;
-  left: 445px;
   overflow: hidden auto;
   width: 17px;
   flex-shrink: 0;

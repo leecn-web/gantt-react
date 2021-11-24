@@ -25,6 +25,7 @@ const TaskListHeaderItem: React.FC<{
         <div
           id={`column${index}`}
           data-id={item.name}
+          data-last={item.isLast}
           className={styles.ganttTable_HeaderItem_reSize}
         >
           <div className={styles.ganttTable_HeaderItem_reSize_Inner} />

@@ -75,9 +75,8 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   }, [columnWidth, dates, timeStep]);
 
   useEffect(() => {
-    const handleMouseMove = async (event: MouseEvent) => {
+    const handleMove = async (event: any) => {
       if (!ganttEvent.changedTask || !point || !svg?.current) return;
-      event.preventDefault();
 
       point.x = event.clientX;
       const cursor = point.matrixTransform(
@@ -97,14 +96,12 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
         setGanttEvent({ action: ganttEvent.action, changedTask });
       }
     };
-
-    const handleMouseUp = async (event: MouseEvent) => {
+    const handleUp = async (event: any) => {
       const { action, originalSelectedTask, changedTask } = ganttEvent;
       if (!changedTask || !point || !svg?.current || !originalSelectedTask)
         return;
-      event.preventDefault();
 
-      point.x = event.clientX;
+      point.x = event ? event.clientX : point.x;
       const cursor = point.matrixTransform(
         svg?.current.getScreenCTM()?.inverse()
       );
@@ -126,6 +123,9 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
       // remove listeners
       svg.current.removeEventListener("mousemove", handleMouseMove);
       svg.current.removeEventListener("mouseup", handleMouseUp);
+
+      // svg.current.removeEventListener("touchmove", e => handleTouchMove(e));
+      // svg.current.removeEventListener("touchend", e => handleTouchUp(e));
       setGanttEvent({ action: "" });
       setIsMoving(false);
 
@@ -166,6 +166,27 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
         setFailedTask(originalSelectedTask);
       }
     };
+    const handleMouseMove = async (event: MouseEvent) => {
+      event.preventDefault();
+      handleMove(event);
+    };
+
+    const handleMouseUp = async (event: MouseEvent) => {
+      event.preventDefault();
+      handleUp(event);
+    };
+
+    // const handleTouchMove = async (event: TouchEvent) => {
+    //   event.preventDefault();
+    //   const e = event.touches[0];
+    //   handleMove(e);
+    // };
+
+    // const handleTouchUp = async (event: TouchEvent) => {
+    //   event.preventDefault();
+    //   const e = event.touches[0];
+    //   handleUp(e);
+    // };
 
     if (
       !isMoving &&
@@ -177,6 +198,9 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
     ) {
       svg.current.addEventListener("mousemove", handleMouseMove);
       svg.current.addEventListener("mouseup", handleMouseUp);
+
+      // svg.current.addEventListener("touchmove", e => handleTouchMove(e));
+      // svg.current.addEventListener("touchend", e => handleTouchUp(e));
       setIsMoving(true);
     }
   }, [

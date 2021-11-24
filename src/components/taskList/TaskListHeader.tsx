@@ -36,8 +36,8 @@ export const TaskListHeaderDefault: React.FC<{
 
     // 记录拖动的列及起始位置
     const name = target.getAttribute("data-id");
-
-    if (name) {
+    const isLast = target.getAttribute("data-last") === "1";
+    if (name && !isLast) {
       dragRef.current.draging = true;
       dragRef.current.dragColumn = name;
       dragRef.current.dragStart = e.clientX; // 获取鼠标按下时光标x的值
@@ -46,13 +46,7 @@ export const TaskListHeaderDefault: React.FC<{
 
   const onMouseUp = (): void => {
     // 获取当前鼠标位置，与起始位置的差为最新的列宽
-
     if (dragRef.current.draging) {
-      // const moveX = e.clientX;
-      // const diffX = (dragRef.current.dragStart as number) - moveX;
-      // onChangeColumnWidth &&
-      //   onChangeColumnWidth(dragRef.current.dragColumn as string, diffX);
-
       dragRef.current.draging = false;
       dragRef.current.dragColumn = "";
       dragRef.current.dragStart = 0; // 获取鼠标按下时光标x的值
@@ -71,10 +65,6 @@ export const TaskListHeaderDefault: React.FC<{
       }
     }
   };
-  // interface currentType {
-  //   fn: () => void;
-  //   timer: ReturnType<typeof setTimeout> | null;
-  // }
 
   // const useDebounce = (fn: (e: any) => void, delay: number, dep = []) => {
   //   const current: any = useRef({ fn, timer: null });
@@ -109,19 +99,6 @@ export const TaskListHeaderDefault: React.FC<{
     }, dep);
   };
 
-  // const onMouseOver = (e: any): void => {
-  //   if (dragRef.current.draging) {
-  //     // const moveX = e.clientX;
-  //     // const diffX = (dragRef.current.dragStart as number) - moveX;
-  //     // onChangeColumnWidth &&
-  //     //   onChangeColumnWidth(dragRef.current.dragColumn as string, diffX);
-
-  //     dragRef.current.draging = false;
-  //     dragRef.current.dragColumn = "";
-  //     dragRef.current.dragStart = 0; // 获取鼠标按下时光标x的值
-  //   }
-  // };
-
   return (
     <div
       className={styles.ganttTable}
@@ -139,7 +116,7 @@ export const TaskListHeaderDefault: React.FC<{
       <div
         className={styles.ganttTable_Header}
         style={{
-          height: headerHeight - 2 + 40,
+          height: headerHeight - 2,
         }}
       >
         {columns.map((item, index) => {

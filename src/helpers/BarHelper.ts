@@ -63,7 +63,6 @@ export const convertToBarTasks = (
     }
     return task;
   });
-
   return barTasks;
 };
 

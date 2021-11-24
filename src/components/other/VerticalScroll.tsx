@@ -2,6 +2,7 @@ import React, { SyntheticEvent, useRef, useEffect } from "react";
 import styles from "./verticalScroll.module.css";
 
 export const VerticalScroll: React.FC<{
+  listCellWidth: string;
   scroll: number;
   ganttHeight: number;
   ganttFullHeight: number;
@@ -9,6 +10,7 @@ export const VerticalScroll: React.FC<{
   rtl: boolean;
   onScroll: (event: SyntheticEvent<HTMLDivElement>) => void;
 }> = ({
+  listCellWidth,
   scroll,
   ganttHeight,
   ganttFullHeight,
@@ -17,18 +19,19 @@ export const VerticalScroll: React.FC<{
   onScroll,
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const isMobile = !!listCellWidth;
 
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scroll;
     }
   }, [scroll]);
-
   return (
     <div
       style={{
         height: ganttHeight,
-        marginTop: headerHeight + 40,
+        marginTop: headerHeight,
+        left: isMobile ? "445px" : "100%",
         marginLeft: rtl ? "" : "-17px",
       }}
       className={styles.scroll}

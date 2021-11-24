@@ -33,7 +33,7 @@ export const Calendar: React.FC<CalendarProps> = ({
   const getCalendarValuesForMonth = () => {
     const topValues: ReactChild[] = [];
     const bottomValues: ReactChild[] = [];
-    const topDefaultHeight = headerHeight * 0.5;
+    const topDefaultHeight = headerHeight * 0.35;
     for (let i = 0; i < dateSetup.dates.length; i++) {
       const date = dateSetup.dates[i];
       const bottomValue = `${date.getMonth() + 1}月`;
@@ -51,12 +51,12 @@ export const Calendar: React.FC<CalendarProps> = ({
         i === 0 ||
         date.getFullYear() !== dateSetup.dates[i - 1].getFullYear()
       ) {
-        const topValue = `${date.getFullYear()}`;
+        const topValue = `${date.getFullYear()}年`;
         let xText: number;
         if (rtl) {
-          xText = (6 + i + date.getMonth() + 1) * columnWidth;
+          xText = (i + date.getMonth() + 1) * columnWidth + columnWidth;
         } else {
-          xText = (6 + i - date.getMonth()) * columnWidth;
+          xText = (i - date.getMonth()) * columnWidth + columnWidth;
         }
         topValues.push(
           <TopPartOfCalendar
@@ -64,7 +64,7 @@ export const Calendar: React.FC<CalendarProps> = ({
             value={topValue}
             x1Line={columnWidth * i}
             y1Line={0}
-            y2Line={topDefaultHeight}
+            y2Line={headerHeight * 0.5}
             xText={xText}
             yText={topDefaultHeight * 0.9}
           />
@@ -78,14 +78,14 @@ export const Calendar: React.FC<CalendarProps> = ({
     const topValues: ReactChild[] = [];
     const bottomValues: ReactChild[] = [];
     let weeksCount: number = 1;
-    const topDefaultHeight = headerHeight * 0.5;
+    const topDefaultHeight = headerHeight * 0.35;
     const dates = dateSetup.dates;
     for (let i = dates.length - 1; i >= 0; i--) {
       const date = dates[i];
       let topValue = "";
       if (i === 0 || date.getMonth() !== dates[i - 1].getMonth()) {
         // top
-        topValue = `${date.getFullYear()}-${date.getMonth() + 1}`;
+        topValue = `${date.getFullYear()}年${date.getMonth() + 1}月`;
       }
       // bottom
       const bottomValue = `第${getWeekNumberISO8601(date)}周`;
@@ -100,7 +100,6 @@ export const Calendar: React.FC<CalendarProps> = ({
           {bottomValue}
         </text>
       );
-
       if (topValue) {
         // if last day is new month
         if (i !== dates.length - 1) {
@@ -110,8 +109,8 @@ export const Calendar: React.FC<CalendarProps> = ({
               value={topValue}
               x1Line={columnWidth * i + weeksCount * columnWidth}
               y1Line={0}
-              y2Line={topDefaultHeight}
-              xText={columnWidth * i + columnWidth * weeksCount * 0.5}
+              xText={columnWidth * i + columnWidth * 0.5}
+              y2Line={headerHeight * 0.5}
               yText={topDefaultHeight * 0.9}
             />
           );
@@ -126,7 +125,7 @@ export const Calendar: React.FC<CalendarProps> = ({
   const getCalendarValuesForDay = () => {
     const topValues: ReactChild[] = [];
     const bottomValues: ReactChild[] = [];
-    const topDefaultHeight = headerHeight * 0.5;
+    const topDefaultHeight = headerHeight * 0.35;
     const dates = dateSetup.dates;
     for (let i = 0; i < dates.length; i++) {
       const date = dates[i];
@@ -146,7 +145,7 @@ export const Calendar: React.FC<CalendarProps> = ({
         i + 1 !== dates.length &&
         date.getMonth() !== dates[i + 1].getMonth()
       ) {
-        const topValue = `${date.getFullYear()}-${date.getMonth() + 1}`;
+        const topValue = `${date.getFullYear()}年${date.getMonth() + 1}月`;
 
         topValues.push(
           <TopPartOfCalendar
@@ -154,12 +153,12 @@ export const Calendar: React.FC<CalendarProps> = ({
             value={topValue}
             x1Line={columnWidth * (i + 1)}
             y1Line={0}
-            y2Line={topDefaultHeight}
+            y2Line={headerHeight * 0.5}
             xText={
               columnWidth * (i + 1) -
               getDaysInMonth(date.getMonth(), date.getFullYear()) *
-                columnWidth *
-                0.5
+                columnWidth +
+              columnWidth
             }
             yText={topDefaultHeight * 0.9}
           />
@@ -173,7 +172,7 @@ export const Calendar: React.FC<CalendarProps> = ({
     const topValues: ReactChild[] = [];
     const bottomValues: ReactChild[] = [];
     const ticks = viewMode === ViewMode.HalfDay ? 2 : 4;
-    const topDefaultHeight = headerHeight * 0.5;
+    const topDefaultHeight = headerHeight * 0.35;
     const dates = dateSetup.dates;
     for (let i = 0; i < dates.length; i++) {
       const date = dates[i];
@@ -193,7 +192,7 @@ export const Calendar: React.FC<CalendarProps> = ({
         </text>
       );
       if (i === 0 || date.getDate() !== dates[i - 1].getDate()) {
-        const topValue = `${date.getMonth() + 1}-${date.getDate()}`;
+        const topValue = `${date.getMonth() + 1}月${date.getDate()}日`;
         topValues.push(
           <TopPartOfCalendar
             key={topValue + date.getFullYear()}
@@ -236,7 +235,10 @@ export const Calendar: React.FC<CalendarProps> = ({
         height={headerHeight}
         className={styles.calendarHeader}
       />
-      {bottomValues} {topValues}
+      {bottomValues}
+      <line x="0" y1="44" x2="100%" y2="44" style={{ stroke: "#e6e4e4" }} />
+      {/* <line x="0" y1="45" x2="100%" y2="50" className="_3rUKi" /> */}
+      {topValues}
     </g>
   );
 };

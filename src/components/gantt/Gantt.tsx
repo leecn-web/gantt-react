@@ -30,7 +30,7 @@ import scrollStyle from "../other/horizontalScroll.module.css";
 export const Gantt: React.FunctionComponent<GanttProps> = props => {
   const {
     tasks,
-    headerHeight = 50,
+    headerHeight = 88,
     columnWidth = 60,
     listCellWidth = "155px",
     rowHeight = 50,
@@ -497,12 +497,12 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
   // 得到当前时间和结束时间的时间戳，用于计算当前日期是否在图表内
   const first = useRef(dateSetup.dates[0].getTime());
   const end = useRef(dateSetup.dates[dateSetup.dates.length - 1].getTime());
-  useEffect(() => {
-    changeDates(() => {
-      first.current = dateSetup.dates[0].getTime();
-      end.current = dateSetup.dates[dateSetup.dates.length - 1].getTime();
-    });
-  }, [viewMode, first.current, end.current]);
+  // useEffect(() => {
+  //   changeDates(() => {
+  //     first.current = dateSetup.dates[0].getTime();
+  //     end.current = dateSetup.dates[dateSetup.dates.length - 1].getTime();
+  //   });
+  // }, [viewMode, first.current, end.current]);
   // 定位到当前位置
   const onChangeScrollX8Current = useCallback(() => {
     const now = new Date().getTime();
@@ -531,7 +531,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
   // 初始化加载
   useEffect(() => {
     if (isFirstLoaded.current && lineX) {
-      onChangeScrollX8Current();
+      // onChangeScrollX8Current();
     }
   }, [lineX, isFirstLoaded.current, dateSetup.dates]);
   // 更新x轴位置
@@ -731,6 +731,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
           />
         )}
         <VerticalScroll
+          listCellWidth={listCellWidth}
           ganttFullHeight={ganttFullHeight}
           ganttHeight={ganttHeight}
           headerHeight={headerHeight}
