@@ -18,6 +18,7 @@ type BarDisplayProps = {
     progressSelectedColor: string;
   };
   onMouseDown: (event: React.MouseEvent<SVGPolygonElement, MouseEvent>) => void;
+  onTouchStart: (event: React.TouchEvent<SVGPolygonElement>) => void;
 };
 export const BarDisplay: React.FC<BarDisplayProps> = ({
   x,

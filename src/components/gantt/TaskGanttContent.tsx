@@ -100,6 +100,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
       const { action, originalSelectedTask, changedTask } = ganttEvent;
       if (!changedTask || !point || !svg?.current || !originalSelectedTask)
         return;
+      console.log("originalSelectedTask", originalSelectedTask);
 
       point.x = event ? event.clientX : point.x;
       const cursor = point.matrixTransform(
@@ -124,8 +125,6 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
       svg.current.removeEventListener("mousemove", handleMouseMove);
       svg.current.removeEventListener("mouseup", handleMouseUp);
 
-      // svg.current.removeEventListener("touchmove", e => handleTouchMove(e));
-      // svg.current.removeEventListener("touchend", e => handleTouchUp(e));
       setGanttEvent({ action: "" });
       setIsMoving(false);
 
@@ -166,6 +165,19 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
         setFailedTask(originalSelectedTask);
       }
     };
+
+    const handleTouchMove = async (event: TouchEvent) => {
+      event.preventDefault();
+      const e = event.touches[0];
+      handleMove(e);
+    };
+
+    const handleTouchUp = async (event: TouchEvent) => {
+      event.preventDefault();
+      const e = event.touches[0];
+      handleUp(e);
+    };
+
     const handleMouseMove = async (event: MouseEvent) => {
       event.preventDefault();
       handleMove(event);
@@ -176,18 +188,6 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
       handleUp(event);
     };
 
-    // const handleTouchMove = async (event: TouchEvent) => {
-    //   event.preventDefault();
-    //   const e = event.touches[0];
-    //   handleMove(e);
-    // };
-
-    // const handleTouchUp = async (event: TouchEvent) => {
-    //   event.preventDefault();
-    //   const e = event.touches[0];
-    //   handleUp(e);
-    // };
-
     if (
       !isMoving &&
       (ganttEvent.action === "move" ||
@@ -196,13 +196,23 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
         ganttEvent.action === "progress") &&
       svg?.current
     ) {
+      // 移动端绑定事件
+      svg?.current?.addEventListener("touchmove", handleTouchMove);
+      svg?.current?.addEventListener("touchend", handleTouchUp);
+      // pc端绑定事件
       svg.current.addEventListener("mousemove", handleMouseMove);
       svg.current.addEventListener("mouseup", handleMouseUp);
-
-      // svg.current.addEventListener("touchmove", e => handleTouchMove(e));
-      // svg.current.addEventListener("touchend", e => handleTouchUp(e));
       setIsMoving(true);
     }
+
+    return () => {
+      // 移动端绑定事件
+      svg?.current?.removeEventListener("touchmove", handleTouchMove);
+      svg?.current?.removeEventListener("touchend", handleTouchUp);
+      // pc端绑定事件
+      svg?.current?.addEventListener("mousemove", handleMouseMove);
+      svg?.current?.addEventListener("mouseup", handleMouseUp);
+    };
   }, [
     ganttEvent,
     xStep,
@@ -222,6 +232,9 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
     task: BarTask,
     event?: React.MouseEvent | React.KeyboardEvent
   ) => {
+    event?.stopPropagation();
+    event?.preventDefault();
+
     if (!event) {
       if (action === "select") {
         setSelectedTask(task.id);
@@ -279,6 +292,47 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
       });
     }
   };
+  /**
+   * Method is Touch of task change
+   */
+  const handleBarTouchStart = async (
+    action: string,
+    task: BarTask,
+    event?: React.TouchEvent
+  ) => {
+    event?.stopPropagation();
+    event?.preventDefault();
+
+    if (!event) {
+      if (action === "select") {
+        setSelectedTask(task.id);
+      }
+    }
+    // Mouse Events
+    else if (action === "left") {
+      setSelectedTask(task.id);
+
+      setGanttEvent({
+        action: "start",
+        changedTask: task,
+        originalSelectedTask: task,
+      });
+    } else if (action === "right") {
+      setSelectedTask(task.id);
+      setGanttEvent({
+        action: "end",
+        changedTask: task,
+        originalSelectedTask: task,
+      });
+    } else if (action === "dblclick") {
+      !!onDoubleClick && onDoubleClick(task);
+    } else if (action === "end") {
+      // handleUp(event);
+      setGanttEvent({ action: "" });
+      // setIsMoving(false);
+      setSelectedTask("null");
+    }
+  };
 
   return (
     <g className="content">
@@ -310,6 +364,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
               isDateChangeable={!!onDateChange && !task.isDisabled}
               isDelete={!task.isDisabled}
               onEventStart={handleBarEventStart}
+              onTouchEvent={handleBarTouchStart}
               key={task.id}
               isSelected={!!selectedTask && task.id === selectedTask.id}
               rtl={rtl}

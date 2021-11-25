@@ -263,13 +263,15 @@ const taskXCoordinate = (
   dateDelta: number,
   columnWidth: number
 ) => {
-  const index = ~~(
+  let index = ~~(
     (xDate.getTime() -
       dates[0].getTime() +
       xDate.getTimezoneOffset() -
       dates[0].getTimezoneOffset()) /
     dateDelta
   );
+  if (index >= dates.length) index = dates.length - 1;
+
   const x = Math.round(
     (index +
       (xDate.getTime() -

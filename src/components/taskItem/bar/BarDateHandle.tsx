@@ -8,6 +8,9 @@ type BarDateHandleProps = {
   height: number;
   barCornerRadius: number;
   onMouseDown: (event: React.MouseEvent<SVGRectElement, MouseEvent>) => void;
+  onTouchStart: (event: React.TouchEvent<SVGRectElement>) => void;
+  onTouchEnd: (event: React.TouchEvent<SVGRectElement>) => void;
+  onTouchMove: (event: React.TouchEvent<SVGRectElement>) => void;
 };
 export const BarDateHandle: React.FC<BarDateHandleProps> = ({
   x,
@@ -16,6 +19,9 @@ export const BarDateHandle: React.FC<BarDateHandleProps> = ({
   height,
   barCornerRadius,
   onMouseDown,
+  onTouchStart,
+  onTouchEnd,
+  // onTouchMove,
 }) => {
   return (
     <rect
@@ -27,6 +33,9 @@ export const BarDateHandle: React.FC<BarDateHandleProps> = ({
       ry={barCornerRadius}
       rx={barCornerRadius}
       onMouseDown={onMouseDown}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+      // onTouchMove={onTouchMove}
     />
   );
 };

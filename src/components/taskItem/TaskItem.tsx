@@ -21,6 +21,11 @@ export type TaskItemProps = {
     selectedTask: BarTask,
     event?: React.MouseEvent | React.KeyboardEvent
   ) => any;
+  onTouchEvent: (
+    action: string,
+    selectedTask: BarTask,
+    event?: React.TouchEvent
+  ) => any;
 };
 
 export const TaskItem: React.FC<TaskItemProps> = props => {
@@ -32,6 +37,7 @@ export const TaskItem: React.FC<TaskItemProps> = props => {
     isSelected,
     rtl,
     onEventStart,
+    onTouchEvent,
   } = {
     ...props,
   };
@@ -103,6 +109,17 @@ export const TaskItem: React.FC<TaskItemProps> = props => {
       onFocus={() => {
         onEventStart("select", task);
       }}
+      onTouchStart={e => {
+        e.stopPropagation();
+        e.preventDefault();
+        onTouchEvent("select", task);
+      }}
+      // onTouchEnd={e => {
+      //   onTouchEvent("end", task, e);
+      // }}
+      // onTouchMove={e => {
+      //   onTouchEvent("move", task, e);
+      // }}
     >
       {taskItem}
       <text
