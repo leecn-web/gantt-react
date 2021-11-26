@@ -86,8 +86,6 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
         originalSelectedTask: ganttEvent.originalSelectedTask,
       });
     }
-
-    console.log("123 changedTask", changedTask);
   };
 
   const handleUp = async (event: any) => {
@@ -109,6 +107,9 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
       initEventX1Delta,
       rtl
     );
+    if (newChangedTask.progress !== changedTask.progress) {
+      newChangedTask.progress = changedTask.progress;
+    }
 
     const isNotLikeOriginal =
       originalSelectedTask.start !== newChangedTask.start ||
@@ -124,8 +125,6 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
 
     // custom operation start
     let operationSuccess = true;
-
-    console.log("123 newChangedTask", newChangedTask);
 
     if (
       (action === "move" || action === "end" || action === "start") &&
@@ -345,8 +344,6 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
     } else if (action === "dblclick") {
       !!onDoubleClick && onDoubleClick(task);
     } else if (action === "progress") {
-      console.log("123 originalSelectedTask", task);
-
       await setGanttEvent({
         action,
         changedTask: task,
