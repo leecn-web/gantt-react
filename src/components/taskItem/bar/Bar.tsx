@@ -74,8 +74,6 @@ export const Bar: React.FC<TaskItemProps> = ({
                 onEventStart("end", task, e);
               }}
               onTouchStart={e => {
-                e.preventDefault();
-                e.stopPropagation();
                 onTouchEvent("right", task, e);
               }}
               onTouchEnd={e => {
@@ -96,6 +94,9 @@ export const Bar: React.FC<TaskItemProps> = ({
             progressPoint={progressPoint}
             onMouseDown={e => {
               onEventStart("progress", task, e);
+            }}
+            onTouchStart={e => {
+              onTouchEvent("progress", task, e);
             }}
           />
         )}
