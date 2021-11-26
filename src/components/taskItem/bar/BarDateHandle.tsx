@@ -20,7 +20,7 @@ export const BarDateHandle: React.FC<BarDateHandleProps> = ({
   barCornerRadius,
   onMouseDown,
   onTouchStart,
-  onTouchEnd,
+  // onTouchEnd,
   // onTouchMove,
 }) => {
   return (
@@ -34,7 +34,7 @@ export const BarDateHandle: React.FC<BarDateHandleProps> = ({
       rx={barCornerRadius}
       onMouseDown={onMouseDown}
       onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
+      // onTouchEnd={onTouchEnd}
       // onTouchMove={onTouchMove}
     />
   );

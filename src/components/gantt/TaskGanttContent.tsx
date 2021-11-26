@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { EventOption } from "../../types/PublicTypes";
 import { BarTask } from "../../types/BarTask";
 import { Arrow } from "../other/Arrow";
@@ -60,6 +60,136 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   const [xStep, setXStep] = useState(0);
   const [initEventX1Delta, setInitEventX1Delta] = useState(0);
   const [isMoving, setIsMoving] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
+
+  const handleMove = async (event: any) => {
+    if (!ganttEvent.changedTask || !point || !svg?.current) return;
+
+    point.x = event.clientX;
+    const cursor = point.matrixTransform(
+      svg?.current.getScreenCTM()?.inverse()
+    );
+
+    const { isChanged, changedTask } = handleTaskBySVGMouseEvent(
+      cursor.x,
+      ganttEvent.action as BarMoveAction,
+      ganttEvent.changedTask,
+      xStep,
+      timeStep,
+      initEventX1Delta,
+      rtl
+    );
+    if (isChanged) {
+      setGanttEvent({
+        action: ganttEvent.action,
+        changedTask,
+        originalSelectedTask: ganttEvent.originalSelectedTask,
+      });
+    }
+
+    console.log("123 changedTask", changedTask);
+  };
+
+  const handleUp = async (event: any) => {
+    const { action, originalSelectedTask, changedTask } = ganttEvent;
+
+    if (!changedTask || !point || !svg?.current || !originalSelectedTask)
+      return;
+
+    point.x = event ? event.clientX : point.x;
+    const cursor = point.matrixTransform(
+      svg?.current.getScreenCTM()?.inverse()
+    );
+    const { changedTask: newChangedTask } = handleTaskBySVGMouseEvent(
+      cursor.x,
+      action as BarMoveAction,
+      changedTask,
+      xStep,
+      isMobile ? 0 : timeStep,
+      initEventX1Delta,
+      rtl
+    );
+
+    const isNotLikeOriginal =
+      originalSelectedTask.start !== newChangedTask.start ||
+      originalSelectedTask.end !== newChangedTask.end ||
+      originalSelectedTask.progress !== newChangedTask.progress;
+
+    // remove listeners
+    svg.current.removeEventListener("mousemove", handleMouseMove);
+    svg.current.removeEventListener("mouseup", handleMouseUp);
+
+    setGanttEvent({ action: "" });
+    setIsMoving(false);
+
+    // custom operation start
+    let operationSuccess = true;
+
+    console.log("123 newChangedTask", newChangedTask);
+
+    if (
+      (action === "move" || action === "end" || action === "start") &&
+      onDateChange &&
+      isNotLikeOriginal
+    ) {
+      try {
+        const result = await onDateChange(
+          newChangedTask,
+          newChangedTask.barChildren
+        );
+        if (result !== undefined) {
+          operationSuccess = result;
+        }
+      } catch (error) {
+        operationSuccess = false;
+      }
+    } else if (onProgressChange && isNotLikeOriginal) {
+      try {
+        const result = await onProgressChange(
+          newChangedTask,
+          newChangedTask.barChildren
+        );
+        if (result !== undefined) {
+          operationSuccess = result;
+        }
+      } catch (error) {
+        operationSuccess = false;
+      }
+    }
+
+    // If operation is failed - return old state
+    if (!operationSuccess) {
+      setFailedTask(originalSelectedTask);
+    }
+  };
+
+  const handleTouchMove = useCallback(
+    async (event: TouchEvent) => {
+      event.preventDefault();
+      const e = event.touches[0];
+      handleMove(e);
+    },
+    [ganttEvent, selectedTask, handleMove]
+  );
+
+  const handleTouchUp = useCallback(
+    async (event: TouchEvent) => {
+      event.preventDefault();
+      const e = event.touches[0];
+      handleUp(e);
+    },
+    [ganttEvent, selectedTask, handleUp]
+  );
+
+  const handleMouseMove = async (event: MouseEvent) => {
+    event.preventDefault();
+    handleMove(event);
+  };
+
+  const handleMouseUp = async (event: MouseEvent) => {
+    event.preventDefault();
+    handleUp(event);
+  };
 
   // create xStep
   useEffect(() => {
@@ -74,120 +204,8 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
     setXStep(newXStep);
   }, [columnWidth, dates, timeStep]);
 
+  // pc端事件绑定
   useEffect(() => {
-    const handleMove = async (event: any) => {
-      if (!ganttEvent.changedTask || !point || !svg?.current) return;
-
-      point.x = event.clientX;
-      const cursor = point.matrixTransform(
-        svg?.current.getScreenCTM()?.inverse()
-      );
-
-      const { isChanged, changedTask } = handleTaskBySVGMouseEvent(
-        cursor.x,
-        ganttEvent.action as BarMoveAction,
-        ganttEvent.changedTask,
-        xStep,
-        timeStep,
-        initEventX1Delta,
-        rtl
-      );
-      if (isChanged) {
-        setGanttEvent({ action: ganttEvent.action, changedTask });
-      }
-    };
-    const handleUp = async (event: any) => {
-      const { action, originalSelectedTask, changedTask } = ganttEvent;
-      if (!changedTask || !point || !svg?.current || !originalSelectedTask)
-        return;
-      console.log("originalSelectedTask", originalSelectedTask);
-
-      point.x = event ? event.clientX : point.x;
-      const cursor = point.matrixTransform(
-        svg?.current.getScreenCTM()?.inverse()
-      );
-      const { changedTask: newChangedTask } = handleTaskBySVGMouseEvent(
-        cursor.x,
-        action as BarMoveAction,
-        changedTask,
-        xStep,
-        timeStep,
-        initEventX1Delta,
-        rtl
-      );
-
-      const isNotLikeOriginal =
-        originalSelectedTask.start !== newChangedTask.start ||
-        originalSelectedTask.end !== newChangedTask.end ||
-        originalSelectedTask.progress !== newChangedTask.progress;
-
-      // remove listeners
-      svg.current.removeEventListener("mousemove", handleMouseMove);
-      svg.current.removeEventListener("mouseup", handleMouseUp);
-
-      setGanttEvent({ action: "" });
-      setIsMoving(false);
-
-      // custom operation start
-      let operationSuccess = true;
-      if (
-        (action === "move" || action === "end" || action === "start") &&
-        onDateChange &&
-        isNotLikeOriginal
-      ) {
-        try {
-          const result = await onDateChange(
-            newChangedTask,
-            newChangedTask.barChildren
-          );
-          if (result !== undefined) {
-            operationSuccess = result;
-          }
-        } catch (error) {
-          operationSuccess = false;
-        }
-      } else if (onProgressChange && isNotLikeOriginal) {
-        try {
-          const result = await onProgressChange(
-            newChangedTask,
-            newChangedTask.barChildren
-          );
-          if (result !== undefined) {
-            operationSuccess = result;
-          }
-        } catch (error) {
-          operationSuccess = false;
-        }
-      }
-
-      // If operation is failed - return old state
-      if (!operationSuccess) {
-        setFailedTask(originalSelectedTask);
-      }
-    };
-
-    const handleTouchMove = async (event: TouchEvent) => {
-      event.preventDefault();
-      const e = event.touches[0];
-      handleMove(e);
-    };
-
-    const handleTouchUp = async (event: TouchEvent) => {
-      event.preventDefault();
-      const e = event.touches[0];
-      handleUp(e);
-    };
-
-    const handleMouseMove = async (event: MouseEvent) => {
-      event.preventDefault();
-      handleMove(event);
-    };
-
-    const handleMouseUp = async (event: MouseEvent) => {
-      event.preventDefault();
-      handleUp(event);
-    };
-
     if (
       !isMoving &&
       (ganttEvent.action === "move" ||
@@ -196,23 +214,11 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
         ganttEvent.action === "progress") &&
       svg?.current
     ) {
-      // 移动端绑定事件
-      svg?.current?.addEventListener("touchmove", handleTouchMove);
-      svg?.current?.addEventListener("touchend", handleTouchUp);
       // pc端绑定事件
       svg.current.addEventListener("mousemove", handleMouseMove);
       svg.current.addEventListener("mouseup", handleMouseUp);
       setIsMoving(true);
     }
-
-    return () => {
-      // 移动端绑定事件
-      svg?.current?.removeEventListener("touchmove", handleTouchMove);
-      svg?.current?.removeEventListener("touchend", handleTouchUp);
-      // pc端绑定事件
-      svg?.current?.addEventListener("mousemove", handleMouseMove);
-      svg?.current?.addEventListener("mouseup", handleMouseUp);
-    };
   }, [
     ganttEvent,
     xStep,
@@ -224,6 +230,18 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
     isMoving,
   ]);
 
+  // 移动端事件绑定
+  useEffect(() => {
+    // 移动端绑定事件
+    svg?.current?.addEventListener("touchmove", handleTouchMove);
+    svg?.current?.addEventListener("touchend", handleTouchUp);
+    return () => {
+      // 移动端绑定事件
+      svg?.current?.removeEventListener("touchmove", handleTouchMove);
+      svg?.current?.removeEventListener("touchend", handleTouchUp);
+    };
+  }, [ganttEvent, svg, handleTouchMove, handleTouchUp]);
+
   /**
    * Method is Start point of task change
    */
@@ -234,6 +252,8 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   ) => {
     event?.stopPropagation();
     event?.preventDefault();
+
+    setIsMobile(false);
 
     if (!event) {
       if (action === "select") {
@@ -300,9 +320,10 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
     task: BarTask,
     event?: React.TouchEvent
   ) => {
-    event?.stopPropagation();
     event?.preventDefault();
+    event?.stopPropagation();
 
+    setIsMobile(true);
     if (!event) {
       if (action === "select") {
         setSelectedTask(task.id);
@@ -310,28 +331,50 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
     }
     // Mouse Events
     else if (action === "left") {
-      setSelectedTask(task.id);
-
-      setGanttEvent({
+      await setGanttEvent({
         action: "start",
         changedTask: task,
         originalSelectedTask: task,
       });
     } else if (action === "right") {
-      setSelectedTask(task.id);
-      setGanttEvent({
+      await setGanttEvent({
         action: "end",
         changedTask: task,
         originalSelectedTask: task,
       });
     } else if (action === "dblclick") {
       !!onDoubleClick && onDoubleClick(task);
+    } else if (action === "progress") {
+      console.log("123 originalSelectedTask", task);
+
+      await setGanttEvent({
+        action,
+        changedTask: task,
+        originalSelectedTask: task,
+      });
+    } else if (action === "move") {
+      if (!svg?.current || !point) return;
+      point.x = event.touches[0].pageX;
+      const cursor = point.matrixTransform(
+        svg.current.getScreenCTM()?.inverse()
+      );
+      setInitEventX1Delta(cursor.x - task.x1);
+      setGanttEvent({
+        action,
+        changedTask: task,
+        originalSelectedTask: task,
+      });
     } else if (action === "end") {
-      // handleUp(event);
-      setGanttEvent({ action: "" });
-      // setIsMoving(false);
-      setSelectedTask("null");
+      if (ganttEvent.action === "move") {
+        setGanttEvent({ action: "" });
+      }
     }
+    // else if (action === "end") {
+    //   // handleUp(event);
+    //   setGanttEvent({ action: "" });
+    //   setIsMoving(false);
+    //   setSelectedTask("");
+    // }
   };
 
   return (

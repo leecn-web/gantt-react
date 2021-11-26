@@ -31,6 +31,7 @@ export const BarDisplay: React.FC<BarDisplayProps> = ({
   barCornerRadius,
   // styles,
   onMouseDown,
+  onTouchStart,
 }) => {
   const getProcessColor = () => {
     return "#3D54FD";
@@ -43,7 +44,7 @@ export const BarDisplay: React.FC<BarDisplayProps> = ({
   };
 
   return (
-    <g onMouseDown={onMouseDown}>
+    <g onMouseDown={onMouseDown} onTouchStart={onTouchStart}>
       <rect
         x={x}
         width={width}

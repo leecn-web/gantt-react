@@ -109,14 +109,12 @@ export const TaskItem: React.FC<TaskItemProps> = props => {
       onFocus={() => {
         onEventStart("select", task);
       }}
-      onTouchStart={e => {
-        e.stopPropagation();
-        e.preventDefault();
-        onTouchEvent("select", task);
-      }}
-      // onTouchEnd={e => {
-      //   onTouchEvent("end", task, e);
+      // onTouchStart={() => {
+      //   onTouchEvent("select", task);
       // }}
+      onTouchEnd={e => {
+        onTouchEvent("end", task, e);
+      }}
       // onTouchMove={e => {
       //   onTouchEvent("move", task, e);
       // }}
