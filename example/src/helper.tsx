@@ -3,12 +3,13 @@ import { Task } from "../../dist/types/PublicTypes";
 export function initTasks() {
   const tasks: any[] = [
     {
-      start: new Date("2022-02-12 00:00:00"),
-      end: new Date("2022-02-14 00:00:00"),
+      start: new Date("2022-02-12"),
+      end: new Date("2022-02-14"),
       name: "Some Project",
       id: "ProjectSample",
-      progress: 25,
+      progress: 50,
       type: "task",
+      project: "ProjectSample",
       hideChildren: false,
     },
     {
@@ -26,7 +27,16 @@ export function initTasks() {
       end: new Date("2022-01-14 00:00:00"),
       name: "Research",
       id: "Task 1",
-      progress: 25,
+      progress: -10,
+      type: "task",
+      project: "ProjectSample",
+    },
+    {
+      start: new Date("2022-01-12 00:00:00"),
+      end: new Date("2022-01-12 04:00:00"),
+      name: "aaaa",
+      id: "Task 2",
+      progress: 40,
       type: "task",
       project: "ProjectSample",
     },

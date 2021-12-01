@@ -126,7 +126,7 @@ export const StandardTooltipContent: React.FC<{
         <b style={{ fontSize: fontSize + 6 }}>{`${task.name}`}</b>
       </p>
       <p className={styles.tooltipDefaultContainerParagraph}>
-        {!!task.progress && `当前进度: ${task.progress} %`}
+        {`当前进度: ${task.progress} %`}
       </p>
       <p className={styles.tooltipDefaultContainerParagraph}>
         {!!task.start &&
