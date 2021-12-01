@@ -69,7 +69,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
   let today: ReactChild = <rect />;
   let todayLine: ReactChild = <rect />;
   for (let i = 0; i < dates.length; i++) {
-    const date = dates[i];
+    const date = dates[i] ?? new Date();
     ticks.push(
       <line
         key={date.getTime()}

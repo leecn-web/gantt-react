@@ -214,12 +214,19 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
         action === "start" ||
         action === "progress"
       ) {
-        const prevStateTask = barTasks.find(t => t.id === changedTask.id);
+        const prevStateTask = barTasks.find(t => t.id === changedTask.id) ?? {
+          start: new Date(),
+          end: new Date(),
+          progress: 0,
+        };
+        prevStateTask.start = prevStateTask?.start || new Date();
+        prevStateTask.end = prevStateTask?.end || new Date();
+        prevStateTask.progress = prevStateTask?.progress || 0;
         if (
           prevStateTask &&
-          (prevStateTask.start.getTime() !== changedTask.start.getTime() ||
-            prevStateTask.end.getTime() !== changedTask.end.getTime() ||
-            prevStateTask.progress !== changedTask.progress)
+          (prevStateTask?.start?.getTime() !== changedTask.start.getTime() ||
+            prevStateTask?.end?.getTime() !== changedTask.end.getTime() ||
+            prevStateTask?.progress !== changedTask.progress)
         ) {
           // actions for change
           const newTaskList = barTasks.map(t =>

@@ -119,7 +119,7 @@ export const TaskItem: React.FC<TaskItemProps> = props => {
       //   onTouchEvent("move", task, e);
       // }}
     >
-      {taskItem}
+      {!task.isEmpty && taskItem}
       <text
         x={getX()}
         y={task.y + taskHeight * 0.5}
@@ -130,7 +130,7 @@ export const TaskItem: React.FC<TaskItemProps> = props => {
         }
         ref={textRef}
       >
-        {task.name}
+        {!task.isEmpty && task.name}
       </text>
     </g>
   );

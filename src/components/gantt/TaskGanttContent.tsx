@@ -107,7 +107,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
       initEventX1Delta,
       rtl
     );
-    if (newChangedTask.progress !== changedTask.progress) {
+    if (isMobile) {
       newChangedTask.progress = changedTask.progress;
     }
 
@@ -192,8 +192,8 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
 
   // create xStep
   useEffect(() => {
-    const date1 = dates[1] ?? new Date();
-    const date0 = dates[0] ?? new Date();
+    const date1 = dates?.[1] ?? new Date();
+    const date0 = dates?.[0] ?? new Date();
     const dateDelta =
       date1.getTime() -
       date0.getTime() -

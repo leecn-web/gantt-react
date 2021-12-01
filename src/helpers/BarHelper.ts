@@ -22,11 +22,13 @@ export const convertToBarTasks = (
   milestoneBackgroundColor: string,
   milestoneBackgroundSelectedColor: string
 ) => {
-  const dateDelta =
-    dates[1].getTime() -
-    dates[0].getTime() -
-    dates[1].getTimezoneOffset() * 60 * 1000 +
-    dates[0].getTimezoneOffset() * 60 * 1000;
+  let dateDelta =
+    (dates?.[1]?.getTime() || new Date().getTime()) -
+    (dates?.[0]?.getTime() || new Date().getTime()) -
+    (dates?.[1]?.getTimezoneOffset() || new Date().getTime()) * 60 * 1000 +
+    (dates?.[0]?.getTimezoneOffset() || new Date().getTime()) * 60 * 1000;
+  if (!dateDelta) dateDelta = 0;
+
   let barTasks = tasks.map((t, i) => {
     return convertToBarTask(
       t,
@@ -263,11 +265,12 @@ const taskXCoordinate = (
   dateDelta: number,
   columnWidth: number
 ) => {
+  if (!xDate) xDate = new Date();
   let index = ~~(
-    (xDate.getTime() -
-      dates[0].getTime() +
-      xDate.getTimezoneOffset() -
-      dates[0].getTimezoneOffset()) /
+    ((xDate?.getTime() || new Date().getTime()) -
+      (dates?.[0]?.getTime() || new Date().getTime()) +
+      (xDate?.getTimezoneOffset() || new Date().getTime()) -
+      (dates?.[0]?.getTimezoneOffset() || new Date().getTime())) /
     dateDelta
   );
   if (index >= dates.length) index = dates.length - 1;
