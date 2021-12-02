@@ -20,7 +20,7 @@ export const ViewSwitcher: React.SFC<ViewSwitcherProps> = props => {
   } = props;
   return (
     <div className="ViewContainer">
-      <button className="Button" onClick={handleChange}>
+      <button className="Button" onClick={() => handleChange()}>
         当前
       </button>
       <button

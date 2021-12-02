@@ -15,8 +15,11 @@ export const Bar: React.FC<TaskItemProps> = ({
   onTouchEvent,
   isSelected,
 }) => {
+  let progressWidth = task.progressWidth;
+  if (task.progressWidth > task.x2 - task.x1) progressWidth = task.x2 - task.x1;
+  else if (task.progressWidth < 0) progressWidth = 0;
   const progressPoint = getProgressPoint(
-    +!rtl * task.progressWidth + task.progressX,
+    +!rtl * progressWidth + task.progressX,
     task.y,
     task.height
   );

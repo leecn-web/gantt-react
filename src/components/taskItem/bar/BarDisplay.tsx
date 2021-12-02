@@ -42,7 +42,9 @@ export const BarDisplay: React.FC<BarDisplayProps> = ({
     return "#3D54FD";
     // return isSelected ? styles.backgroundSelectedColor : styles.backgroundColor;
   };
-
+  let pWidth = progressWidth;
+  if (pWidth > width) pWidth = width;
+  else if (pWidth < 0) pWidth = 0;
   return (
     <g onMouseDown={onMouseDown} onTouchStart={onTouchStart}>
       <rect
@@ -57,7 +59,7 @@ export const BarDisplay: React.FC<BarDisplayProps> = ({
       />
       <rect
         x={progressX}
-        width={progressWidth}
+        width={pWidth}
         y={y}
         height={height}
         ry={barCornerRadius}

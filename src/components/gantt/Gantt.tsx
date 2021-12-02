@@ -432,8 +432,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
         }
       }
       await setDateSetup({ dates: newDates, viewMode });
-      first.current = newDates[0].getTime();
-      end.current = newDates[newDates.length - 1].getTime();
       await setBarTasks(
         convertToBarTasks(
           filteredTasks,
@@ -481,48 +479,19 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       onExpanderClick,
     ]
   );
-  // 增加获取当前定位的方法
-  const todayDOM: any = useRef(document.getElementById("currentLine"));
-  const boxDOM: any = useRef(
-    document.querySelector(`.${styles.ganttVerticalContainer}`)
-  );
-  const todayRef = useRef<number>(0);
-  // 获取当前定位的具体x位置
-  const lineX: number = useMemo(() => {
-    if (todayDOM.current) {
-      const x = todayDOM.current.getAttribute("x");
-      todayRef.current = parseInt(x);
-      let width = 1;
-      if (boxDOM.current) {
-        width = Math.floor(boxDOM.current.clientWidth / 2);
-      }
-      return todayRef.current - width;
-    } else {
-      return 0;
-    }
-  }, [todayDOM.current, boxDOM.current, todayRef.current, tasks]);
-  // 得到当前时间和结束时间的时间戳，用于计算当前日期是否在图表内
-  const first = useRef(dateSetup.dates[0].getTime());
-  const end = useRef(dateSetup.dates[dateSetup.dates.length - 1].getTime());
-  useEffect(() => {
-    changeDates(() => {
-      first.current = dateSetup.dates[0].getTime();
-      end.current = dateSetup.dates[dateSetup.dates.length - 1].getTime();
-    });
-  }, [viewMode, first.current, end.current]);
   // 定位到当前位置
   const onChangeScrollX8Current = useCallback(() => {
     const now = new Date().getTime();
     let timer: NodeJS.Timeout | null = null;
 
-    if (first.current > now) {
+    if (dateSetup.dates[0].getTime() > now) {
       coefficientRef.current[`${viewMode}Left`] =
         coefficientRef.current[`${viewMode}Left`] + 1;
       changeDates();
       timer = setTimeout(() => {
         onChangeScrollX8Current();
       }, 1);
-    } else if (end.current < now) {
+    } else if (dateSetup.dates[dateSetup.dates.length - 1].getTime() < now) {
       coefficientRef.current[`${viewMode}Right`] =
         coefficientRef.current[`${viewMode}Right`] + 1;
       changeDates();
@@ -530,28 +499,33 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
         onChangeScrollX8Current();
       }, 1);
     } else {
-      if (timer) clearTimeout(timer);
-      setScrollX(lineX);
-      isFirstLoaded.current = false;
+      setTimeout(() => {
+        const todayDOM = document.getElementById("currentLine");
+        const boxDOM: any = document.querySelector(
+          `.${styles.ganttVerticalContainer}`
+        );
+        const x = todayDOM?.getAttribute("x");
+        const width = Math.floor(boxDOM.clientWidth / 2);
+        let linex = Number(x) - width;
+        if (linex < 0) linex = 0;
+        if (timer) clearTimeout(timer);
+        setScrollX(linex);
+      }, 10);
     }
-  }, [lineX, viewMode, dateSetup, first.current, end.current]);
+  }, [viewMode, dateSetup, dateSetup.dates, coefficientRef, coefficientRef]);
   // 初始化加载
   useEffect(() => {
-    if (isFirstLoaded.current && lineX) {
-      onChangeScrollX8Current();
+    if (isFirstLoaded.current && barTasks && barTasks.length) {
+      const firstItem = barTasks[0];
+      const boxDOM: any = document.querySelector(
+        `.${styles.ganttVerticalContainer}`
+      );
+      const width = Math.floor(boxDOM.clientWidth / 2);
+      const linex = firstItem.x1 - width;
+      setScrollX(linex);
+      isFirstLoaded.current = false;
     }
-  }, [lineX, isFirstLoaded.current, dateSetup.dates]);
-  // 更新x轴位置
-  useEffect(() => {
-    todayDOM.current = document.getElementById("currentLine");
-    boxDOM.current = document.querySelector(
-      `.${styles.ganttVerticalContainer}`
-    );
-    if (todayDOM.current) {
-      const x = todayDOM.current.getAttribute("x");
-      todayRef.current = parseInt(x);
-    }
-  }, [lineX, scrollX, viewMode]);
+  }, [isFirstLoaded.current, barTasks]);
 
   const gridProps: GridProps = useMemo(() => {
     return {
