@@ -483,7 +483,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
   const onChangeScrollX8Current = useCallback(() => {
     const now = new Date().getTime();
     let timer: NodeJS.Timeout | null = null;
-
     if (dateSetup.dates[0].getTime() > now) {
       coefficientRef.current[`${viewMode}Left`] =
         coefficientRef.current[`${viewMode}Left`] + 1;
@@ -516,14 +515,16 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
   // 初始化加载
   useEffect(() => {
     if (isFirstLoaded.current && barTasks && barTasks.length) {
-      const firstItem = barTasks[0];
-      const boxDOM: any = document.querySelector(
-        `.${styles.ganttVerticalContainer}`
-      );
-      const width = Math.floor(boxDOM.clientWidth / 2);
-      const linex = firstItem.x1 - width;
-      setScrollX(linex);
-      isFirstLoaded.current = false;
+      setTimeout(() => {
+        const firstItem = barTasks[0];
+        const boxDOM: any = document.querySelector(
+          `.${styles.ganttVerticalContainer}`
+        );
+        const width = Math.floor(boxDOM.clientWidth / 2);
+        const linex = firstItem.x1 - width;
+        setScrollX(linex);
+        isFirstLoaded.current = false;
+      }, 100);
     }
   }, [isFirstLoaded.current, barTasks]);
 
