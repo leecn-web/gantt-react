@@ -112,7 +112,7 @@ export const TaskList: React.FC<TaskListProps> = ({
   };
 
   return (
-    <div ref={taskListRef}>
+    <div ref={taskListRef} style={{ overflow: "hidden" }}>
       {/* <BaseTable
         className="class"
         {...pipeline.getProps()}

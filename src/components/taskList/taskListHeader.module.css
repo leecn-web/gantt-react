@@ -29,6 +29,7 @@
   /* flex: 1; */
   vertical-align: -webkit-baseline-middle;
   vertical-align: middle;
+  overflow: hidden;
 }
 .ganttTable_HeaderItem_reSize {
   position: absolute;

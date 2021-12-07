@@ -530,13 +530,26 @@ const handleTaskBySVGMouseEventForBar = (
             timeStep
           );
         } else {
-          changedTask.end = dateByX(
-            newX2,
-            selectedTask.x2,
-            selectedTask.end,
-            xStep,
-            timeStep
-          );
+          if (
+            new Date(changedTask.end).getTime() <
+            new Date(changedTask.start).getTime()
+          ) {
+            changedTask.end = dateByX(
+              newX2,
+              selectedTask.x2,
+              selectedTask.start,
+              xStep,
+              timeStep
+            );
+          } else {
+            changedTask.end = dateByX(
+              newX2,
+              selectedTask.x2,
+              selectedTask.end,
+              xStep,
+              timeStep
+            );
+          }
         }
         const [progressWidth, progressX] = progressWithByParams(
           changedTask.x1,
