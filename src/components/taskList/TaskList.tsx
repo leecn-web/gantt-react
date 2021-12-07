@@ -1,6 +1,4 @@
 import React, { useEffect, useRef } from "react";
-// import React, { useEffect, useRef } from "react";
-// import { BaseTable, features, useTablePipeline } from "ali-react-table";
 import { BarTask } from "../../types/BarTask";
 import { Task } from "../../types/PublicTypes";
 
@@ -17,8 +15,6 @@ export type TaskListProps = {
   taskListRef: React.RefObject<HTMLDivElement>;
   horizontalContainerClass?: string;
   selectedTask: BarTask | undefined;
-  setSelectedTask: (task: string) => void;
-  onExpanderClick: (task: Task) => void;
   columns: any[];
   TaskListHeader: React.FC<{
     headerHeight: number;
@@ -39,6 +35,8 @@ export type TaskListProps = {
     setSelectedTask: (taskId: string) => void;
     onExpanderClick: (task: Task) => void;
   }>;
+  setSelectedTask: (task: string) => void;
+  onExpanderClick: (task: Task) => void;
   onChangeColumnWidth: (columnId: string, width: number) => void;
 };
 
@@ -51,8 +49,6 @@ export const TaskList: React.FC<TaskListProps> = ({
   scrollY,
   tasks,
   selectedTask,
-  setSelectedTask,
-  onExpanderClick,
   locale,
   ganttHeight,
   taskListRef,
@@ -60,6 +56,8 @@ export const TaskList: React.FC<TaskListProps> = ({
   TaskListHeader,
   TaskListTable,
   columns,
+  setSelectedTask,
+  onExpanderClick,
   onChangeColumnWidth,
 }) => {
   const horizontalContainerRef = useRef<HTMLDivElement>(null);
@@ -135,7 +133,9 @@ export const TaskList: React.FC<TaskListProps> = ({
       <div
         ref={horizontalContainerRef}
         className={horizontalContainerClass}
-        style={ganttHeight ? { maxHeight: ganttHeight } : {}}
+        style={{
+          maxHeight: ganttHeight && ganttHeight,
+        }}
       >
         <TaskListTable {...tableProps} />
       </div>

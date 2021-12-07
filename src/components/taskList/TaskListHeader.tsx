@@ -116,7 +116,7 @@ export const TaskListHeaderDefault: React.FC<{
       <div
         className={styles.ganttTable_Header}
         style={{
-          height: headerHeight - 2,
+          height: headerHeight - 1,
         }}
       >
         {columns.map((item, index) => {

@@ -163,6 +163,26 @@ export const Calendar: React.FC<CalendarProps> = ({
             yText={topDefaultHeight * 0.9}
           />
         );
+      } else if (i === dates.length - 1) {
+        const topValue = `${date.getFullYear()}年${date.getMonth() + 1}月`;
+
+        topValues.push(
+          <TopPartOfCalendar
+            key={topValue + date.getFullYear()}
+            value={topValue}
+            x1Line={columnWidth * (i + 1)}
+            y1Line={0}
+            y2Line={headerHeight * 0.5}
+            xText={
+              (columnWidth * (i + 1) -
+                getDaysInMonth(date.getMonth(), date.getFullYear()) *
+                  columnWidth) *
+                2 +
+              columnWidth
+            }
+            yText={topDefaultHeight * 0.9}
+          />
+        );
       }
     }
     return [topValues, bottomValues];
@@ -232,11 +252,11 @@ export const Calendar: React.FC<CalendarProps> = ({
         x={0}
         y={0}
         width={columnWidth * dateSetup.dates.length}
-        height={headerHeight}
+        height={headerHeight + 1}
         className={styles.calendarHeader}
       />
       {bottomValues}
-      <line x="0" y1="44" x2="100%" y2="44" style={{ stroke: "#e6e4e4" }} />
+      <line x="0" y1="44" x2="100%" y2="45" className={styles.calendarLine} />
       {/* <line x="0" y1="45" x2="100%" y2="50" className="_3rUKi" /> */}
       {topValues}
     </g>

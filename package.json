@@ -71,7 +71,5 @@
   "files": [
     "dist"
   ],
-  "dependencies": {
-    "ali-react-table": "^2.6.1"
-  }
+  "dependencies": {}
 }

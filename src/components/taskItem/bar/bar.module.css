@@ -18,5 +18,9 @@
 .barBackground {
   user-select: none;
   stroke-width: 0;
-  opacity: 0.4;
+  fill: var(--primary-3);
+}
+
+.progressBarBackground {
+  fill: var(--primary-color);
 }

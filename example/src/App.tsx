@@ -148,6 +148,26 @@ const App = () => {
     { wait: 500 }
   );
 
+  // const themeConfig = useMemo(() => {
+  //   if (true) {
+  //     return {
+  //       bgColor: "transparent",
+  //       tableHeaderColor: "transparent",
+  //     };
+  //   }
+  //   // return {
+  //   //   borderColor: comp.themeConfig["--comp-border-color"],
+  //   //   titleColor: comp.themeConfig["--comp-title-color"],
+  //   //   h2Color: comp.themeConfig["--h2-and-content-color"],
+  //   //   iconColor: comp.themeConfig["--icon-and-message-color"],
+  //   //   bgColor: comp.themeConfig["--page-background"],
+  //   //   tableBodyColor: comp.themeConfig["--table-body-color"],
+  //   //   tableBorderColor: comp.themeConfig["--table-border-color"],
+  //   //   tableHeaderColor: comp.themeConfig["--table-header-color"],
+  //   //   tablePrimaryColor: comp.themeConfig["--table-primary-color"],
+  //   // };
+  // }, []);
+
   return (
     <div>
       <h3>Gantt With Limited Height</h3>

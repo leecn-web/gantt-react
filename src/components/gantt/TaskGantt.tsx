@@ -11,6 +11,7 @@ export type TaskGanttProps = {
   ganttHeight: number;
   scrollY: number;
   scrollX: number;
+  ChildrenDom: React.ReactChild;
 };
 export const TaskGantt: React.FC<TaskGanttProps> = ({
   gridProps,
@@ -19,6 +20,7 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
   ganttHeight,
   scrollY,
   scrollX,
+  ChildrenDom,
 }) => {
   const ganttSVGRef = useRef<SVGSVGElement>(null);
   const horizontalContainerRef = useRef<HTMLDivElement>(null);
@@ -43,10 +45,11 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
       ref={verticalGanttContainerRef}
       dir="ltr"
     >
+      <div>{ChildrenDom}</div>
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width={gridProps.svgWidth}
-        height={calendarProps.headerHeight}
+        height={calendarProps.headerHeight + 1}
         fontFamily={barProps.fontFamily}
         // style={{ height: "90px", paddingTop: "40px" }}
         // style={{ paddingTop: "40px", boxSizing: "content-box" }}
@@ -57,11 +60,10 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
       <div
         ref={horizontalContainerRef}
         className={styles.horizontalContainer}
-        style={
-          ganttHeight
-            ? { maxHeight: ganttHeight, width: gridProps.svgWidth }
-            : { width: gridProps.svgWidth }
-        }
+        style={{
+          maxHeight: ganttHeight && ganttHeight,
+          width: gridProps.svgWidth,
+        }}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

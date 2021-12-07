@@ -1,17 +1,18 @@
 .gridRow {
-  fill: #fff;
+  fill: transparent;
 }
 
 .gridRowSelect {
-  fill: rgba(61, 84, 253, 0.1);
+  fill: var(--primary-2);
 }
 
 .gridRowLine {
-  stroke: #fff;
+  stroke: transparent;
 }
 
 .gridTick {
-  stroke: #e6e4e4;
+  /* stroke: var(--disable-color); */
+  stroke: rgba(189, 198, 217, 0.5);
 }
 
 .today {

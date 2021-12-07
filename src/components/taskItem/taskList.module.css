@@ -12,7 +12,7 @@
 }
 
 .barLabelOutside {
-  fill: #555;
+  fill: var(--primary-text-color);
   text-anchor: start;
   -webkit-touch-callout: none;
   -webkit-user-select: none;

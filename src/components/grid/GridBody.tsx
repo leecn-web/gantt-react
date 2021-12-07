@@ -110,7 +110,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
           y={0}
           width={2}
           height={y}
-          fill="#3D54FD"
+          style={{ fill: "var(--primary-color)" }}
         />
       );
     }
@@ -137,7 +137,8 @@ export const GridBody: React.FC<GridBodyProps> = ({
           y={0}
           width={2}
           height={y}
-          fill="#3D54FD"
+          style={{ fill: "var(--primary-color)" }}
+          // fill="#3D54FD"
         />
       );
     }

@@ -1,6 +1,6 @@
 .calendarBottomText {
   text-anchor: middle;
-  fill: #333;
+  fill: var(--secondary-text-color);
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -10,7 +10,7 @@
 }
 
 .calendarTopTick {
-  stroke: #e6e4e4;
+  stroke: rgba(189, 198, 217, 0.5);
 }
 
 .calendarTopText {
@@ -25,7 +25,11 @@
 }
 
 .calendarHeader {
-  fill: #ffffff;
-  stroke: #e0e0e0;
-  stroke-width: 1.4;
+  fill: transparent;
+  stroke: rgba(189, 198, 217, 0.5);
+  stroke-width: 1;
+}
+
+.calendarLine {
+  stroke: rgba(189, 198, 217, 0.5);
 }

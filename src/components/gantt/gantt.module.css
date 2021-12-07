@@ -1,16 +1,23 @@
 .ganttVerticalContainer {
+  width: 100%;
+  flex: 1;
   overflow: hidden;
   font-size: 0;
   margin: 0;
   padding: 0;
-  border: 1px solid #e6e4e4;
+  border: 1px solid rgba(189, 198, 217, 0.5);
+  border-top: none;
+  border-bottom: none;
 }
 
 .horizontalContainer {
-  width: 440px;
+  width: 443px;
   margin: 0;
   padding: 0;
   overflow: hidden;
+  border: 1px solid rgba(189, 198, 217, 0.5);
+  border-top: none;
+  border-right: none;
 }
 
 .wrapper {
@@ -31,9 +38,12 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  height: 40px;
-  right: 6px;
+  height: 43px;
+  top: 1px;
+  right: 1px;
+  padding-right: 5px;
   background: transparent;
   text-align: right;
-  border-top: 1px solid #e6e4e4;
+  overflow: hidden;
+  background: var(--comp-background);
 }

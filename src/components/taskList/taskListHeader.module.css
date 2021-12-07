@@ -1,19 +1,17 @@
 .ganttTable {
   display: table;
-  width: 440px;
-  margin-right: 2px;
-  border-bottom: #e6e4e4 1px solid;
-  border-top: #e6e4e4 1px solid;
-  border-left: #e6e4e4 1px solid;
-  border: 1px solid #e6e4e4;
+  width: 442px;
+  border: 1px solid rgba(189, 198, 217, 0.5);
+  border-right: none;
 }
 
 .ganttTable_Header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 440px;
+  width: 442px;
   list-style: none;
+  background-color: transparent;
 }
 
 .ganttTable_HeaderSeparator {
@@ -43,5 +41,5 @@
 .ganttTable_HeaderItem_reSize_Inner {
   width: 1px;
   height: 100%;
-  background: #e6e4e4;
+  background: rgba(189, 198, 217, 0.5);
 }

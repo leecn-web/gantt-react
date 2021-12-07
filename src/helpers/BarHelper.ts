@@ -27,7 +27,7 @@ export const convertToBarTasks = (
     (dates?.[0]?.getTime() || new Date().getTime()) -
     (dates?.[1]?.getTimezoneOffset() || new Date().getTime()) * 60 * 1000 +
     (dates?.[0]?.getTimezoneOffset() || new Date().getTime()) * 60 * 1000;
-  if (!dateDelta) dateDelta = 0;
+  if (!dateDelta || dateDelta < 0) dateDelta = 0;
 
   let barTasks = tasks.map((t, i) => {
     return convertToBarTask(
@@ -274,6 +274,7 @@ const taskXCoordinate = (
     dateDelta
   );
   if (index >= dates.length) index = dates.length - 1;
+  if (index < 0) index = 0;
 
   const x = Math.round(
     (index +
@@ -284,6 +285,7 @@ const taskXCoordinate = (
         dateDelta) *
       columnWidth
   );
+  if (!x || x === Infinity || x === -Infinity) return 0;
   return x;
 };
 const taskXCoordinateRTL = (

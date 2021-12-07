@@ -431,8 +431,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
           setScrollX(newDates.length * columnWidth);
         }
       }
-      await setDateSetup({ dates: newDates, viewMode });
-      await setBarTasks(
+      setDateSetup({ dates: newDates, viewMode });
+      setBarTasks(
         convertToBarTasks(
           filteredTasks,
           newDates,
@@ -476,29 +476,42 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       milestoneBackgroundSelectedColor,
       rtl,
       scrollX,
+      dateSetup,
       onExpanderClick,
     ]
   );
+  // 得到当前时间和结束时间的时间戳，用于计算当前日期是否在图表内
+  const first = useRef(dateSetup.dates[0].getTime());
+  const end = useRef(dateSetup.dates[dateSetup.dates.length - 1].getTime());
+  useEffect(() => {
+    first.current = dateSetup.dates[0].getTime();
+    end.current = dateSetup.dates[dateSetup.dates.length - 1].getTime();
+  }, [viewMode, first, end, coefficientRef, dateSetup, changeDates]);
   // 定位到当前位置
   const onChangeScrollX8Current = useCallback(() => {
     const now = new Date().getTime();
     let timer: NodeJS.Timeout | null = null;
-    if (dateSetup.dates[0].getTime() > now) {
+    if (first.current > now) {
       coefficientRef.current[`${viewMode}Left`] =
         coefficientRef.current[`${viewMode}Left`] + 1;
-      changeDates();
-      timer = setTimeout(() => {
-        onChangeScrollX8Current();
-      }, 1);
-    } else if (dateSetup.dates[dateSetup.dates.length - 1].getTime() < now) {
+      changeDates(() => {
+        timer = setTimeout(() => {
+          if (timer) clearTimeout(timer);
+          onChangeScrollX8Current();
+        }, 1);
+      });
+    } else if (end.current < now) {
       coefficientRef.current[`${viewMode}Right`] =
         coefficientRef.current[`${viewMode}Right`] + 1;
       changeDates();
       timer = setTimeout(() => {
+        if (timer) clearTimeout(timer);
         onChangeScrollX8Current();
       }, 1);
     } else {
-      setTimeout(() => {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(() => {
+        if (timer) clearTimeout(timer);
         const todayDOM = document.getElementById("currentLine");
         const boxDOM: any = document.querySelector(
           `.${styles.ganttVerticalContainer}`
@@ -507,15 +520,16 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
         const width = Math.floor(boxDOM.clientWidth / 2);
         let linex = Number(x) - width;
         if (linex < 0) linex = 0;
-        if (timer) clearTimeout(timer);
         setScrollX(linex);
       }, 10);
     }
-  }, [viewMode, dateSetup, dateSetup.dates, coefficientRef, coefficientRef]);
+  }, [first, end, coefficientRef, viewMode, scrollX, changeDates]);
   // 初始化加载
   useEffect(() => {
     if (isFirstLoaded.current && barTasks && barTasks.length) {
-      setTimeout(() => {
+      let timer: NodeJS.Timeout | null = null;
+      timer = setTimeout(() => {
+        if (timer) clearTimeout(timer);
         const firstItem = barTasks[0];
         const boxDOM: any = document.querySelector(
           `.${styles.ganttVerticalContainer}`
@@ -632,11 +646,11 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       horizontalContainerClass: styles.horizontalContainer,
       selectedTask,
       taskListRef,
-      setSelectedTask: handleSelectedTask,
-      onExpanderClick: handleExpanderClick,
       TaskListHeader,
       TaskListTable,
       columns,
+      setSelectedTask: handleSelectedTask,
+      onExpanderClick: handleExpanderClick,
       onChangeColumnWidth,
     };
   }, [
@@ -652,39 +666,65 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     styles.horizontalContainer,
     selectedTask,
     taskListRef,
-    handleSelectedTask,
-    handleExpanderClick,
     TaskListHeader,
     TaskListTable,
     columns,
+    handleSelectedTask,
+    handleExpanderClick,
     onChangeColumnWidth,
   ]);
 
+  const childrenRef = useRef<any>();
+  const [width, setWidth] = useState<number>(0);
+
+  const Children = (
+    <div
+      ref={childrenRef}
+      className={styles.toolsBar}
+      style={{
+        maxWidth: `${width}px`,
+      }}
+    >
+      {
+        // children 不是数组我们需要用 React.Children.map 来遍历
+        // 或者把它转成数组
+        React.Children.map(props.children, child => {
+          if (!React.isValidElement(child)) {
+            return null;
+          }
+          const childProps = {
+            ...child.props,
+            changeScrollCurrent: onChangeScrollX8Current,
+          };
+          // 这里我们通常还会判断 child 的类型来确定是不是要传递相应的数据，这里我就不做了
+          return React.cloneElement(child, childProps);
+        })
+      }
+    </div>
+  );
+
+  useEffect(() => {
+    const func = () => {
+      const rect = document
+        .querySelector(`.${styles.ganttVerticalContainer}`)
+        ?.getBoundingClientRect();
+      setWidth(rect?.width ? rect?.width - 10 : 0);
+    };
+    func();
+    window.addEventListener("resize", func);
+    return () => {
+      window.removeEventListener("resize", func);
+    };
+  }, [childrenRef]);
+
   return (
-    <div style={{ position: "relative" }}>
+    <div style={{ width: "100%", position: "relative" }}>
       <div
         className={styles.wrapper}
         onKeyDown={handleKeyDown}
         tabIndex={0}
         ref={wrapperRef}
       >
-        <div className={styles.toolsBar}>
-          {
-            // children 不是数组我们需要用 React.Children.map 来遍历
-            // 或者把它转成数组
-            React.Children.map(props.children, child => {
-              if (!React.isValidElement(child)) {
-                return null;
-              }
-              const childProps = {
-                ...child.props,
-                changeScrollCurrent: onChangeScrollX8Current,
-              };
-              // 这里我们通常还会判断 child 的类型来确定是不是要传递相应的数据，这里我就不做了
-              return React.cloneElement(child, childProps);
-            })
-          }
-        </div>
         {listCellWidth && <TaskList {...tableProps} />}
         <TaskGantt
           gridProps={gridProps}
@@ -693,6 +733,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
           ganttHeight={ganttHeight}
           scrollY={scrollY}
           scrollX={scrollX}
+          ChildrenDom={Children}
         />
         {ganttEvent.changedTask && (
           <Tooltip

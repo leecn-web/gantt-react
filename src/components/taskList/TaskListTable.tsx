@@ -82,12 +82,12 @@ export const TaskListTableDefault: React.FC<{
             style={{
               height: rowHeight,
               backgroundColor:
-                selectedTaskId === t.id ? "rgba(61, 84, 253, 0.1)" : "#fff",
+                selectedTaskId === t.id ? "var(--primary-2)" : "transparent",
             }}
             key={`${t.id}row`}
             onClick={() => setSelectedTask(t.id)}
           >
-            {columns.map(item => {
+            {columns.map((item, idx) => {
               const Render = item.onrender;
               const alignValue = showAlignValue(item);
               return (
@@ -99,6 +99,10 @@ export const TaskListTableDefault: React.FC<{
                     maxWidth: item.maxWidth,
                     width: item.width || item.maxWidth,
                     justifyContent: alignValue,
+                    paddingLeft:
+                      idx === columns.length - 1 && item.isLast === undefined
+                        ? 0
+                        : "10px",
                   }}
                 >
                   <div className={styles.taskListNameWrapper}>

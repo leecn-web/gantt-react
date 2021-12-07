@@ -141,6 +141,7 @@ export interface ViewSwitcherProps {
 export interface GanttProps extends EventOption, DisplayOption, StylingOption {
   tasks: Task[];
   columns: any[];
+  themeConfig?: any;
   onChangeColumnWidth: (columnId: string, width: number) => void;
   onScrollBottom: () => void;
 }

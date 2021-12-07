@@ -33,15 +33,15 @@ export const BarDisplay: React.FC<BarDisplayProps> = ({
   onMouseDown,
   onTouchStart,
 }) => {
-  const getProcessColor = () => {
-    return "#3D54FD";
-    // return isSelected ? styles.progressSelectedColor : styles.progressColor;
-  };
+  // const getProcessColor = () => {
+  //   return "#3D54FD";
+  //   // return isSelected ? styles.progressSelectedColor : styles.progressColor;
+  // };
 
-  const getBarColor = () => {
-    return "#3D54FD";
-    // return isSelected ? styles.backgroundSelectedColor : styles.backgroundColor;
-  };
+  // const getBarColor = () => {
+  //   return "#3D54FD";
+  //   // return isSelected ? styles.backgroundSelectedColor : styles.backgroundColor;
+  // };
   let pWidth = progressWidth;
   if (pWidth > width) pWidth = width;
   else if (pWidth < 0) pWidth = 0;
@@ -54,7 +54,7 @@ export const BarDisplay: React.FC<BarDisplayProps> = ({
         height={height}
         ry={barCornerRadius}
         rx={barCornerRadius}
-        fill={getBarColor()}
+        // fill={getBarColor()}
         className={style.barBackground}
       />
       <rect
@@ -64,7 +64,8 @@ export const BarDisplay: React.FC<BarDisplayProps> = ({
         height={height}
         ry={barCornerRadius}
         rx={barCornerRadius}
-        fill={getProcessColor()}
+        // fill={getProcessColor()}
+        className={style.progressBarBackground}
       />
     </g>
   );
