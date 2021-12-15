@@ -15,18 +15,18 @@
 
 .calendarTopText {
   text-anchor: middle;
-  fill: #555;
+  fill: var(--secondary-text-color);
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
   pointer-events: none;
+  font-weight: bold;
 }
 
 .calendarHeader {
   fill: transparent;
-  stroke: rgba(189, 198, 217, 0.5);
   stroke-width: 1;
 }
 

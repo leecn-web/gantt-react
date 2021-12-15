@@ -27,6 +27,7 @@ export type TaskGanttContentProps = {
   fontSize: string;
   fontFamily: string;
   rtl: boolean;
+  themeConfig: any;
   setGanttEvent: (value: GanttEvent) => void;
   setFailedTask: (value: BarTask | null) => void;
   setSelectedTask: (taskId: string) => void;
@@ -48,6 +49,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   fontFamily,
   fontSize,
   rtl,
+  themeConfig,
   setGanttEvent,
   setFailedTask,
   setSelectedTask,
@@ -274,22 +276,6 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
         }
       }
     }
-    // Mouse Events
-    else if (action === "mouseenter") {
-      if (!ganttEvent.action) {
-        setGanttEvent({
-          action,
-          changedTask: task,
-          originalSelectedTask: task,
-        });
-      }
-    } else if (action === "mouseleave") {
-      if (ganttEvent.action === "mouseenter") {
-        setGanttEvent({ action: "" });
-      }
-    } else if (action === "dblclick") {
-      !!onDoubleClick && onDoubleClick(task);
-    }
     // Change task event start
     else if (action === "move") {
       if (!svg?.current || !point) return;
@@ -303,6 +289,22 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
         changedTask: task,
         originalSelectedTask: task,
       });
+    }
+    // Mouse Events
+    else if (action === "mouseenter") {
+      // if (!ganttEvent.action) {
+      setGanttEvent({
+        action,
+        changedTask: task,
+        originalSelectedTask: task,
+      });
+      // }
+    } else if (action === "mouseleave") {
+      if (ganttEvent.action === "mouseenter") {
+        setGanttEvent({ action: "" });
+      }
+    } else if (action === "dblclick") {
+      !!onDoubleClick && onDoubleClick(task);
     } else {
       setGanttEvent({
         action,
@@ -408,6 +410,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
               key={task.id}
               isSelected={!!selectedTask && task.id === selectedTask.id}
               rtl={rtl}
+              themeConfig={themeConfig}
             />
           );
         })}

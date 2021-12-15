@@ -32,6 +32,7 @@ export const TaskListTableDefault: React.FC<{
   tasks: Task[];
   selectedTaskId: string;
   columns: any[];
+  themeConfig: any;
   setSelectedTask: (taskId: string) => void;
   onExpanderClick: (task: Task) => void;
 }> = ({
@@ -43,6 +44,7 @@ export const TaskListTableDefault: React.FC<{
   // locale,
   columns,
   selectedTaskId,
+  themeConfig,
   setSelectedTask,
   // onExpanderClick,
 }) => {
@@ -61,6 +63,7 @@ export const TaskListTableDefault: React.FC<{
         return "flex-start";
     }
   };
+
   return (
     <div
       className={styles.taskListWrapper}
@@ -76,13 +79,15 @@ export const TaskListTableDefault: React.FC<{
         // } else if (t.hideChildren === true) {
         //   expanderSymbol = "▶";
         // }
+        let background = "";
+        if (selectedTaskId === t.id && themeConfig.tableHeaderColor) {
+          background = themeConfig.tableHeaderColor;
+        }
         return (
           <div
             className={styles.taskListTableRow}
             style={{
               height: rowHeight,
-              backgroundColor:
-                selectedTaskId === t.id ? "var(--primary-2)" : "transparent",
             }}
             key={`${t.id}row`}
             onClick={() => setSelectedTask(t.id)}
@@ -92,7 +97,7 @@ export const TaskListTableDefault: React.FC<{
               const alignValue = showAlignValue(item);
               return (
                 <div
-                  key={item.name}
+                  key={`${item.name}-${idx}`}
                   className={styles.taskListCell}
                   style={{
                     minWidth: item.minWidth,
@@ -103,6 +108,8 @@ export const TaskListTableDefault: React.FC<{
                       idx === columns.length - 1 && item.isLast === undefined
                         ? 0
                         : "10px",
+                    borderColor: themeConfig.tableBorderColor,
+                    backgroundColor: background,
                   }}
                 >
                   <div className={styles.taskListNameWrapper}>

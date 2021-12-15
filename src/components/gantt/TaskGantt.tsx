@@ -12,6 +12,7 @@ export type TaskGanttProps = {
   scrollY: number;
   scrollX: number;
   ChildrenDom: React.ReactChild;
+  themeConfig: any;
 };
 export const TaskGantt: React.FC<TaskGanttProps> = ({
   gridProps,
@@ -21,6 +22,7 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
   scrollY,
   scrollX,
   ChildrenDom,
+  themeConfig,
 }) => {
   const ganttSVGRef = useRef<SVGSVGElement>(null);
   const horizontalContainerRef = useRef<HTMLDivElement>(null);
@@ -42,6 +44,9 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
   return (
     <div
       className={styles.ganttVerticalContainer}
+      style={{
+        borderColor: themeConfig.tableBorderColor,
+      }}
       ref={verticalGanttContainerRef}
       dir="ltr"
     >

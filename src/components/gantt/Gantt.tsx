@@ -30,14 +30,14 @@ import scrollStyle from "../other/horizontalScroll.module.css";
 export const Gantt: React.FunctionComponent<GanttProps> = props => {
   const {
     tasks,
-    headerHeight = 88,
+    headerHeight = 75,
     columnWidth = 60,
     listCellWidth = "155px",
-    rowHeight = 50,
+    rowHeight = 32,
     ganttHeight = 0,
     viewMode = ViewMode.Day,
     locale = "en-GB",
-    barFill = 60,
+    barFill = 93.75,
     barCornerRadius = 3,
     barProgressColor = "#a3a3ff",
     barProgressSelectedColor = "#8282f5",
@@ -61,6 +61,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     TaskListHeader = TaskListHeaderDefault,
     TaskListTable = TaskListTableDefault,
     columns = [],
+    themeConfig = {},
     onDateChange,
     onProgressChange,
     onDoubleClick,
@@ -88,6 +89,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
   });
 
   const [taskHeight, setTaskHeight] = useState((rowHeight * barFill) / 100);
+
   const [taskListWidth, setTaskListWidth] = useState(0);
   const [svgContainerWidth, setSvgContainerWidth] = useState(0);
   const [svgContainerHeight, setSvgContainerHeight] = useState(ganttHeight);
@@ -552,6 +554,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       todayColor,
       rtl,
       selectedTask,
+      themeConfig,
     };
   }, [
     columnWidth,
@@ -562,6 +565,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     todayColor,
     rtl,
     selectedTask,
+    themeConfig,
   ]);
   const calendarProps: CalendarProps = useMemo(() => {
     return {
@@ -573,6 +577,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       fontFamily,
       fontSize,
       rtl,
+      themeConfig,
     };
   }, [
     dateSetup,
@@ -583,6 +588,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     fontFamily,
     fontSize,
     rtl,
+    themeConfig,
   ]);
   const barProps: TaskGanttContentProps = useMemo(() => {
     return {
@@ -600,6 +606,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       arrowIndent,
       svgWidth,
       rtl,
+      themeConfig,
       setGanttEvent,
       setFailedTask,
       setSelectedTask: handleSelectedTask,
@@ -623,6 +630,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     arrowIndent,
     svgWidth,
     rtl,
+    themeConfig,
     setGanttEvent,
     setFailedTask,
     handleSelectedTask,
@@ -649,6 +657,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       TaskListHeader,
       TaskListTable,
       columns,
+      themeConfig,
       setSelectedTask: handleSelectedTask,
       onExpanderClick: handleExpanderClick,
       onChangeColumnWidth,
@@ -669,6 +678,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     TaskListHeader,
     TaskListTable,
     columns,
+    themeConfig,
     handleSelectedTask,
     handleExpanderClick,
     onChangeColumnWidth,
@@ -721,6 +731,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     <div style={{ width: "100%", position: "relative" }}>
       <div
         className={styles.wrapper}
+        style={{ borderColor: themeConfig.tableBorderColor }}
         onKeyDown={handleKeyDown}
         tabIndex={0}
         ref={wrapperRef}
@@ -734,6 +745,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
           scrollY={scrollY}
           scrollX={scrollX}
           ChildrenDom={Children}
+          themeConfig={themeConfig}
         />
         {ganttEvent.changedTask && (
           <Tooltip

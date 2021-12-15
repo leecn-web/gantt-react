@@ -16,6 +16,7 @@ export type TaskItemProps = {
   isDelete: boolean;
   isSelected: boolean;
   rtl: boolean;
+  themeConfig: any;
   onEventStart: (
     action: GanttContentMoveAction,
     selectedTask: BarTask,
@@ -36,6 +37,7 @@ export const TaskItem: React.FC<TaskItemProps> = props => {
     taskHeight,
     isSelected,
     rtl,
+    themeConfig,
     onEventStart,
     onTouchEvent,
   } = {
@@ -128,6 +130,7 @@ export const TaskItem: React.FC<TaskItemProps> = props => {
             ? style.barLabel
             : style.barLabel && style.barLabelOutside
         }
+        style={{ fill: themeConfig.titleColor }}
         ref={textRef}
       >
         {!task.isEmpty && task.name}

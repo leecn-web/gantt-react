@@ -497,6 +497,12 @@ const handleTaskBySVGMouseEventForBar = (
             timeStep
           );
         } else {
+          if (
+            new Date(changedTask.end).getTime() <
+            new Date(changedTask.start).getTime()
+          ) {
+            changedTask.end = selectedTask.start;
+          }
           changedTask.start = dateByX(
             newX1,
             selectedTask.x1,

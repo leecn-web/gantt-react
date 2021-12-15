@@ -7,8 +7,16 @@ export const TaskListHeaderDefault: React.FC<{
   fontFamily: string;
   fontSize: string;
   columns: any[];
+  themeConfig: any;
   onChangeColumnWidth: (columnId: string, width: number) => void;
-}> = ({ headerHeight, fontFamily, fontSize, columns, onChangeColumnWidth }) => {
+}> = ({
+  headerHeight,
+  fontFamily,
+  fontSize,
+  columns,
+  themeConfig,
+  onChangeColumnWidth,
+}) => {
   const showAlignValue = (item: { align: any }) => {
     switch (item.align) {
       case "center":
@@ -106,6 +114,7 @@ export const TaskListHeaderDefault: React.FC<{
         fontFamily: fontFamily,
         fontSize: fontSize,
         userSelect: "none",
+        borderColor: themeConfig.tableBorderColor,
       }}
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
@@ -127,11 +136,12 @@ export const TaskListHeaderDefault: React.FC<{
           const alignValue = showAlignValue(item);
           return (
             <TaskListHeaderItem
-              key={`column${item.name}`}
+              key={`column${item.name}-${index}`}
               index={index}
               lastIndex={columns.length - 1 === index}
               item={item}
               alignValue={alignValue}
+              themeConfig={themeConfig}
             >
               <Label />
             </TaskListHeaderItem>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useDebounceFn } from "ahooks";
 import { Task, ViewMode, Gantt } from "gantt-task-react";
 import { ViewSwitcher } from "./components/view-switcher";
@@ -32,6 +32,83 @@ const App = () => {
       resize: true,
       onrender: (item: any) => {
         return <div>{new Date(item.data.start).getTime()}</div>;
+      },
+    },
+    {
+      name: "stextbff8d155-826c-4ffa-b221-7355f82f04ce",
+      label: "字段",
+      align: "center",
+      width: 130,
+      minWidth: 80,
+      resize: true,
+      onrender: (item: any) => {
+        return <div>{new Date(item.data.end).getTime()}</div>;
+      },
+    },
+    {
+      name: "stextbff8d155-826c-4ffa-b221-7355f82f04ce",
+      label: "字段",
+      align: "center",
+      width: 130,
+      minWidth: 80,
+      resize: true,
+      onrender: (item: any) => {
+        return <div>{new Date(item.data.end).getTime()}</div>;
+      },
+    },
+    {
+      name: "stextbff8d155-826c-4ffa-b221-7355f82f04ce",
+      label: "字段",
+      align: "center",
+      width: 130,
+      minWidth: 80,
+      resize: true,
+      onrender: (item: any) => {
+        return <div>{new Date(item.data.end).getTime()}</div>;
+      },
+    },
+    {
+      name: "stextbff8d155-826c-4ffa-b221-7355f82f04ce",
+      label: "字段",
+      align: "center",
+      width: 130,
+      minWidth: 80,
+      resize: true,
+      onrender: (item: any) => {
+        return <div>{new Date(item.data.end).getTime()}</div>;
+      },
+    },
+    {
+      name: "stextbff8d155-826c-4ffa-b221-7355f82f04ce",
+      label: "字段",
+      align: "center",
+      width: 130,
+      minWidth: 80,
+      resize: true,
+      onrender: (item: any) => {
+        return <div>{new Date(item.data.end).getTime()}</div>;
+      },
+    },
+    {
+      name: "stextbff8d155-826c-4ffa-b221-7355f82f04ce",
+      label: "字段",
+      align: "center",
+      width: 130,
+      minWidth: 80,
+      resize: true,
+      onrender: (item: any) => {
+        return <div>{new Date(item.data.end).getTime()}</div>;
+      },
+    },
+    {
+      name: "stextbff8d155-826c-4ffa-b221-7355f82f04ce",
+      label: "字段",
+      align: "center",
+      width: 130,
+      minWidth: 80,
+      resize: true,
+      onrender: (item: any) => {
+        return <div>{new Date(item.data.end).getTime()}</div>;
       },
     },
     {
@@ -148,25 +225,25 @@ const App = () => {
     { wait: 500 }
   );
 
-  // const themeConfig = useMemo(() => {
-  //   if (true) {
-  //     return {
-  //       bgColor: "transparent",
-  //       tableHeaderColor: "transparent",
-  //     };
-  //   }
-  //   // return {
-  //   //   borderColor: comp.themeConfig["--comp-border-color"],
-  //   //   titleColor: comp.themeConfig["--comp-title-color"],
-  //   //   h2Color: comp.themeConfig["--h2-and-content-color"],
-  //   //   iconColor: comp.themeConfig["--icon-and-message-color"],
-  //   //   bgColor: comp.themeConfig["--page-background"],
-  //   //   tableBodyColor: comp.themeConfig["--table-body-color"],
-  //   //   tableBorderColor: comp.themeConfig["--table-border-color"],
-  //   //   tableHeaderColor: comp.themeConfig["--table-header-color"],
-  //   //   tablePrimaryColor: comp.themeConfig["--table-primary-color"],
-  //   // };
-  // }, []);
+  const themeConfig = useMemo(() => {
+    if (true) {
+      return {
+        bgColor: "transparent",
+        tableHeaderColor: "transparent",
+      };
+    }
+    // return {
+    //   borderColor: comp.themeConfig["--comp-border-color"],
+    //   titleColor: comp.themeConfig["--comp-title-color"],
+    //   h2Color: comp.themeConfig["--h2-and-content-color"],
+    //   iconColor: comp.themeConfig["--icon-and-message-color"],
+    //   bgColor: comp.themeConfig["--page-background"],
+    //   tableBodyColor: comp.themeConfig["--table-body-color"],
+    //   tableBorderColor: comp.themeConfig["--table-border-color"],
+    //   tableHeaderColor: comp.themeConfig["--table-header-color"],
+    //   tablePrimaryColor: comp.themeConfig["--table-primary-color"],
+    // };
+  }, []);
 
   return (
     <div>
@@ -186,6 +263,7 @@ const App = () => {
         columns={columns}
         onChangeColumnWidth={onChangeColumnWidth}
         onScrollBottom={run}
+        themeConfig={themeConfig}
       >
         <ViewSwitcher
           onViewModeChange={viewMode => setView(viewMode)}

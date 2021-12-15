@@ -13,6 +13,7 @@ export type GridBodyProps = {
   todayColor: string;
   rtl: boolean;
   selectedTask: BarTask | undefined;
+  themeConfig: any;
 };
 export const GridBody: React.FC<GridBodyProps> = ({
   tasks,
@@ -23,6 +24,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
   // todayColor,
   rtl,
   selectedTask,
+  themeConfig,
 }) => {
   const selectedTaskId = selectedTask ? selectedTask.id : "";
   let y = 0;
@@ -42,11 +44,14 @@ export const GridBody: React.FC<GridBodyProps> = ({
       <rect
         key={"Row" + task.id}
         x="0"
-        y={y}
+        y={y - 2}
         width={svgWidth}
         height={rowHeight}
-        className={
-          selectedTaskId === task.id ? styles.gridRowSelect : styles.gridRow
+        className={styles.gridRow}
+        style={
+          selectedTaskId === task.id
+            ? { fill: themeConfig.tableHeaderColor }
+            : {}
         }
       />
     );
@@ -71,14 +76,26 @@ export const GridBody: React.FC<GridBodyProps> = ({
   for (let i = 0; i < dates.length; i++) {
     const date = dates[i] ?? new Date();
     ticks.push(
-      <line
+      <rect
         key={date.getTime()}
-        x1={tickX}
-        y1={0}
-        x2={tickX}
-        y2={y}
+        x={tickX}
+        y={0}
+        width={1}
+        height={y}
         className={styles.gridTick}
+        style={{ fill: themeConfig.tableBorderColor }}
       />
+      // <line
+      //   key={date.getTime()}
+      //   x1={tickX - 1}
+      //   y1={0}
+      //   x2={tickX}
+      //   y2={y}
+      //   className={styles.gridTick}
+      //   style={{
+      //     stroke: themeConfig.tableBorderColor,
+      //   }}
+      // />
     );
     if (
       (i + 1 !== dates.length &&
@@ -108,9 +125,9 @@ export const GridBody: React.FC<GridBodyProps> = ({
           id="currentLine"
           x={tickX + (columnWidth / 2 - 1)}
           y={0}
-          width={2}
+          width={1}
           height={y}
-          style={{ fill: "var(--primary-color)" }}
+          style={{ fill: "var(--primary-3)" }}
         />
       );
     }
@@ -135,9 +152,9 @@ export const GridBody: React.FC<GridBodyProps> = ({
           id="currentLine"
           x={tickX + columnWidth + (columnWidth / 2 - 1)}
           y={0}
-          width={2}
+          width={1}
           height={y}
-          style={{ fill: "var(--primary-color)" }}
+          style={{ fill: "var(--primary-3)" }}
           // fill="#3D54FD"
         />
       );

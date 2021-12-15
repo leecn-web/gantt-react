@@ -9,13 +9,21 @@
   display: flex;
   align-items: center;
   text-overflow: ellipsis;
-  width: 442px;
-  overflow: hidden;
-  border-bottom: 1px solid rgba(189, 198, 217, 0.5);
+  width: 443px;
+  /* border-bottom: 1px solid rgba(189, 198, 217, 0.5); */
+  background-color: transparent;
 }
-
-.taskListTableRow:nth-of-type(even) {
-  background-color: #f5f5f5;
+/* .taskListTableRow:hover {
+  background-color: var(--header-hover-color);
+} */
+.taskListTableRow:last-child {
+  border-bottom: none;
+}
+.taskListTableRow:last-child .taskListCell {
+  border-bottom: none !important;
+}
+.taskListTableRow:hover .taskListCell {
+  background-color: var(--header-hover-color);
 }
 
 .taskListCell {
@@ -25,6 +33,7 @@
   height: 100%;
   padding-left: 10px;
   border-right: 1px solid rgba(189, 198, 217, 0.5);
+  border-bottom: 1px solid rgba(189, 198, 217, 0.5);
   vertical-align: middle;
   white-space: nowrap;
   overflow: hidden;
@@ -34,6 +43,7 @@
 .taskListCell:last-child {
   border-right: none !important;
 }
+
 .taskListNameWrapper {
   display: flex;
 }
