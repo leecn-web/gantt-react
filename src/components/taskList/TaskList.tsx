@@ -2,7 +2,8 @@ import React, { useEffect, useRef } from "react";
 import { BarTask } from "../../types/BarTask";
 import { Task } from "../../types/PublicTypes";
 import styles from "./task.css";
-import inStyles from "./taskListTable.module.css";
+// import inStyles from "./taskListTable.module.css";
+import heaStyles from "./taskListHeader.module.css";
 
 export type TaskListProps = {
   headerHeight: number;
@@ -101,12 +102,11 @@ export const TaskList: React.FC<TaskListProps> = ({
 
   useEffect(() => {
     const itemScrollWidth: number =
-      document.querySelector(`.${inStyles.taskListTableRow}`)?.scrollWidth ||
-      443;
+      document.querySelector(`.${heaStyles.ganttTable}`)?.scrollWidth || 443;
     if (itemScrollWidth >= 443) {
       widthRef.current = itemScrollWidth;
     }
-  }, [tasks]);
+  }, [tasks, columns, horizontalContainerRef, widthRef.current, heaStyles]);
 
   return (
     <div ref={taskListRef} className={styles.task}>

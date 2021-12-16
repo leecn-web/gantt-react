@@ -140,7 +140,7 @@ export const Calendar: React.FC<CalendarProps> = ({
 
       bottomValues.push(
         <text
-          key={date.getTime()}
+          key={`${bottomValue}-${date.getFullYear()}`}
           y={headerHeight * 0.846}
           x={columnWidth * (i + +rtl) + columnWidth * 0.5}
           // x={columnWidth * (i + +rtl)}
@@ -194,7 +194,9 @@ export const Calendar: React.FC<CalendarProps> = ({
       if (isNow) {
         bottomValues.push(
           <rect
-            key={bottomValue + date.getTime()}
+            key={`${bottomValue}-${
+              date.getMonth() + 1
+            }-${date.getFullYear()}-today`}
             width={32}
             height={26}
             rx="13"
@@ -207,7 +209,7 @@ export const Calendar: React.FC<CalendarProps> = ({
 
       bottomValues.push(
         <text
-          key={date.getTime()}
+          key={`${bottomValue}-${date.getMonth() + 1}-${date.getFullYear()}`}
           y={headerHeight * 0.846}
           x={columnWidth * i + columnWidth * 0.5}
           className={styles.calendarBottomText}
@@ -224,7 +226,7 @@ export const Calendar: React.FC<CalendarProps> = ({
 
         topValues.push(
           <TopPartOfCalendar
-            key={topValue + date.getFullYear()}
+            key={topValue}
             value={topValue}
             x1Line={columnWidth * (i + 1)}
             y1Line={0}

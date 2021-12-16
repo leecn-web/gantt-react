@@ -1,4 +1,4 @@
 .task {
-  overflow: scroll hidden;
+  overflow: auto hidden;
   width: 443px;
 }
