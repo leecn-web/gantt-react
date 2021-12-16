@@ -116,6 +116,7 @@ export const TaskList: React.FC<TaskListProps> = ({
         className={horizontalContainerClass}
         style={{
           width: widthRef.current,
+          height: ganttHeight && ganttHeight,
           maxHeight: ganttHeight && ganttHeight,
         }}
       >

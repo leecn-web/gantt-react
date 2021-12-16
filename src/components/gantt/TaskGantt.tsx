@@ -28,6 +28,7 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
   const horizontalContainerRef = useRef<HTMLDivElement>(null);
   const verticalGanttContainerRef = useRef<HTMLDivElement>(null);
   const newBarProps = { ...barProps, svg: ganttSVGRef };
+  const newGridProps = { ...gridProps, ganttHeight };
 
   useEffect(() => {
     if (horizontalContainerRef.current) {
@@ -40,6 +41,11 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
       verticalGanttContainerRef.current.scrollLeft = scrollX;
     }
   }, [scrollX]);
+
+  const svgHeight =
+    barProps.rowHeight * barProps.tasks.length > ganttHeight
+      ? barProps.rowHeight * barProps.tasks.length
+      : ganttHeight;
 
   return (
     <div
@@ -66,18 +72,19 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
         ref={horizontalContainerRef}
         className={styles.horizontalContainer}
         style={{
-          maxHeight: ganttHeight && ganttHeight,
           width: gridProps.svgWidth,
+          height: ganttHeight && ganttHeight,
+          maxHeight: ganttHeight && ganttHeight,
         }}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width={gridProps.svgWidth}
-          height={barProps.rowHeight * barProps.tasks.length}
+          height={svgHeight}
           fontFamily={barProps.fontFamily}
           ref={ganttSVGRef}
         >
-          <Grid {...gridProps} />
+          <Grid {...newGridProps} />
           <TaskGanttContent {...newBarProps} />
         </svg>
       </div>

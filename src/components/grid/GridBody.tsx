@@ -10,6 +10,7 @@ export type GridBodyProps = {
   svgWidth: number;
   rowHeight: number;
   columnWidth: number;
+  ganttHeight: number;
   todayColor: string;
   rtl: boolean;
   selectedTask: BarTask | undefined;
@@ -21,6 +22,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
   rowHeight,
   svgWidth,
   columnWidth,
+  ganttHeight,
   // todayColor,
   rtl,
   selectedTask,
@@ -73,6 +75,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
   const ticks: ReactChild[] = [];
   let today: ReactChild = <rect />;
   let todayLine: ReactChild = <rect />;
+  const rectHeight = y > ganttHeight ? y : ganttHeight;
   for (let i = 0; i < dates.length; i++) {
     const date = dates[i] ?? new Date();
     ticks.push(
@@ -81,7 +84,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
         x={tickX}
         y={0}
         width={1}
-        height={y}
+        height={rectHeight}
         className={styles.gridTick}
         style={{ fill: themeConfig.tableBorderColor }}
       />
@@ -116,7 +119,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
           x={tickX}
           y={0}
           width={columnWidth}
-          height={y}
+          height={rectHeight}
           fill="transparent"
         />
       );
@@ -126,7 +129,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
           x={tickX + (columnWidth / 2 - 1)}
           y={0}
           width={1}
-          height={y}
+          height={rectHeight}
           style={{ fill: "var(--primary-3)" }}
         />
       );
@@ -143,7 +146,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
           x={tickX + columnWidth}
           y={0}
           width={columnWidth}
-          height={y}
+          height={rectHeight}
           fill="transparent"
         />
       );
@@ -153,7 +156,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
           x={tickX + columnWidth + (columnWidth / 2 - 1)}
           y={0}
           width={1}
-          height={y}
+          height={rectHeight}
           style={{ fill: "var(--primary-3)" }}
           // fill="#3D54FD"
         />

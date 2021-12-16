@@ -49,13 +49,14 @@ export const Calendar: React.FC<CalendarProps> = ({
       const bottomValue = `${date.getMonth() + 1}月`;
       if (isNow) {
         bottomValues.push(
-          <ellipse
+          <rect
             key={bottomValue + date.getFullYear() + date.getMonth() + 1}
-            cx={columnWidth * i + columnWidth * 0.5}
-            cy={headerHeight * 0.7797}
-            rx="16"
-            ry="13"
-            style={{ fill: "var(--primary-color)", strokeWidth: 1 }}
+            width={40}
+            height={26}
+            rx="13"
+            x={columnWidth * i + columnWidth * 0.5 - 20}
+            y={45}
+            style={{ fill: "var(--primary-color)" }}
           />
         );
       }
@@ -126,13 +127,13 @@ export const Calendar: React.FC<CalendarProps> = ({
       }
       if (isNow) {
         bottomValues.push(
-          <ellipse
-            key={bottomValue + date.getTime()}
-            cx={columnWidth * i + columnWidth * 0.5}
-            cy={headerHeight * 0.7797}
-            rx="16"
-            ry="13"
-            style={{ fill: "var(--primary-color)", strokeWidth: 1 }}
+          <rect
+            width={60}
+            height={26}
+            rx="13"
+            x={columnWidth * (i + +rtl) + columnWidth * 0.5 - 30}
+            y={45}
+            style={{ fill: "var(--primary-color)" }}
           />
         );
       }
@@ -141,7 +142,8 @@ export const Calendar: React.FC<CalendarProps> = ({
         <text
           key={date.getTime()}
           y={headerHeight * 0.846}
-          x={columnWidth * (i + +rtl)}
+          x={columnWidth * (i + +rtl) + columnWidth * 0.5}
+          // x={columnWidth * (i + +rtl)}
           className={styles.calendarBottomText}
           style={{ fill: isNow ? "#fff" : themeConfig.h2Color }}
         >
@@ -191,13 +193,14 @@ export const Calendar: React.FC<CalendarProps> = ({
       }
       if (isNow) {
         bottomValues.push(
-          <ellipse
+          <rect
             key={bottomValue + date.getTime()}
-            cx={columnWidth * i + columnWidth * 0.5}
-            cy={headerHeight * 0.7797}
-            rx="16"
-            ry="13"
-            style={{ fill: "var(--primary-color)", strokeWidth: 1 }}
+            width={32}
+            height={26}
+            rx="13"
+            x={columnWidth * i + columnWidth * 0.5 - 16}
+            y={45}
+            style={{ fill: "var(--primary-color)" }}
           />
         );
       }
@@ -285,12 +288,14 @@ export const Calendar: React.FC<CalendarProps> = ({
       }
       if (isNow) {
         bottomValues.push(
-          <ellipse
-            cx={columnWidth * i + columnWidth * 0.5}
-            cy={headerHeight * 0.77}
-            rx="16"
-            ry="13"
-            style={{ fill: "var(--primary-color)", strokeWidth: 1 }}
+          <rect
+            key={bottomValue + date.getTime()}
+            width={32}
+            height={26}
+            rx="13"
+            x={columnWidth * i + columnWidth * 0.5 - 16}
+            y={45}
+            style={{ fill: "var(--primary-color)" }}
           />
         );
       }

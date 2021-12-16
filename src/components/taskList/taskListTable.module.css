@@ -9,7 +9,7 @@
   display: flex;
   align-items: center;
   text-overflow: ellipsis;
-  width: 443px;
+  /* width: 443px; */
   /* border-bottom: 1px solid rgba(189, 198, 217, 0.5); */
   background-color: transparent;
 }
