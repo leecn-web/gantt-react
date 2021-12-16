@@ -546,6 +546,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
 
   const gridProps: GridProps = useMemo(() => {
     return {
+      ganttHeight,
       columnWidth,
       svgWidth,
       tasks: tasks,
@@ -557,6 +558,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       themeConfig,
     };
   }, [
+    ganttHeight,
     columnWidth,
     svgWidth,
     tasks,
