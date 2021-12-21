@@ -272,6 +272,33 @@ const App = () => {
           isChecked={isChecked}
         />
       </Gantt>
+      <div>
+        <h3>Gantt With Limited Height</h3>
+        <Gantt
+          tasks={tasks}
+          viewMode={view}
+          onDateChange={handleTaskChange}
+          onDelete={handleTaskDelete}
+          onProgressChange={handleProgressChange}
+          onDoubleClick={handleDblClick}
+          onSelect={handleSelect}
+          onExpanderClick={handleExpanderClick}
+          listCellWidth={isChecked ? "155px" : ""}
+          ganttHeight={300}
+          columnWidth={columnWidth}
+          columns={columns}
+          onChangeColumnWidth={onChangeColumnWidth}
+          onScrollBottom={run}
+          themeConfig={themeConfig}
+        >
+          <ViewSwitcher
+            onViewModeChange={viewMode => setView(viewMode)}
+            changeScrollCurrent={() => {}}
+            onViewListChange={setIsChecked}
+            isChecked={isChecked}
+          />
+        </Gantt>
+      </div>
     </div>
   );
 };

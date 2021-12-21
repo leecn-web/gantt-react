@@ -14,6 +14,11 @@ export const BarProgressHandle: React.FC<BarProgressHandleProps> = ({
   return (
     <polygon
       className={styles.barHandle}
+      style={{
+        fill: "#fff",
+        stroke: "var(--primary-color)",
+        strokeWidth: 1,
+      }}
       points={progressPoint}
       onMouseDown={onMouseDown}
       onTouchStart={onTouchStart}

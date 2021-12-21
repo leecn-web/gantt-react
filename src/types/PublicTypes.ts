@@ -142,6 +142,7 @@ export interface GanttProps extends EventOption, DisplayOption, StylingOption {
   tasks: Task[];
   columns: any[];
   themeConfig?: any;
+  lineId?: string;
   onChangeColumnWidth: (columnId: string, width: number) => void;
   onScrollBottom: () => void;
 }

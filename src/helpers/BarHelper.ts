@@ -360,13 +360,25 @@ export const getProgressPoint = (
   taskY: number,
   taskHeight: number
 ) => {
+  // const point = [
+  //   progressX - 5,
+  //   taskY + taskHeight,
+  //   progressX + 5,
+  //   taskY + taskHeight,
+  //   progressX,
+  //   taskY + taskHeight - 8.66,
+  // ];
   const point = [
-    progressX - 5,
-    taskY + taskHeight,
-    progressX + 5,
-    taskY + taskHeight,
     progressX,
-    taskY + taskHeight - 8.66,
+    taskY + taskHeight - 15,
+    progressX - 8,
+    taskY + taskHeight - 9,
+    progressX - 8,
+    taskY + taskHeight - 1,
+    progressX + 8,
+    taskY + taskHeight - 1,
+    progressX + 8,
+    taskY + taskHeight - 9,
   ];
   return point.join(",");
 };

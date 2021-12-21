@@ -15,6 +15,7 @@ export type GridBodyProps = {
   rtl: boolean;
   selectedTask: BarTask | undefined;
   themeConfig: any;
+  lineId: string;
 };
 export const GridBody: React.FC<GridBodyProps> = ({
   tasks,
@@ -27,6 +28,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
   rtl,
   selectedTask,
   themeConfig,
+  lineId,
 }) => {
   const selectedTaskId = selectedTask ? selectedTask.id : "";
   let y = 0;
@@ -125,7 +127,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
       );
       todayLine = (
         <rect
-          id="currentLine"
+          id={lineId}
           x={tickX + (columnWidth / 2 - 1)}
           y={0}
           width={1}
@@ -152,7 +154,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
       );
       todayLine = (
         <rect
-          id="currentLine"
+          id={lineId}
           x={tickX + columnWidth + (columnWidth / 2 - 1)}
           y={0}
           width={1}

@@ -62,6 +62,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     TaskListTable = TaskListTableDefault,
     columns = [],
     themeConfig = {},
+    lineId = "currentLine",
     onDateChange,
     onProgressChange,
     onDoubleClick,
@@ -514,7 +515,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       if (timer) clearTimeout(timer);
       timer = setTimeout(() => {
         if (timer) clearTimeout(timer);
-        const todayDOM = document.getElementById("currentLine");
+        const todayDOM = document.getElementById(lineId);
+        console.log("123 todayDOM", todayDOM);
         const boxDOM: any = document.querySelector(
           `.${styles.ganttVerticalContainer}`
         );
@@ -556,6 +558,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       rtl,
       selectedTask,
       themeConfig,
+      lineId,
     };
   }, [
     ganttHeight,
@@ -568,6 +571,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     rtl,
     selectedTask,
     themeConfig,
+    lineId,
   ]);
   const calendarProps: CalendarProps = useMemo(() => {
     return {
@@ -748,6 +752,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
           scrollX={scrollX}
           ChildrenDom={Children}
           themeConfig={themeConfig}
+          lineId={lineId}
         />
         {ganttEvent.changedTask && (
           <Tooltip

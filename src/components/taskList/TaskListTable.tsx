@@ -46,7 +46,7 @@ export const TaskListTableDefault: React.FC<{
   selectedTaskId,
   themeConfig,
   setSelectedTask,
-  // onExpanderClick,
+  onExpanderClick,
 }) => {
   // const toLocaleDateString = useMemo(() => toLocaleDateStringFactory(locale), [
   //   locale,
@@ -73,12 +73,12 @@ export const TaskListTableDefault: React.FC<{
       }}
     >
       {tasks.map(t => {
-        // let expanderSymbol = "";
-        // if (t.hideChildren === false) {
-        //   expanderSymbol = "▼";
-        // } else if (t.hideChildren === true) {
-        //   expanderSymbol = "▶";
-        // }
+        let expanderSymbol = "";
+        if (t.hideChildren === false) {
+          expanderSymbol = "▼";
+        } else if (t.hideChildren === true) {
+          expanderSymbol = "▶";
+        }
         let background = "";
         if (selectedTaskId === t.id && themeConfig.tableHeaderColor) {
           background = themeConfig.tableHeaderColor;
@@ -113,7 +113,7 @@ export const TaskListTableDefault: React.FC<{
                   }}
                 >
                   <div className={styles.taskListNameWrapper}>
-                    {/* <div
+                    <div
                       className={
                         expanderSymbol
                           ? styles.taskListExpander
@@ -122,7 +122,7 @@ export const TaskListTableDefault: React.FC<{
                       onClick={() => onExpanderClick(t)}
                     >
                       {expanderSymbol}
-                    </div> */}
+                    </div>
                     <div>
                       <Render data={t} />
                     </div>

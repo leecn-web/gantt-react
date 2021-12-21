@@ -13,6 +13,7 @@ export type TaskGanttProps = {
   scrollX: number;
   ChildrenDom: React.ReactChild;
   themeConfig: any;
+  lineId: string;
 };
 export const TaskGantt: React.FC<TaskGanttProps> = ({
   gridProps,
@@ -23,12 +24,13 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
   scrollX,
   ChildrenDom,
   themeConfig,
+  lineId,
 }) => {
   const ganttSVGRef = useRef<SVGSVGElement>(null);
   const horizontalContainerRef = useRef<HTMLDivElement>(null);
   const verticalGanttContainerRef = useRef<HTMLDivElement>(null);
   const newBarProps = { ...barProps, svg: ganttSVGRef };
-  const newGridProps = { ...gridProps, ganttHeight };
+  const newGridProps = { ...gridProps, ganttHeight, lineId };
 
   useEffect(() => {
     if (horizontalContainerRef.current) {
