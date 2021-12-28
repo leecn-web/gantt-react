@@ -3,7 +3,7 @@ import { useDebounceFn } from "ahooks";
 import { Task, ViewMode, Gantt } from "gantt-task-react";
 import { ViewSwitcher } from "./components/view-switcher";
 // import { getStartEndDateForProject, initTasks } from "./helper";
-import { getStartEndDateForProject, initTasks } from "./helper";
+import { initTasks } from "./helper";
 import "gantt-task-react/dist/index.css";
 
 //Init
@@ -15,7 +15,7 @@ const App = () => {
     {
       name: "stext2e010ce8-cbfd-4fc4-bece-3c03eed17214",
       label: "姓名",
-      align: "center",
+      align: "left",
       minWidth: 80,
       width: 130,
       resize: true,
@@ -26,7 +26,7 @@ const App = () => {
     {
       name: "stext46d4fbfc-0b65-4193-a436-d24f27401e34",
       label: "性别",
-      align: "center",
+      align: "left",
       width: 130,
       minWidth: 80,
       resize: true,
@@ -37,7 +37,7 @@ const App = () => {
     {
       name: "stextbff8d155-826c-4ffa-b221-2",
       label: "字段",
-      align: "center",
+      align: "left",
       width: 130,
       minWidth: 80,
       resize: true,
@@ -48,7 +48,7 @@ const App = () => {
     {
       name: "stextbff8d155-826c-4ffa-b221-3",
       label: "字段",
-      align: "center",
+      align: "left",
       width: 130,
       minWidth: 80,
       resize: true,
@@ -59,7 +59,7 @@ const App = () => {
     {
       name: "stextbff8d155-826c-4ffa-b221-4",
       label: "字段",
-      align: "center",
+      align: "left",
       width: 130,
       minWidth: 80,
       resize: true,
@@ -70,7 +70,7 @@ const App = () => {
     {
       name: "stextbff8d155-826c-4ffa-b221-5",
       label: "字段",
-      align: "center",
+      align: "left",
       width: 130,
       minWidth: 80,
       resize: true,
@@ -81,7 +81,7 @@ const App = () => {
     {
       name: "stextbff8d155-826c-4ffa-b221-6",
       label: "字段",
-      align: "center",
+      align: "left",
       width: 130,
       minWidth: 80,
       resize: true,
@@ -92,7 +92,7 @@ const App = () => {
     {
       name: "stextbff8d155-826c-4ffa-b221-7",
       label: "字段",
-      align: "center",
+      align: "left",
       width: 130,
       minWidth: 80,
       resize: true,
@@ -103,7 +103,7 @@ const App = () => {
     {
       name: "stextbff8d155-826c-4ffa-b221-8",
       label: "字段",
-      align: "center",
+      align: "left",
       width: 130,
       minWidth: 80,
       resize: true,
@@ -114,7 +114,7 @@ const App = () => {
     {
       name: "stextbff8d155-826c-4ffa-b221-9",
       label: "字段",
-      align: "center",
+      align: "left",
       width: 130,
       minWidth: 80,
       resize: true,
@@ -150,19 +150,19 @@ const App = () => {
   const handleTaskChange = (task: Task) => {
     console.log("On date change Id:" + task.id);
     let newTasks = tasks.map(t => (t.id === task.id ? task : t));
-    if (task.project) {
-      const [start, end] = getStartEndDateForProject(newTasks, task.project);
-      const project = newTasks[newTasks.findIndex(t => t.id === task.project)];
-      if (
-        project.start.getTime() !== start.getTime() ||
-        project.end.getTime() !== end.getTime()
-      ) {
-        const changedProject = { ...project, start, end };
-        newTasks = newTasks.map(t =>
-          t.id === task.project ? changedProject : t
-        );
-      }
-    }
+    // if (task.project) {
+    //   const [start, end] = getStartEndDateForProject(newTasks, task.project);
+    //   const project = newTasks[newTasks.findIndex(t => t.id === task.project)];
+    //   if (
+    //     project.start.getTime() !== start.getTime() ||
+    //     project.end.getTime() !== end.getTime()
+    //   ) {
+    //     const changedProject = { ...project, start, end };
+    //     newTasks = newTasks.map(t =>
+    //       t.id === task.project ? changedProject : t
+    //     );
+    //   }
+    // }
     setTasks(newTasks);
   };
 
@@ -189,7 +189,6 @@ const App = () => {
 
   const handleExpanderClick = (task: Task) => {
     setTasks(tasks.map(t => (t.id === task.id ? task : t)));
-    console.log("On expander click Id:" + task.id);
   };
 
   const onChangeColumnWidth = (columnId: string, diffWidth: number) => {
@@ -272,33 +271,6 @@ const App = () => {
           isChecked={isChecked}
         />
       </Gantt>
-      <div>
-        <h3>Gantt With Limited Height</h3>
-        <Gantt
-          tasks={tasks}
-          viewMode={view}
-          onDateChange={handleTaskChange}
-          onDelete={handleTaskDelete}
-          onProgressChange={handleProgressChange}
-          onDoubleClick={handleDblClick}
-          onSelect={handleSelect}
-          onExpanderClick={handleExpanderClick}
-          listCellWidth={isChecked ? "155px" : ""}
-          ganttHeight={300}
-          columnWidth={columnWidth}
-          columns={columns}
-          onChangeColumnWidth={onChangeColumnWidth}
-          onScrollBottom={run}
-          themeConfig={themeConfig}
-        >
-          <ViewSwitcher
-            onViewModeChange={viewMode => setView(viewMode)}
-            changeScrollCurrent={() => {}}
-            onViewListChange={setIsChecked}
-            isChecked={isChecked}
-          />
-        </Gantt>
-      </div>
     </div>
   );
 };

@@ -516,7 +516,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       timer = setTimeout(() => {
         if (timer) clearTimeout(timer);
         const todayDOM = document.getElementById(lineId);
-        console.log("123 todayDOM", todayDOM);
         const boxDOM: any = document.querySelector(
           `.${styles.ganttVerticalContainer}`
         );

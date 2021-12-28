@@ -5,7 +5,7 @@
 
 .projectBackground {
   user-select: none;
-  opacity: 0.6;
+  fill: var(--primary-3);
 }
 
 .projectTop {

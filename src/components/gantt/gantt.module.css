@@ -5,7 +5,7 @@
   font-size: 0;
   margin: 0;
   padding: 0;
-  border-left: 1px solid rgba(189, 198, 217, 0.5);
+  border-left: 1px solid #eff2f6;
 }
 
 .horizontalContainer {
@@ -22,7 +22,7 @@
   list-style: none;
   outline: none;
   position: relative;
-  border: 1px solid rgba(189, 198, 217, 0.5);
+  border: 1px solid #eff2f6;
   border-radius: 4px;
 }
 .ganttToolsContainer {

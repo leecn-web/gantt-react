@@ -1,7 +1,8 @@
 // import React, { useMemo } from "react";
-import React from "react";
+import React, { ReactElement } from "react";
 import styles from "./taskListTable.module.css";
 import { Task } from "../../types/PublicTypes";
+// const { HDYIcon } = window.PlatformSDK?.Widget || null;
 
 // const localeDateStringCache = {};
 // const toLocaleDateStringFactory = (locale: string) => (
@@ -73,11 +74,26 @@ export const TaskListTableDefault: React.FC<{
       }}
     >
       {tasks.map(t => {
-        let expanderSymbol = "";
+        let expanderSymbol: ReactElement;
         if (t.hideChildren === false) {
-          expanderSymbol = "▼";
+          expanderSymbol = (
+            // <i className="iconfont">&#xe654;</i>
+            <i
+              className={`iconfont iconxiala`}
+              style={{
+                marginRight: "4px",
+              }}
+            ></i>
+          );
         } else if (t.hideChildren === true) {
-          expanderSymbol = "▶";
+          expanderSymbol = (
+            <i
+              className={`iconfont iconxiala-copy`}
+              style={{
+                marginRight: "4px",
+              }}
+            ></i>
+          );
         }
         let background = "";
         if (selectedTaskId === t.id && themeConfig.tableHeaderColor) {
@@ -113,16 +129,19 @@ export const TaskListTableDefault: React.FC<{
                   }}
                 >
                   <div className={styles.taskListNameWrapper}>
-                    <div
-                      className={
-                        expanderSymbol
-                          ? styles.taskListExpander
-                          : styles.taskListEmptyExpander
-                      }
-                      onClick={() => onExpanderClick(t)}
-                    >
-                      {expanderSymbol}
-                    </div>
+                    {idx === 0 ? (
+                      <div
+                        className={
+                          expanderSymbol
+                            ? styles.taskListExpander
+                            : styles.taskListEmptyExpander
+                        }
+                        style={{ paddingLeft: `${(t?.level || 0) * 20}px` }}
+                        onClick={() => onExpanderClick(t)}
+                      >
+                        {expanderSymbol}
+                      </div>
+                    ) : null}
                     <div>
                       <Render data={t} />
                     </div>

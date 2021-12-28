@@ -32,8 +32,8 @@
   width: 100%;
   height: 100%;
   padding-left: 10px;
-  border-right: 1px solid rgba(189, 198, 217, 0.5);
-  border-bottom: 1px solid rgba(189, 198, 217, 0.5);
+  border-right: 1px solid #eff2f6;
+  border-bottom: 1px solid #eff2f6;
   vertical-align: middle;
   white-space: nowrap;
   overflow: hidden;
@@ -46,17 +46,18 @@
 
 .taskListNameWrapper {
   display: flex;
+  align-items: center;
 }
 
 .taskListExpander {
   color: rgb(86 86 86);
-  font-size: 0.6rem;
-  padding: 0.15rem 0.2rem 0rem 0.2rem;
+  font-size: 12px;
+  /* padding: 0.15rem 0.2rem 0rem 0.2rem; */
   user-select: none;
   cursor: pointer;
 }
 .taskListEmptyExpander {
-  font-size: 0.6rem;
-  padding-left: 1rem;
+  font-size: 12px;
+  padding-left: 12px;
   user-select: none;
 }

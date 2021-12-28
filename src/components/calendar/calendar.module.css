@@ -10,7 +10,7 @@
 }
 
 .calendarTopTick {
-  stroke: rgba(189, 198, 217, 0.5);
+  stroke: #eff2f6;
 }
 
 .calendarTopText {
@@ -31,5 +31,5 @@
 }
 
 .calendarLine {
-  stroke: rgba(189, 198, 217, 0.5);
+  stroke: #eff2f6;
 }

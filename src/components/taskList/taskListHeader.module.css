@@ -29,8 +29,8 @@
   vertical-align: -webkit-baseline-middle;
   vertical-align: middle;
   overflow: hidden;
-  border-right: 1px solid rgba(189, 198, 217, 0.5);
-  border-bottom: 1px solid rgba(189, 198, 217, 0.5);
+  border-right: 1px solid #eff2f6;
+  border-bottom: 1px solid #eff2f6;
   box-sizing: border-box;
 }
 .ganttTable_HeaderItem_reSize {

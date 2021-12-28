@@ -29,6 +29,7 @@ export interface Task {
   dependencies?: string[];
   hideChildren?: boolean;
   isEmpty?: boolean;
+  level?: number;
 }
 
 export interface EventOption {

@@ -10,6 +10,7 @@ export function initTasks() {
       progress: 50,
       type: "project",
       hideChildren: false,
+      level: 0,
     },
     {
       start: new Date("2021-12-15"),
@@ -19,6 +20,7 @@ export function initTasks() {
       progress: 155,
       type: "task",
       project: "ProjectSample",
+      level: 1,
     },
     {
       start: new Date("2020-05-01"),
@@ -28,16 +30,18 @@ export function initTasks() {
       progress: -10,
       type: "project",
       hideChildren: false,
+      level: 0,
     },
     {
       start: new Date("2020-05-01"),
       end: new Date("2020-05-05"),
       name: "ProjectSample1-1",
       id: "ProjectSample1-1",
-      progress: 100,
+      progress: 50,
       type: "project",
       project: "ProjectSample1",
       hideChildren: false,
+      level: 1,
     },
     {
       start: new Date("2020-05-01"),
@@ -47,6 +51,7 @@ export function initTasks() {
       progress: 155,
       type: "task",
       project: "ProjectSample1-1",
+      level: 2,
     },
     {
       start: new Date("2020-05-01"),
@@ -56,6 +61,7 @@ export function initTasks() {
       progress: 100,
       type: "task",
       project: "ProjectSample1-1",
+      level: 2,
     },
     {
       start: new Date("2020-05-01"),
@@ -66,6 +72,7 @@ export function initTasks() {
       type: "project",
       project: "ProjectSample1",
       hideChildren: false,
+      level: 1,
     },
     {
       start: new Date("2020-05-01"),
@@ -75,6 +82,7 @@ export function initTasks() {
       progress: 100,
       type: "task",
       project: "ProjectSample1-2",
+      level: 2,
     },
     // {
     //   start: new Date("2020-05-01"),
