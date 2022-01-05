@@ -50,7 +50,7 @@ export const BarDisplay: React.FC<BarDisplayProps> = ({
       <rect
         x={x}
         width={width}
-        y={y - 1}
+        y={y - 2}
         height={height}
         ry={barCornerRadius}
         rx={barCornerRadius}
@@ -60,7 +60,7 @@ export const BarDisplay: React.FC<BarDisplayProps> = ({
       <rect
         x={progressX}
         width={pWidth}
-        y={y - 1}
+        y={y - 2}
         height={height}
         ry={barCornerRadius}
         rx={barCornerRadius}

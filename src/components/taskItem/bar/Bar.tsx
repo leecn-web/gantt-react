@@ -11,9 +11,10 @@ export const Bar: React.FC<TaskItemProps> = ({
   isProgressChangeable,
   isDateChangeable,
   rtl,
+  isSelected,
+  hiddenPercent,
   onEventStart,
   onTouchEvent,
-  isSelected,
 }) => {
   let progressWidth = task.progressWidth;
   if (task.progressWidth > task.x2 - task.x1) progressWidth = task.x2 - task.x1;
@@ -81,19 +82,17 @@ export const Bar: React.FC<TaskItemProps> = ({
                 onTouchEvent("right", task, e);
               }}
               onTouchEnd={e => {
-                e.preventDefault();
                 e.stopPropagation();
                 onTouchEvent("end", task, e);
               }}
               onTouchMove={e => {
-                e.preventDefault();
                 e.stopPropagation();
                 onTouchEvent("move", task, e);
               }}
             />
           </g>
         )}
-        {isProgressChangeable && (
+        {isProgressChangeable && !hiddenPercent && (
           <BarProgressHandle
             progressPoint={progressPoint}
             onMouseDown={e => {

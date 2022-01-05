@@ -37,13 +37,16 @@ export type TaskListProps = {
     selectedTaskId: string;
     columns: any[];
     themeConfig: any;
+    ganttHeight: number;
     setSelectedTask: (taskId: string) => void;
     onExpanderClick: (task: Task) => void;
+    onDoubleClick?: (task: Task) => void;
   }>;
   themeConfig: any;
   setSelectedTask: (task: string) => void;
   onExpanderClick: (task: Task) => void;
   onChangeColumnWidth: (columnId: string, width: number) => void;
+  onDoubleClick?: (task: Task) => void;
 };
 
 export const TaskList: React.FC<TaskListProps> = ({
@@ -66,6 +69,7 @@ export const TaskList: React.FC<TaskListProps> = ({
   setSelectedTask,
   onExpanderClick,
   onChangeColumnWidth,
+  onDoubleClick,
 }) => {
   const horizontalContainerRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -94,8 +98,10 @@ export const TaskList: React.FC<TaskListProps> = ({
     selectedTaskId: selectedTaskId,
     columns,
     themeConfig,
+    ganttHeight,
     setSelectedTask,
     onExpanderClick,
+    onDoubleClick: onDoubleClick,
   };
 
   const widthRef = useRef(443);

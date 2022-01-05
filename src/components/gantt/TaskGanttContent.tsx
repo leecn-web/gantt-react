@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { EventOption } from "../../types/PublicTypes";
 import { BarTask } from "../../types/BarTask";
 import { Arrow } from "../other/Arrow";
@@ -28,6 +28,7 @@ export type TaskGanttContentProps = {
   fontFamily: string;
   rtl: boolean;
   themeConfig: any;
+  hiddenPercent?: boolean;
   setGanttEvent: (value: GanttEvent) => void;
   setFailedTask: (value: BarTask | null) => void;
   setSelectedTask: (taskId: string) => void;
@@ -50,6 +51,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
   fontSize,
   rtl,
   themeConfig,
+  hiddenPercent,
   setGanttEvent,
   setFailedTask,
   setSelectedTask,
@@ -164,23 +166,17 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
     }
   };
 
-  const handleTouchMove = useCallback(
-    async (event: TouchEvent) => {
-      event.preventDefault();
-      const e = event.touches[0];
-      handleMove(e);
-    },
-    [ganttEvent, selectedTask, handleMove]
-  );
+  const handleTouchMove = async (event: TouchEvent) => {
+    event.stopPropagation();
+    const e = event.touches[0];
+    handleMove(e);
+  };
 
-  const handleTouchUp = useCallback(
-    async (event: TouchEvent) => {
-      event.preventDefault();
-      const e = event.touches[0];
-      handleUp(e);
-    },
-    [ganttEvent, selectedTask, handleUp]
-  );
+  const handleTouchUp = async (event: TouchEvent) => {
+    event.stopPropagation();
+    const e = event.touches[0];
+    handleUp(e);
+  };
 
   const handleMouseMove = async (event: MouseEvent) => {
     event.preventDefault();
@@ -251,8 +247,8 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
     task: BarTask,
     event?: React.MouseEvent | React.KeyboardEvent
   ) => {
-    event?.stopPropagation();
     event?.preventDefault();
+    event?.stopPropagation();
 
     setIsMobile(false);
 
@@ -321,14 +317,14 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
     task: BarTask,
     event?: React.TouchEvent
   ) => {
-    event?.preventDefault();
+    // event?.preventDefault();
     event?.stopPropagation();
 
     setIsMobile(true);
     if (!event) {
-      if (action === "select") {
-        setSelectedTask(task.id);
-      }
+      // if (action === "select") {
+      //   setSelectedTask(task.id);
+      // }
     }
     // Mouse Events
     else if (action === "left") {
@@ -363,10 +359,16 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
         changedTask: task,
         originalSelectedTask: task,
       });
+    } else if (action === "enter") {
+      setGanttEvent({
+        action: "start",
+        changedTask: task,
+        originalSelectedTask: task,
+      });
     } else if (action === "end") {
-      if (ganttEvent.action === "move") {
-        setGanttEvent({ action: "" });
-      }
+      setSelectedTask("");
+      setGanttEvent({ action: "" });
+      setIsMoving(false);
     }
     // else if (action === "end") {
     //   // handleUp(event);
@@ -411,6 +413,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
               isSelected={!!selectedTask && task.id === selectedTask.id}
               rtl={rtl}
               themeConfig={themeConfig}
+              hiddenPercent={hiddenPercent}
             />
           );
         })}

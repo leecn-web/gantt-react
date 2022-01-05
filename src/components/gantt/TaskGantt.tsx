@@ -14,6 +14,7 @@ export type TaskGanttProps = {
   ChildrenDom: React.ReactChild;
   themeConfig: any;
   lineId: string;
+  listCellWidth?: string;
 };
 export const TaskGantt: React.FC<TaskGanttProps> = ({
   gridProps,
@@ -25,6 +26,7 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
   ChildrenDom,
   themeConfig,
   lineId,
+  listCellWidth,
 }) => {
   const ganttSVGRef = useRef<SVGSVGElement>(null);
   const horizontalContainerRef = useRef<HTMLDivElement>(null);
@@ -54,6 +56,7 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
       className={styles.ganttVerticalContainer}
       style={{
         borderColor: themeConfig.tableBorderColor,
+        borderWidth: listCellWidth ? `1px` : `0px`,
       }}
       ref={verticalGanttContainerRef}
       dir="ltr"

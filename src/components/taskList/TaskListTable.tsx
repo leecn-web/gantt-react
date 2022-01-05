@@ -34,8 +34,10 @@ export const TaskListTableDefault: React.FC<{
   selectedTaskId: string;
   columns: any[];
   themeConfig: any;
+  ganttHeight: number;
   setSelectedTask: (taskId: string) => void;
   onExpanderClick: (task: Task) => void;
+  onDoubleClick?: (task: Task) => void;
 }> = ({
   rowHeight,
   // rowWidth,
@@ -46,8 +48,10 @@ export const TaskListTableDefault: React.FC<{
   columns,
   selectedTaskId,
   themeConfig,
+  ganttHeight,
   setSelectedTask,
   onExpanderClick,
+  onDoubleClick,
 }) => {
   // const toLocaleDateString = useMemo(() => toLocaleDateStringFactory(locale), [
   //   locale,
@@ -65,6 +69,11 @@ export const TaskListTableDefault: React.FC<{
     }
   };
 
+  const clientHeight = tasks.length * 32;
+  const isFull = clientHeight < ganttHeight;
+  let otherColor = "#eff2f6";
+  let lastColor = "#eff2f6";
+
   return (
     <div
       className={styles.taskListWrapper}
@@ -73,7 +82,7 @@ export const TaskListTableDefault: React.FC<{
         fontSize: fontSize,
       }}
     >
-      {tasks.map(t => {
+      {tasks.map((t: Task, tIndex) => {
         let expanderSymbol: ReactElement;
         if (t.hideChildren === false) {
           expanderSymbol = (
@@ -107,10 +116,25 @@ export const TaskListTableDefault: React.FC<{
             }}
             key={`${t.id}row`}
             onClick={() => setSelectedTask(t.id)}
+            onDoubleClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+              onDoubleClick && onDoubleClick(t);
+            }}
           >
             {columns.map((item, idx) => {
               const Render = item.onrender;
               const alignValue = showAlignValue(item);
+              if (themeConfig.tableBorderColor) {
+                lastColor = themeConfig.tableBorderColor;
+                otherColor = themeConfig.tableBorderColor;
+              } else {
+                lastColor = "#eff2f6";
+                otherColor = "#eff2f6";
+              }
+              if (!isFull) {
+                lastColor = "transparent";
+              }
               return (
                 <div
                   key={`${item.name}-${idx}`}
@@ -121,11 +145,11 @@ export const TaskListTableDefault: React.FC<{
                     width: item.width || item.maxWidth,
                     justifyContent: alignValue,
                     paddingLeft:
-                      idx === columns.length - 1 && item.isLast === undefined
-                        ? 0
-                        : "10px",
+                      idx === columns.length - 1 && !item.resize ? 0 : "10px",
                     borderColor: themeConfig.tableBorderColor,
                     backgroundColor: background,
+                    borderBottomColor:
+                      tIndex === tasks.length - 1 ? lastColor : otherColor,
                   }}
                 >
                   <div className={styles.taskListNameWrapper}>

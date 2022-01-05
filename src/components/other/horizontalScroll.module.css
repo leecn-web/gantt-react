@@ -1,4 +1,5 @@
 .scroll {
   max-width: 100%;
   overflow: auto;
+  height: 17px;
 }

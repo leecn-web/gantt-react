@@ -63,6 +63,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     columns = [],
     themeConfig = {},
     lineId = "currentLine",
+    hiddenPercent = false,
     onDateChange,
     onProgressChange,
     onDoubleClick,
@@ -404,6 +405,16 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       }
     }
     setSelectedTask(newSelectedTask);
+    const wrapDOM = document.getElementsByClassName(
+      `${styles.ganttVerticalContainer}`
+    );
+    const rect = wrapDOM[wrapDOM.length - 1]?.getBoundingClientRect();
+    newSelectedTask?.x1 &&
+      setScrollX(
+        newSelectedTask?.x1 -
+          rect.width / 2 +
+          (newSelectedTask.x2 - newSelectedTask.x1) / 2
+      );
   };
   const handleExpanderClick = (task: Task) => {
     if (onExpanderClick && task.hideChildren !== undefined) {
@@ -516,9 +527,11 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       timer = setTimeout(() => {
         if (timer) clearTimeout(timer);
         const todayDOM = document.getElementById(lineId);
-        const boxDOM: any = document.querySelector(
-          `.${styles.ganttVerticalContainer}`
+        const ganttVerticalContainer = document.getElementsByClassName(
+          `${styles.ganttVerticalContainer}`
         );
+        const boxDOM: any =
+          ganttVerticalContainer[ganttVerticalContainer.length - 1];
         const x = todayDOM?.getAttribute("x");
         const width = Math.floor(boxDOM.clientWidth / 2);
         let linex = Number(x) - width;
@@ -534,9 +547,11 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       timer = setTimeout(() => {
         if (timer) clearTimeout(timer);
         const firstItem = barTasks[0];
-        const boxDOM: any = document.querySelector(
-          `.${styles.ganttVerticalContainer}`
+        const ganttVerticalContainer = document.getElementsByClassName(
+          `${styles.ganttVerticalContainer}`
         );
+        const boxDOM: any =
+          ganttVerticalContainer[ganttVerticalContainer.length - 1];
         const width = Math.floor(boxDOM.clientWidth / 2);
         const linex = firstItem.x1 - width;
         setScrollX(linex);
@@ -612,6 +627,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       svgWidth,
       rtl,
       themeConfig,
+      hiddenPercent,
       setGanttEvent,
       setFailedTask,
       setSelectedTask: handleSelectedTask,
@@ -636,6 +652,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     svgWidth,
     rtl,
     themeConfig,
+    hiddenPercent,
     setGanttEvent,
     setFailedTask,
     handleSelectedTask,
@@ -666,6 +683,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       setSelectedTask: handleSelectedTask,
       onExpanderClick: handleExpanderClick,
       onChangeColumnWidth,
+      onDoubleClick,
     };
   }, [
     rowHeight,
@@ -687,6 +705,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     handleSelectedTask,
     handleExpanderClick,
     onChangeColumnWidth,
+    onDoubleClick,
   ]);
 
   const childrenRef = useRef<any>();
@@ -720,15 +739,18 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
 
   useEffect(() => {
     const func = () => {
-      const rect = document
-        .querySelector(`.${styles.ganttVerticalContainer}`)
-        ?.getBoundingClientRect();
+      const wrapDOM = document.getElementsByClassName(
+        `${styles.ganttVerticalContainer}`
+      );
+      const rect = wrapDOM[wrapDOM.length - 1]?.getBoundingClientRect();
       setWidth(rect?.width ? rect?.width - 10 : 0);
     };
-    func();
-    window.addEventListener("resize", func);
+    setTimeout(() => {
+      func();
+    }, 500);
+    window.addEventListener("resize", func, false);
     return () => {
-      window.removeEventListener("resize", func);
+      window.removeEventListener("resize", func, false);
     };
   }, [childrenRef]);
 
@@ -743,6 +765,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       >
         {listCellWidth && <TaskList {...tableProps} />}
         <TaskGantt
+          listCellWidth={listCellWidth}
           gridProps={gridProps}
           calendarProps={calendarProps}
           barProps={barProps}

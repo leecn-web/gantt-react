@@ -10,7 +10,7 @@ import "gantt-task-react/dist/index.css";
 const App = () => {
   const [view, setView] = React.useState<ViewMode>(ViewMode.Day);
   const [tasks, setTasks] = React.useState<Task[]>(initTasks());
-  const [isChecked, setIsChecked] = React.useState(true);
+  const [isChecked, setIsChecked] = React.useState(false);
   const [columns, setColumns] = React.useState<any[]>([
     {
       name: "stext2e010ce8-cbfd-4fc4-bece-3c03eed17214",
@@ -45,96 +45,96 @@ const App = () => {
         return <div>{new Date(item.data.end).getTime()}</div>;
       },
     },
-    {
-      name: "stextbff8d155-826c-4ffa-b221-3",
-      label: "字段",
-      align: "left",
-      width: 130,
-      minWidth: 80,
-      resize: true,
-      onrender: (item: any) => {
-        return <div>{new Date(item.data.end).getTime()}</div>;
-      },
-    },
-    {
-      name: "stextbff8d155-826c-4ffa-b221-4",
-      label: "字段",
-      align: "left",
-      width: 130,
-      minWidth: 80,
-      resize: true,
-      onrender: (item: any) => {
-        return <div>{new Date(item.data.end).getTime()}</div>;
-      },
-    },
-    {
-      name: "stextbff8d155-826c-4ffa-b221-5",
-      label: "字段",
-      align: "left",
-      width: 130,
-      minWidth: 80,
-      resize: true,
-      onrender: (item: any) => {
-        return <div>{new Date(item.data.end).getTime()}</div>;
-      },
-    },
-    {
-      name: "stextbff8d155-826c-4ffa-b221-6",
-      label: "字段",
-      align: "left",
-      width: 130,
-      minWidth: 80,
-      resize: true,
-      onrender: (item: any) => {
-        return <div>{new Date(item.data.end).getTime()}</div>;
-      },
-    },
-    {
-      name: "stextbff8d155-826c-4ffa-b221-7",
-      label: "字段",
-      align: "left",
-      width: 130,
-      minWidth: 80,
-      resize: true,
-      onrender: (item: any) => {
-        return <div>{new Date(item.data.end).getTime()}</div>;
-      },
-    },
-    {
-      name: "stextbff8d155-826c-4ffa-b221-8",
-      label: "字段",
-      align: "left",
-      width: 130,
-      minWidth: 80,
-      resize: true,
-      onrender: (item: any) => {
-        return <div>{new Date(item.data.end).getTime()}</div>;
-      },
-    },
-    {
-      name: "stextbff8d155-826c-4ffa-b221-9",
-      label: "字段",
-      align: "left",
-      width: 130,
-      minWidth: 80,
-      resize: true,
-      onrender: (item: any) => {
-        return <div>{new Date(item.data.end).getTime()}</div>;
-      },
-    },
-    {
-      name: "more",
-      label: () => <i className="iconfont iconMoreVertical'"></i>,
-      align: "center",
-      onrender: () => {
-        const isBtnShow = true;
-        return isBtnShow ? <div>2</div> : <div></div>;
-      },
-      width: 50,
-      maxWidth: 50,
-      minWidth: 50,
-      resize: false,
-    },
+    // {
+    //   name: "stextbff8d155-826c-4ffa-b221-3",
+    //   label: "字段",
+    //   align: "left",
+    //   width: 130,
+    //   minWidth: 80,
+    //   resize: true,
+    //   onrender: (item: any) => {
+    //     return <div>{new Date(item.data.end).getTime()}</div>;
+    //   },
+    // },
+    // {
+    //   name: "stextbff8d155-826c-4ffa-b221-4",
+    //   label: "字段",
+    //   align: "left",
+    //   width: 130,
+    //   minWidth: 80,
+    //   resize: true,
+    //   onrender: (item: any) => {
+    //     return <div>{new Date(item.data.end).getTime()}</div>;
+    //   },
+    // },
+    // {
+    //   name: "stextbff8d155-826c-4ffa-b221-5",
+    //   label: "字段",
+    //   align: "left",
+    //   width: 130,
+    //   minWidth: 80,
+    //   resize: true,
+    //   onrender: (item: any) => {
+    //     return <div>{new Date(item.data.end).getTime()}</div>;
+    //   },
+    // },
+    // {
+    //   name: "stextbff8d155-826c-4ffa-b221-6",
+    //   label: "字段",
+    //   align: "left",
+    //   width: 130,
+    //   minWidth: 80,
+    //   resize: true,
+    //   onrender: (item: any) => {
+    //     return <div>{new Date(item.data.end).getTime()}</div>;
+    //   },
+    // },
+    // {
+    //   name: "stextbff8d155-826c-4ffa-b221-7",
+    //   label: "字段",
+    //   align: "left",
+    //   width: 130,
+    //   minWidth: 80,
+    //   resize: true,
+    //   onrender: (item: any) => {
+    //     return <div>{new Date(item.data.end).getTime()}</div>;
+    //   },
+    // },
+    // {
+    //   name: "stextbff8d155-826c-4ffa-b221-8",
+    //   label: "字段",
+    //   align: "left",
+    //   width: 130,
+    //   minWidth: 80,
+    //   resize: true,
+    //   onrender: (item: any) => {
+    //     return <div>{new Date(item.data.end).getTime()}</div>;
+    //   },
+    // },
+    // {
+    //   name: "stextbff8d155-826c-4ffa-b221-9",
+    //   label: "字段",
+    //   align: "left",
+    //   width: 130,
+    //   minWidth: 80,
+    //   resize: true,
+    //   onrender: (item: any) => {
+    //     return <div>{new Date(item.data.end).getTime()}</div>;
+    //   },
+    // },
+    // {
+    //   name: "more",
+    //   label: () => <i className="iconfont iconMoreVertical'"></i>,
+    //   align: "center",
+    //   onrender: () => {
+    //     const isBtnShow = true;
+    //     return isBtnShow ? <div>2</div> : <div></div>;
+    //   },
+    //   width: 50,
+    //   maxWidth: 50,
+    //   minWidth: 50,
+    //   resize: false,
+    // },
   ]);
   let columnWidth = 50;
   if (view === ViewMode.Hour) {
@@ -224,29 +224,26 @@ const App = () => {
     { wait: 500 }
   );
 
-  const themeConfig = useMemo(() => {
-    if (true) {
-      return {
-        bgColor: "transparent",
-        tableHeaderColor: "transparent",
-      };
-    }
-    // return {
-    //   borderColor: comp.themeConfig["--comp-border-color"],
-    //   titleColor: comp.themeConfig["--comp-title-color"],
-    //   h2Color: comp.themeConfig["--h2-and-content-color"],
-    //   iconColor: comp.themeConfig["--icon-and-message-color"],
-    //   bgColor: comp.themeConfig["--page-background"],
-    //   tableBodyColor: comp.themeConfig["--table-body-color"],
-    //   tableBorderColor: comp.themeConfig["--table-border-color"],
-    //   tableHeaderColor: comp.themeConfig["--table-header-color"],
-    //   tablePrimaryColor: comp.themeConfig["--table-primary-color"],
-    // };
+  const themeConfig: any = useMemo(() => {
+    return {
+      bgColor: "transparent",
+      tableHeaderColor: "red",
+      tableHeaderBg: "red",
+      tableBorderColor: "red",
+    };
+  }, []);
+
+  const reLoadVarClass: any = useMemo(() => {
+    return {
+      "--table-border-color": "red",
+      "--header-hover-color": "red",
+      "--tools-background": "red",
+      "--tools-text-color": "red",
+    };
   }, []);
 
   return (
-    <div>
-      <h3>Gantt With Limited Height</h3>
+    <div style={reLoadVarClass}>
       <Gantt
         tasks={tasks}
         viewMode={view}
@@ -263,6 +260,7 @@ const App = () => {
         onChangeColumnWidth={onChangeColumnWidth}
         onScrollBottom={run}
         themeConfig={themeConfig}
+        hiddenPercent={false}
       >
         <ViewSwitcher
           onViewModeChange={viewMode => setView(viewMode)}

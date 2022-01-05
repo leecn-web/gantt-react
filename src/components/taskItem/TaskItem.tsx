@@ -17,6 +17,7 @@ export type TaskItemProps = {
   isSelected: boolean;
   rtl: boolean;
   themeConfig: any;
+  hiddenPercent?: boolean;
   onEventStart: (
     action: GanttContentMoveAction,
     selectedTask: BarTask,
@@ -101,31 +102,45 @@ export const TaskItem: React.FC<TaskItemProps> = props => {
         e.stopPropagation();
       }}
       onMouseEnter={e => {
+        e.preventDefault();
+        e.stopPropagation();
         onEventStart("mouseenter", task, e);
       }}
       onMouseLeave={e => {
+        e.preventDefault();
+        e.stopPropagation();
         onEventStart("mouseleave", task, e);
       }}
       onDoubleClick={e => {
+        e.preventDefault();
+        e.stopPropagation();
         onEventStart("dblclick", task, e);
       }}
-      onFocus={() => {
-        onEventStart("select", task);
-      }}
-      // onTouchStart={() => {
-      //   onTouchEvent("select", task);
+      // onFocus={e => {
+      //   e.preventDefault();
+      //   e.stopPropagation();
+      //   onEventStart("select", task);
       // }}
+      onTouchStart={e => {
+        e.stopPropagation();
+        onTouchEvent("start", task, e);
+      }}
       onTouchEnd={e => {
+        e.stopPropagation();
         onTouchEvent("end", task, e);
       }}
       // onTouchMove={e => {
       //   onTouchEvent("move", task, e);
       // }}
+      onContextMenu={e => {
+        e.preventDefault();
+      }}
+      style={{ userSelect: "none" }}
     >
       {!task.isEmpty && taskItem}
       <text
         x={getX()}
-        y={task.y + taskHeight * 0.5}
+        y={task.y + taskHeight * 0.5 + 16 * 0.25}
         className={
           isTextInside
             ? style.barLabel
