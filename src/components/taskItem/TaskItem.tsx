@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { BarTask } from "../../types/BarTask";
 import { GanttContentMoveAction } from "../../types/GanttTaskActions";
 import { Bar } from "./bar/Bar";
@@ -90,6 +90,10 @@ export const TaskItem: React.FC<TaskItemProps> = props => {
     }
   };
 
+  const isMinWidth = useMemo(() => {
+    return task.x2 - task.x1 < 18;
+  }, [task]);
+
   return (
     <g
       onKeyDown={e => {
@@ -139,7 +143,7 @@ export const TaskItem: React.FC<TaskItemProps> = props => {
     >
       {!task.isEmpty && taskItem}
       <text
-        x={getX()}
+        x={isMinWidth ? getX() - (task.x2 - task.x1) + 18 : getX()}
         y={task.y + taskHeight * 0.5 + 16 * 0.25}
         className={
           isTextInside

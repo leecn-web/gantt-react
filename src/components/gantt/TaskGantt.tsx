@@ -15,6 +15,7 @@ export type TaskGanttProps = {
   themeConfig: any;
   lineId: string;
   listCellWidth?: string;
+  verticalGanttContainerRef: any;
 };
 export const TaskGantt: React.FC<TaskGanttProps> = ({
   gridProps,
@@ -27,10 +28,11 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
   themeConfig,
   lineId,
   listCellWidth,
+  verticalGanttContainerRef,
 }) => {
   const ganttSVGRef = useRef<SVGSVGElement>(null);
   const horizontalContainerRef = useRef<HTMLDivElement>(null);
-  const verticalGanttContainerRef = useRef<HTMLDivElement>(null);
+  // const verticalGanttContainerRef = useRef<HTMLDivElement>(null);
   const newBarProps = { ...barProps, svg: ganttSVGRef };
   const newGridProps = { ...gridProps, ganttHeight, lineId };
 

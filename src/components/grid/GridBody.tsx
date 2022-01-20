@@ -128,7 +128,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
       todayLine = (
         <rect
           id={lineId}
-          x={tickX + (columnWidth / 2 - 1)}
+          x={tickX + columnWidth / 2}
           y={0}
           width={1}
           height={rectHeight}

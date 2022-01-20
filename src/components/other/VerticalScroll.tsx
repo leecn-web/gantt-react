@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useRef, useEffect } from "react";
+import React, { SyntheticEvent, useEffect } from "react";
 import styles from "./verticalScroll.module.css";
 
 export const VerticalScroll: React.FC<{
@@ -8,6 +8,7 @@ export const VerticalScroll: React.FC<{
   ganttFullHeight: number;
   headerHeight: number;
   rtl: boolean;
+  scrollRef: any;
   onScroll: (event: SyntheticEvent<HTMLDivElement>) => void;
 }> = ({
   listCellWidth,
@@ -16,9 +17,10 @@ export const VerticalScroll: React.FC<{
   ganttFullHeight,
   headerHeight,
   rtl,
+  scrollRef,
   onScroll,
 }) => {
-  const scrollRef = useRef<HTMLDivElement>(null);
+  // const scrollRef = useRef<HTMLDivElement>(null);
   const isMobile = !!listCellWidth;
 
   useEffect(() => {

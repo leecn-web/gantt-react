@@ -1,13 +1,20 @@
 import React, { ReactChild } from "react";
+import dayjs from "dayjs";
 import { ViewMode } from "../../types/PublicTypes";
 import { TopPartOfCalendar } from "./TopPartOfCalendar";
 import {
   getCachedDateTimeFormat,
   getDaysInMonth,
-  getWeekNumberISO8601,
 } from "../../helpers/DateHelper";
 import { DateSetup } from "../../types/DateSetup";
 import styles from "./calendar.module.css";
+
+import isoWeeksInYear from "dayjs/plugin/isoWeeksInYear";
+import isLeapYear from "dayjs/plugin/isLeapYear";
+import isoWeek from "dayjs/plugin/isoWeek";
+dayjs.extend(isoWeeksInYear);
+dayjs.extend(isLeapYear);
+dayjs.extend(isoWeek);
 
 export type CalendarProps = {
   dateSetup: DateSetup;
@@ -113,25 +120,28 @@ export const Calendar: React.FC<CalendarProps> = ({
         // top
         topValue = `${date.getFullYear()}年${date.getMonth() + 1}月`;
       }
+
       // bottom
-      const bottomValue = `第${getWeekNumberISO8601(date)}周`;
+      const bottomValue = `第${dayjs(date.valueOf()).isoWeek()}周`;
 
       const now = new Date();
       let isNow = false;
       if (
         date.getFullYear() === now.getFullYear() &&
         date.getMonth() + 1 === now.getMonth() + 1 &&
-        getWeekNumberISO8601(date) === getWeekNumberISO8601(now)
+        dayjs(date.valueOf()).isoWeek() === dayjs(now.getTime()).isoWeek()
+        //  && date.getDate().toString() === now.getDate().toString()
       ) {
         isNow = true;
       }
       if (isNow) {
         bottomValues.push(
           <rect
+            key={`${bottomValue}-${date.getFullYear()}-today`}
             width={60}
             height={26}
             rx="13"
-            x={columnWidth * (i + +rtl) + columnWidth * 0.5 - 30}
+            x={columnWidth * (i + +rtl) - columnWidth * 0.5 - 30}
             y={45}
             style={{ fill: "var(--primary-color)" }}
           />
@@ -142,7 +152,7 @@ export const Calendar: React.FC<CalendarProps> = ({
         <text
           key={`${bottomValue}-${date.getFullYear()}`}
           y={headerHeight * 0.846}
-          x={columnWidth * (i + +rtl) + columnWidth * 0.5}
+          x={columnWidth * (i + +rtl) - columnWidth * 0.5}
           // x={columnWidth * (i + +rtl)}
           className={styles.calendarBottomText}
           style={{ fill: isNow ? "#fff" : themeConfig.h2Color }}

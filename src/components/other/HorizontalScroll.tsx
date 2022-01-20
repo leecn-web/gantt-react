@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useRef, useEffect } from "react";
+import React, { SyntheticEvent, useEffect } from "react";
 import styles from "./horizontalScroll.module.css";
 
 export const HorizontalScroll: React.FC<{
@@ -6,9 +6,10 @@ export const HorizontalScroll: React.FC<{
   svgWidth: number;
   taskListWidth: number;
   rtl: boolean;
+  scrollRef: any;
   onScroll: (event: SyntheticEvent<HTMLDivElement>) => void;
-}> = ({ scroll, svgWidth, taskListWidth, rtl, onScroll }) => {
-  const scrollRef = useRef<HTMLDivElement>(null);
+}> = ({ scroll, svgWidth, taskListWidth, rtl, scrollRef, onScroll }) => {
+  // const scrollRef = useRef<HTMLDivElement>(null);
 
   // // 节流
   // const useThrottle = (fn: (e: any) => void, delay: number, dep = []) => {

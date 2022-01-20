@@ -10,7 +10,7 @@ import "gantt-task-react/dist/index.css";
 const App = () => {
   const [view, setView] = React.useState<ViewMode>(ViewMode.Day);
   const [tasks, setTasks] = React.useState<Task[]>(initTasks());
-  const [isChecked, setIsChecked] = React.useState(false);
+  const [isChecked, setIsChecked] = React.useState(true);
   const [columns, setColumns] = React.useState<any[]>([
     {
       name: "stext2e010ce8-cbfd-4fc4-bece-3c03eed17214",

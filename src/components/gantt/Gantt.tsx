@@ -25,7 +25,7 @@ import { DateSetup } from "../../types/DateSetup";
 import { HorizontalScroll } from "../other/HorizontalScroll";
 import { removeHiddenTasks } from "../../helpers/OtherHelper";
 import styles from "./gantt.module.css";
-import scrollStyle from "../other/horizontalScroll.module.css";
+// import scrollStyle from "../other/horizontalScroll.module.css";
 
 export const Gantt: React.FunctionComponent<GanttProps> = props => {
   const {
@@ -111,6 +111,10 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
   const [ignoreScrollEvent, setIgnoreScrollEvent] = useState(false);
   const isFirstLoaded = useRef<boolean>(true);
 
+  const scrollLeftRef = useRef<any>();
+  const scrollTopRef = useRef<any>();
+  const verticalGanttContainerRef = useRef<any>();
+
   const coefficientRef = useRef({
     hourRight: 1,
     dayRight: 1,
@@ -125,8 +129,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
   // task change events
   useEffect(() => {
     // 拿到滚动的滑块dom
-    const scrollDom: any = document.querySelector(`.${scrollStyle.scroll}`);
-    const scrollWidth = scrollDom.scrollWidth - scrollDom.clientWidth; // 总可滑动长度
+    const scrollDom: any = scrollLeftRef.current;
+    const scrollWidth = scrollDom.scrollWidth - scrollDom?.clientWidth || 0; // 总可滑动长度
     // 判断是向左滑还是向右滑 增加左右两侧的 差量 差量是增加的空数据列表
     if (scrollX >= scrollWidth - 100) {
       coefficientRef.current[`${viewMode}Right`] =
@@ -405,10 +409,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       }
     }
     setSelectedTask(newSelectedTask);
-    const wrapDOM = document.getElementsByClassName(
-      `${styles.ganttVerticalContainer}`
-    );
-    const rect = wrapDOM[wrapDOM.length - 1]?.getBoundingClientRect();
+    const rect = verticalGanttContainerRef.current.getBoundingClientRect();
     newSelectedTask?.x1 &&
       setScrollX(
         newSelectedTask?.x1 -
@@ -527,13 +528,9 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       timer = setTimeout(() => {
         if (timer) clearTimeout(timer);
         const todayDOM = document.getElementById(lineId);
-        const ganttVerticalContainer = document.getElementsByClassName(
-          `${styles.ganttVerticalContainer}`
-        );
-        const boxDOM: any =
-          ganttVerticalContainer[ganttVerticalContainer.length - 1];
+        const boxDOM: any = verticalGanttContainerRef.current?.getBoundingClientRect();
         const x = todayDOM?.getAttribute("x");
-        const width = Math.floor(boxDOM.clientWidth / 2);
+        const width = Math.floor((boxDOM?.width || 0) / 2);
         let linex = Number(x) - width;
         if (linex < 0) linex = 0;
         setScrollX(linex);
@@ -547,12 +544,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       timer = setTimeout(() => {
         if (timer) clearTimeout(timer);
         const firstItem = barTasks[0];
-        const ganttVerticalContainer = document.getElementsByClassName(
-          `${styles.ganttVerticalContainer}`
-        );
-        const boxDOM: any =
-          ganttVerticalContainer[ganttVerticalContainer.length - 1];
-        const width = Math.floor(boxDOM.clientWidth / 2);
+        const boxDOM: any = verticalGanttContainerRef.current?.getBoundingClientRect();
+        const width = Math.floor((boxDOM?.width || 0) / 2);
         const linex = firstItem.x1 - width;
         setScrollX(linex);
         isFirstLoaded.current = false;
@@ -565,7 +558,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       ganttHeight,
       columnWidth,
       svgWidth,
-      tasks: tasks,
+      tasks: barTasks,
       rowHeight,
       dates: dateSetup.dates,
       todayColor,
@@ -739,10 +732,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
 
   useEffect(() => {
     const func = () => {
-      const wrapDOM = document.getElementsByClassName(
-        `${styles.ganttVerticalContainer}`
-      );
-      const rect = wrapDOM[wrapDOM.length - 1]?.getBoundingClientRect();
+      const wrapDOM = verticalGanttContainerRef.current;
+      const rect = wrapDOM?.getBoundingClientRect();
       setWidth(rect?.width ? rect?.width - 10 : 0);
     };
     setTimeout(() => {
@@ -752,7 +743,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     return () => {
       window.removeEventListener("resize", func, false);
     };
-  }, [childrenRef]);
+  }, [childrenRef, verticalGanttContainerRef]);
 
   return (
     <div style={{ width: "100%", position: "relative" }}>
@@ -765,6 +756,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       >
         {listCellWidth && <TaskList {...tableProps} />}
         <TaskGantt
+          verticalGanttContainerRef={verticalGanttContainerRef}
           listCellWidth={listCellWidth}
           gridProps={gridProps}
           calendarProps={calendarProps}
@@ -795,6 +787,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
           />
         )}
         <VerticalScroll
+          scrollRef={scrollTopRef}
           listCellWidth={listCellWidth}
           ganttFullHeight={ganttFullHeight}
           ganttHeight={ganttHeight}
@@ -805,6 +798,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
         />
       </div>
       <HorizontalScroll
+        scrollRef={scrollLeftRef}
         svgWidth={svgWidth}
         taskListWidth={taskListWidth}
         scroll={scrollX}

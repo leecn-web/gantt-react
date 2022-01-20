@@ -25,6 +25,7 @@ export type TaskListProps = {
     fontSize: string;
     columns: any[];
     themeConfig: any;
+    headRef: any;
     onChangeColumnWidth: (columnId: string, width: number) => void;
   }>;
   TaskListTable: React.FC<{
@@ -72,6 +73,7 @@ export const TaskList: React.FC<TaskListProps> = ({
   onDoubleClick,
 }) => {
   const horizontalContainerRef = useRef<HTMLDivElement>(null);
+  const headRef = useRef<any>();
   useEffect(() => {
     if (horizontalContainerRef.current) {
       horizontalContainerRef.current.scrollTop = scrollY;
@@ -85,6 +87,7 @@ export const TaskList: React.FC<TaskListProps> = ({
     rowWidth,
     columns,
     themeConfig,
+    headRef,
     onChangeColumnWidth,
   };
   const selectedTaskId = selectedTask ? selectedTask.id : "";
@@ -107,8 +110,7 @@ export const TaskList: React.FC<TaskListProps> = ({
   const widthRef = useRef(443);
 
   useEffect(() => {
-    const itemScrollWidth: number =
-      document.querySelector(`.${heaStyles.ganttTable}`)?.scrollWidth || 443;
+    const itemScrollWidth: number = headRef.current?.scrollWidth || 443;
     if (itemScrollWidth >= 443) {
       widthRef.current = itemScrollWidth;
     }

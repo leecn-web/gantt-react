@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { getProgressPoint } from "../../../helpers/BarHelper";
 import { BarDisplay } from "./BarDisplay";
 import { BarDateHandle } from "./BarDateHandle";
@@ -26,12 +26,19 @@ export const Bar: React.FC<TaskItemProps> = ({
   );
   const handleHeight = task.height - 2;
 
+  const barWidth = useMemo(() => {
+    return task.x2 - task.x1 > 18 ? task.x2 - task.x1 : 18;
+  }, [task]);
+  const isMinWidth = useMemo(() => {
+    return task.x2 - task.x1 < 18;
+  }, [task]);
+
   return (
-    <g className={styles.barWrapper} tabIndex={0}>
+    <g className={styles.barWrapper}>
       <BarDisplay
         x={task.x1}
         y={task.y}
-        width={task.x2 - task.x1}
+        width={barWidth}
         height={task.height}
         progressX={task.progressX}
         progressWidth={task.progressWidth}
@@ -70,7 +77,11 @@ export const Bar: React.FC<TaskItemProps> = ({
             />
             {/* right */}
             <BarDateHandle
-              x={task.x2 - task.handleWidth - 1}
+              x={
+                isMinWidth
+                  ? task.x2 + barWidth - task.handleWidth - 1
+                  : task.x2 - task.handleWidth - 1
+              }
               y={task.y + 1}
               width={task.handleWidth}
               height={handleHeight}
