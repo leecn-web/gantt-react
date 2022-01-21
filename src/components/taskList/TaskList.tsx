@@ -12,7 +12,6 @@ export type TaskListProps = {
   fontSize: string;
   rowHeight: number;
   ganttHeight: number;
-  scrollY: number;
   locale: string;
   tasks: Task[];
   taskListRef: React.RefObject<HTMLDivElement>;
@@ -56,7 +55,6 @@ export const TaskList: React.FC<TaskListProps> = ({
   fontSize,
   rowWidth,
   rowHeight,
-  scrollY,
   tasks,
   selectedTask,
   locale,
@@ -74,11 +72,6 @@ export const TaskList: React.FC<TaskListProps> = ({
 }) => {
   const horizontalContainerRef = useRef<HTMLDivElement>(null);
   const headRef = useRef<any>();
-  useEffect(() => {
-    if (horizontalContainerRef.current) {
-      horizontalContainerRef.current.scrollTop = scrollY;
-    }
-  }, [scrollY]);
 
   const headerProps = {
     headerHeight,
@@ -119,17 +112,17 @@ export const TaskList: React.FC<TaskListProps> = ({
   return (
     <div ref={taskListRef} className={styles.task}>
       <TaskListHeader {...headerProps} />
+      {/* <div className={styles.tableWrap}> */}
       <div
         ref={horizontalContainerRef}
         className={horizontalContainerClass}
         style={{
           width: widthRef.current,
-          height: ganttHeight && ganttHeight,
-          maxHeight: ganttHeight && ganttHeight,
         }}
       >
         <TaskListTable {...tableProps} />
       </div>
+      {/* </div> */}
     </div>
   );
 };

@@ -1,4 +1,11 @@
 .task {
-  overflow: auto hidden;
+  overflow: overlay;
   width: 443px;
+  height: 100%;
+}
+
+.tableWrap {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
 }

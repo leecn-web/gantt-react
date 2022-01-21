@@ -1,6 +1,9 @@
 .ganttTable {
   display: table;
   width: 443px;
+  position: sticky;
+  top: 0;
+  left: 0;
   /* border-bottom: 1px solid rgba(189, 198, 217, 0.5); */
 }
 

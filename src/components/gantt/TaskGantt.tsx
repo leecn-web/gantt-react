@@ -9,26 +9,28 @@ export type TaskGanttProps = {
   calendarProps: CalendarProps;
   barProps: TaskGanttContentProps;
   ganttHeight: number;
-  scrollY: number;
-  scrollX: number;
   ChildrenDom: React.ReactChild;
   themeConfig: any;
   lineId: string;
   listCellWidth?: string;
   verticalGanttContainerRef: any;
+  ganttFullHeight: number;
+  svgWidth: number;
+  taskListRef: any;
 };
 export const TaskGantt: React.FC<TaskGanttProps> = ({
   gridProps,
   calendarProps,
   barProps,
   ganttHeight,
-  scrollY,
-  scrollX,
   ChildrenDom,
   themeConfig,
   lineId,
   listCellWidth,
   verticalGanttContainerRef,
+  ganttFullHeight,
+  svgWidth,
+  taskListRef,
 }) => {
   const ganttSVGRef = useRef<SVGSVGElement>(null);
   const horizontalContainerRef = useRef<HTMLDivElement>(null);
@@ -36,17 +38,58 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
   const newBarProps = { ...barProps, svg: ganttSVGRef };
   const newGridProps = { ...gridProps, ganttHeight, lineId };
 
+  // scroll events
   useEffect(() => {
-    if (horizontalContainerRef.current) {
-      horizontalContainerRef.current.scrollTop = scrollY;
-    }
-  }, [scrollY]);
+    const handleWheel = (event: WheelEvent) => {
+      const horiRects = horizontalContainerRef.current?.getBoundingClientRect() || {
+        height: 0,
+        bottom: 0,
+      };
+      // const vertiWidth = verticalGanttContainerRef.current?.offsetWidth;
+      console.log("123 horiRects", horiRects);
+      // console.log("123 111", vertiWidth + 443 + 10);
+      // console.log("123 ", horizontalContainerRef.current?.offsetWidth);
 
-  useEffect(() => {
+      if (event.shiftKey || event.deltaX) {
+        // console.log("123 deltaX", event.deltaX);
+
+        const scrollMove = event.deltaX ? event.deltaX : event.deltaY;
+        let newScrollX = scrollX + scrollMove;
+        if (newScrollX < 0) {
+          newScrollX = 0;
+        } else if (newScrollX > svgWidth) {
+          newScrollX = svgWidth;
+        }
+      } else {
+        const calcHeight = horiRects?.height || 0 - horiRects?.bottom || 0;
+        taskListRef.current.scrollTop = calcHeight;
+        console.log("123 deltaY", calcHeight);
+
+        let newScrollY = event.deltaY;
+        if (newScrollY < 0) {
+          newScrollY = 0;
+        } else if (newScrollY > ganttFullHeight - ganttHeight) {
+          newScrollY = ganttFullHeight - ganttHeight;
+        }
+      }
+    };
+    // subscribe if scroll is necessary
     if (verticalGanttContainerRef.current) {
-      verticalGanttContainerRef.current.scrollLeft = scrollX;
+      verticalGanttContainerRef.current.addEventListener("wheel", handleWheel, {
+        passive: false,
+      });
     }
-  }, [scrollX]);
+    return () => {
+      if (verticalGanttContainerRef.current) {
+        verticalGanttContainerRef.current.removeEventListener(
+          "wheel",
+          handleWheel
+        );
+      }
+    };
+  }, [verticalGanttContainerRef, ganttHeight, svgWidth]);
+
+  // const scroll = useScroll(verticalGanttContainerRef.current);
 
   const svgHeight =
     barProps.rowHeight * barProps.tasks.length > ganttHeight
@@ -71,7 +114,12 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
         fontFamily={barProps.fontFamily}
         // style={{ height: "90px", paddingTop: "40px" }}
         // style={{ paddingTop: "40px", boxSizing: "content-box" }}
-        style={{ boxSizing: "content-box" }}
+        style={{
+          boxSizing: "content-box",
+          position: "sticky",
+          top: 0,
+          left: 0,
+        }}
       >
         <Calendar {...calendarProps} />
       </svg>
@@ -80,8 +128,6 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
         className={styles.horizontalContainer}
         style={{
           width: gridProps.svgWidth,
-          height: ganttHeight && ganttHeight,
-          maxHeight: ganttHeight && ganttHeight,
         }}
       >
         <svg

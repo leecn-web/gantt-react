@@ -12,8 +12,6 @@ export type TooltipProps = {
   svgWidth: number;
   headerHeight: number;
   taskListWidth: number;
-  scrollX: number;
-  scrollY: number;
   rowHeight: number;
   fontSize: string;
   fontFamily: string;
@@ -29,8 +27,6 @@ export const Tooltip: React.FC<TooltipProps> = ({
   rtl,
   svgContainerHeight,
   svgContainerWidth,
-  scrollX,
-  scrollY,
   arrowIndent,
   fontSize,
   fontFamily,

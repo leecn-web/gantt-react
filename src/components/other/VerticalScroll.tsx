@@ -3,20 +3,14 @@ import styles from "./verticalScroll.module.css";
 
 export const VerticalScroll: React.FC<{
   listCellWidth: string;
-  scroll: number;
-  ganttHeight: number;
   ganttFullHeight: number;
   headerHeight: number;
-  rtl: boolean;
   scrollRef: any;
   onScroll: (event: SyntheticEvent<HTMLDivElement>) => void;
 }> = ({
   listCellWidth,
-  scroll,
-  ganttHeight,
   ganttFullHeight,
   headerHeight,
-  rtl,
   scrollRef,
   onScroll,
 }) => {
@@ -31,10 +25,10 @@ export const VerticalScroll: React.FC<{
   return (
     <div
       style={{
-        height: ganttHeight,
+        height: "calc(100% - 76px)",
         marginTop: headerHeight,
         left: isMobile ? "445px" : "100%",
-        marginLeft: rtl ? "" : "-17px",
+        marginLeft: "-17px",
       }}
       className={styles.scroll}
       onScroll={onScroll}

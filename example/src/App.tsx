@@ -45,17 +45,17 @@ const App = () => {
         return <div>{new Date(item.data.end).getTime()}</div>;
       },
     },
-    // {
-    //   name: "stextbff8d155-826c-4ffa-b221-3",
-    //   label: "字段",
-    //   align: "left",
-    //   width: 130,
-    //   minWidth: 80,
-    //   resize: true,
-    //   onrender: (item: any) => {
-    //     return <div>{new Date(item.data.end).getTime()}</div>;
-    //   },
-    // },
+    {
+      name: "stextbff8d155-826c-4ffa-b221-3",
+      label: "字段",
+      align: "left",
+      width: 130,
+      minWidth: 80,
+      resize: true,
+      onrender: (item: any) => {
+        return <div>{new Date(item.data.end).getTime()}</div>;
+      },
+    },
     // {
     //   name: "stextbff8d155-826c-4ffa-b221-4",
     //   label: "字段",
@@ -239,6 +239,7 @@ const App = () => {
       "--header-hover-color": "red",
       "--tools-background": "red",
       "--tools-text-color": "red",
+      height: "400px",
     };
   }, []);
 

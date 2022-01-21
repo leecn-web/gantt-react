@@ -1,6 +1,5 @@
 import React, {
   useState,
-  SyntheticEvent,
   useRef,
   useEffect,
   useMemo,
@@ -15,14 +14,12 @@ import { TaskGanttContentProps } from "./TaskGanttContent";
 import { TaskListHeaderDefault } from "../taskList/TaskListHeader";
 import { TaskListTableDefault } from "../taskList/TaskListTable";
 import { StandardTooltipContent, Tooltip } from "../other/Tooltip";
-import { VerticalScroll } from "../other/VerticalScroll";
 import { TaskListProps, TaskList } from "../taskList/TaskList";
 import { TaskGantt } from "./TaskGantt";
 import { BarTask } from "../../types/BarTask";
 import { convertToBarTasks } from "../../helpers/BarHelper";
 import { GanttEvent } from "../../types/GanttTaskActions";
 import { DateSetup } from "../../types/DateSetup";
-import { HorizontalScroll } from "../other/HorizontalScroll";
 import { removeHiddenTasks } from "../../helpers/OtherHelper";
 import styles from "./gantt.module.css";
 // import scrollStyle from "../other/horizontalScroll.module.css";
@@ -71,7 +68,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     onSelect,
     onExpanderClick,
     onChangeColumnWidth,
-    onScrollBottom,
+    // onScrollBottom,
   } = props;
   const wrapperRef = useRef<HTMLDivElement>(null);
   const taskListRef = useRef<HTMLDivElement>(null);
@@ -106,13 +103,12 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
   const svgWidth = dateSetup.dates.length * columnWidth;
   const ganttFullHeight = barTasks.length * rowHeight;
 
-  const [scrollY, setScrollY] = useState(0);
-  const [scrollX, setScrollX] = useState(-1);
-  const [ignoreScrollEvent, setIgnoreScrollEvent] = useState(false);
+  console.log("123 ganttFullHeight", ganttFullHeight);
+  console.log("123 svgContainerHeight", svgContainerHeight);
+
   const isFirstLoaded = useRef<boolean>(true);
 
   const scrollLeftRef = useRef<any>();
-  const scrollTopRef = useRef<any>();
   const verticalGanttContainerRef = useRef<any>();
 
   const coefficientRef = useRef({
@@ -130,7 +126,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
   useEffect(() => {
     // 拿到滚动的滑块dom
     const scrollDom: any = scrollLeftRef.current;
-    const scrollWidth = scrollDom.scrollWidth - scrollDom?.clientWidth || 0; // 总可滑动长度
+    const scrollWidth =
+      scrollDom?.scrollWidth || 0 - scrollDom?.clientWidth || 0; // 总可滑动长度
     // 判断是向左滑还是向右滑 增加左右两侧的 差量 差量是增加的空数据列表
     if (scrollX >= scrollWidth - 100) {
       coefficientRef.current[`${viewMode}Right`] =
@@ -138,10 +135,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     } else if (scrollX <= 100) {
       coefficientRef.current[`${viewMode}Left`] =
         coefficientRef.current[`${viewMode}Left`] + 1;
-      setTimeout(() => {
-        const timeMap = { month: 15, week: 4, day: 15 };
-        setScrollX(timeMap[viewMode] * columnWidth);
-      }, 50);
     }
     let filteredTasks: Task[];
     if (onExpanderClick) {
@@ -157,12 +150,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     );
 
     let newDates = seedDates(startDate, endDate, viewMode);
-    if (rtl) {
-      newDates = newDates.reverse();
-      if (scrollX === -1) {
-        setScrollX(newDates.length * columnWidth);
-      }
-    }
     setDateSetup({ dates: newDates, viewMode });
 
     setBarTasks(
@@ -285,111 +272,11 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     }
   }, [ganttHeight, tasks]);
 
-  // scroll events
-  useEffect(() => {
-    const handleWheel = (event: WheelEvent) => {
-      if (event.shiftKey || event.deltaX) {
-        const scrollMove = event.deltaX ? event.deltaX : event.deltaY;
-        let newScrollX = scrollX + scrollMove;
-        if (newScrollX < 0) {
-          newScrollX = 0;
-        } else if (newScrollX > svgWidth) {
-          newScrollX = svgWidth;
-        }
-        setScrollX(newScrollX);
-        event.preventDefault();
-      } else if (ganttHeight) {
-        let newScrollY = scrollY + event.deltaY;
-        if (newScrollY < 0) {
-          newScrollY = 0;
-        } else if (newScrollY > ganttFullHeight - ganttHeight) {
-          newScrollY = ganttFullHeight - ganttHeight;
-        }
-        if (newScrollY !== scrollY) {
-          setScrollY(newScrollY);
-          event.preventDefault();
-        }
-      }
-
-      setIgnoreScrollEvent(true);
-    };
-
-    // subscribe if scroll is necessary
-    if (wrapperRef.current) {
-      wrapperRef.current.addEventListener("wheel", handleWheel, {
-        passive: false,
-      });
-    }
-    return () => {
-      if (wrapperRef.current) {
-        wrapperRef.current.removeEventListener("wheel", handleWheel);
-      }
-    };
-  }, [wrapperRef.current, scrollY, scrollX, ganttHeight, svgWidth, rtl]);
-
-  const handleScrollY = (event: SyntheticEvent<HTMLDivElement>) => {
-    if (scrollY !== event.currentTarget.scrollTop && !ignoreScrollEvent) {
-      setScrollY(event.currentTarget.scrollTop);
-    }
-    const scrollHeight =
-      event.currentTarget.scrollHeight - event.currentTarget.clientHeight; // 总可滑动高度
-    if (scrollY >= scrollHeight * 0.8) {
-      onScrollBottom && onScrollBottom();
-    }
-    setIgnoreScrollEvent(false);
-  };
-
-  const handleScrollX = (event: SyntheticEvent<HTMLDivElement>) => {
-    if (scrollX !== event.currentTarget.scrollLeft && !ignoreScrollEvent) {
-      setScrollX(event.currentTarget.scrollLeft);
-    }
-    setIgnoreScrollEvent(false);
-  };
-
   /**
    * Handles arrow keys events and transform it to new scroll
    */
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
     event.preventDefault();
-    let newScrollY = scrollY;
-    let newScrollX = scrollX;
-    let isX = true;
-    switch (event.key) {
-      case "Down": // IE/Edge specific value
-      case "ArrowDown":
-        newScrollY += rowHeight;
-        isX = false;
-        break;
-      case "Up": // IE/Edge specific value
-      case "ArrowUp":
-        newScrollY -= rowHeight;
-        isX = false;
-        break;
-      case "Left":
-      case "ArrowLeft":
-        newScrollX -= columnWidth;
-        break;
-      case "Right": // IE/Edge specific value
-      case "ArrowRight":
-        newScrollX += columnWidth;
-        break;
-    }
-    if (isX) {
-      if (newScrollX < 0) {
-        newScrollX = 0;
-      } else if (newScrollX > svgWidth) {
-        newScrollX = svgWidth;
-      }
-      setScrollX(newScrollX);
-    } else {
-      if (newScrollY < 0) {
-        newScrollY = 0;
-      } else if (newScrollY > ganttFullHeight - ganttHeight) {
-        newScrollY = ganttFullHeight - ganttHeight;
-      }
-      setScrollY(newScrollY);
-    }
-    setIgnoreScrollEvent(true);
   };
 
   /**
@@ -409,13 +296,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       }
     }
     setSelectedTask(newSelectedTask);
-    const rect = verticalGanttContainerRef.current.getBoundingClientRect();
-    newSelectedTask?.x1 &&
-      setScrollX(
-        newSelectedTask?.x1 -
-          rect.width / 2 +
-          (newSelectedTask.x2 - newSelectedTask.x1) / 2
-      );
   };
   const handleExpanderClick = (task: Task) => {
     if (onExpanderClick && task.hideChildren !== undefined) {
@@ -440,12 +320,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       );
 
       let newDates = seedDates(startDate, endDate, viewMode);
-      if (rtl) {
-        newDates = newDates.reverse();
-        if (scrollX === -1) {
-          setScrollX(newDates.length * columnWidth);
-        }
-      }
       setDateSetup({ dates: newDates, viewMode });
       setBarTasks(
         convertToBarTasks(
@@ -533,7 +407,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
         const width = Math.floor((boxDOM?.width || 0) / 2);
         let linex = Number(x) - width;
         if (linex < 0) linex = 0;
-        setScrollX(linex);
       }, 10);
     }
   }, [first, end, coefficientRef, viewMode, scrollX, changeDates]);
@@ -543,12 +416,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       let timer: NodeJS.Timeout | null = null;
       timer = setTimeout(() => {
         if (timer) clearTimeout(timer);
-        const firstItem = barTasks[0];
-        const boxDOM: any = verticalGanttContainerRef.current?.getBoundingClientRect();
-        const width = Math.floor((boxDOM?.width || 0) / 2);
-        const linex = firstItem.x1 - width;
-        setScrollX(linex);
-        isFirstLoaded.current = false;
       }, 100);
     }
   }, [isFirstLoaded.current, barTasks]);
@@ -664,7 +531,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       tasks: barTasks,
       locale,
       headerHeight,
-      scrollY,
       ganttHeight,
       horizontalContainerClass: styles.horizontalContainer,
       selectedTask,
@@ -686,7 +552,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     barTasks,
     locale,
     headerHeight,
-    scrollY,
     ganttHeight,
     styles.horizontalContainer,
     selectedTask,
@@ -730,6 +595,18 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     </div>
   );
 
+  // const handleScrollY = (event: SyntheticEvent<HTMLDivElement>) => {
+  //   console.log("123 event", event);
+  //   console.log("123 event", event.currentTarget.scrollHeight);
+  //   console.log("123 event", event.currentTarget.clientHeight);
+
+  //   const scrollHeight =
+  //     event.currentTarget.scrollHeight - event.currentTarget.clientHeight; // 总可滑动高度
+  //   if (scrollY >= scrollHeight * 0.8) {
+  //     onScrollBottom && onScrollBottom();
+  //   }
+  // };
+
   useEffect(() => {
     const func = () => {
       const wrapDOM = verticalGanttContainerRef.current;
@@ -746,7 +623,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
   }, [childrenRef, verticalGanttContainerRef]);
 
   return (
-    <div style={{ width: "100%", position: "relative" }}>
+    <div style={{ width: "100%", height: "100%", position: "relative" }}>
       <div
         className={styles.wrapper}
         style={{ borderColor: themeConfig.tableBorderColor }}
@@ -762,11 +639,12 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
           calendarProps={calendarProps}
           barProps={barProps}
           ganttHeight={ganttHeight}
-          scrollY={scrollY}
-          scrollX={scrollX}
           ChildrenDom={Children}
           themeConfig={themeConfig}
           lineId={lineId}
+          ganttFullHeight={ganttFullHeight}
+          svgWidth={svgWidth}
+          taskListRef={taskListRef}
         />
         {ganttEvent.changedTask && (
           <Tooltip
@@ -776,8 +654,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
             svgContainerWidth={svgContainerWidth}
             fontFamily={fontFamily}
             fontSize={fontSize}
-            scrollX={scrollX}
-            scrollY={scrollY}
             task={ganttEvent.changedTask}
             headerHeight={headerHeight}
             taskListWidth={taskListWidth}
@@ -786,25 +662,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
             svgWidth={svgWidth}
           />
         )}
-        <VerticalScroll
-          scrollRef={scrollTopRef}
-          listCellWidth={listCellWidth}
-          ganttFullHeight={ganttFullHeight}
-          ganttHeight={ganttHeight}
-          headerHeight={headerHeight}
-          scroll={scrollY}
-          onScroll={handleScrollY}
-          rtl={rtl}
-        />
       </div>
-      <HorizontalScroll
-        scrollRef={scrollLeftRef}
-        svgWidth={svgWidth}
-        taskListWidth={taskListWidth}
-        scroll={scrollX}
-        rtl={rtl}
-        onScroll={handleScrollX}
-      />
     </div>
   );
 };

@@ -1,7 +1,8 @@
 .ganttVerticalContainer {
   width: 100%;
+  height: 100%;
   flex: 1;
-  overflow: hidden;
+  overflow: overlay;
   font-size: 0;
   margin: 0;
   padding: 0;
@@ -9,19 +10,20 @@
 }
 
 .horizontalContainer {
-  width: 443px;
   margin: 0;
   padding: 0;
   overflow: hidden;
 }
 
 .wrapper {
+  position: relative;
   display: flex;
+  width: 100%;
+  height: 100%;
   padding: 0;
   margin: 0;
   list-style: none;
   outline: none;
-  position: relative;
   border: 1px solid #eff2f6;
   border-radius: 4px;
 }
