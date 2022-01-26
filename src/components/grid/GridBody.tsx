@@ -48,7 +48,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
       <rect
         key={"Row" + task.id}
         x="0"
-        y={y - 2}
+        y={y - 1}
         width={svgWidth}
         height={rowHeight}
         className={styles.gridRow}

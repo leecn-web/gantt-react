@@ -5,6 +5,7 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
+import { useScroll } from "ahooks";
 import { ViewMode, GanttProps, Task } from "../../types/PublicTypes";
 import { GridProps } from "../grid/Grid";
 // import { ganttDateRange, seedDates, addToDate } from "../../helpers/DateHelper";
@@ -68,7 +69,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     onSelect,
     onExpanderClick,
     onChangeColumnWidth,
-    // onScrollBottom,
+    onScrollBottom,
   } = props;
   const wrapperRef = useRef<HTMLDivElement>(null);
   const taskListRef = useRef<HTMLDivElement>(null);
@@ -103,13 +104,16 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
   const svgWidth = dateSetup.dates.length * columnWidth;
   const ganttFullHeight = barTasks.length * rowHeight;
 
-  console.log("123 ganttFullHeight", ganttFullHeight);
-  console.log("123 svgContainerHeight", svgContainerHeight);
-
   const isFirstLoaded = useRef<boolean>(true);
 
-  const scrollLeftRef = useRef<any>();
   const verticalGanttContainerRef = useRef<any>();
+  const horizontalContainerRef = useRef<any>();
+
+  const [dragRef, setDragRef] = useState({
+    draging: false,
+    dragStart: 0,
+    dragMove: 0,
+  });
 
   const coefficientRef = useRef({
     hourRight: 1,
@@ -121,81 +125,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     weekLeft: 1,
     monthLeft: 1,
   });
-
-  // task change events
-  useEffect(() => {
-    // 拿到滚动的滑块dom
-    const scrollDom: any = scrollLeftRef.current;
-    const scrollWidth =
-      scrollDom?.scrollWidth || 0 - scrollDom?.clientWidth || 0; // 总可滑动长度
-    // 判断是向左滑还是向右滑 增加左右两侧的 差量 差量是增加的空数据列表
-    if (scrollX >= scrollWidth - 100) {
-      coefficientRef.current[`${viewMode}Right`] =
-        coefficientRef.current[`${viewMode}Right`] + 1;
-    } else if (scrollX <= 100) {
-      coefficientRef.current[`${viewMode}Left`] =
-        coefficientRef.current[`${viewMode}Left`] + 1;
-    }
-    let filteredTasks: Task[];
-    if (onExpanderClick) {
-      filteredTasks = removeHiddenTasks(tasks);
-    } else {
-      filteredTasks = tasks;
-    }
-    const [startDate, endDate] = ganttDateRange(
-      filteredTasks,
-      viewMode,
-      coefficientRef.current[`${viewMode}Right`],
-      coefficientRef.current[`${viewMode}Left`]
-    );
-
-    let newDates = seedDates(startDate, endDate, viewMode);
-    setDateSetup({ dates: newDates, viewMode });
-
-    setBarTasks(
-      convertToBarTasks(
-        filteredTasks,
-        newDates,
-        columnWidth,
-        rowHeight,
-        taskHeight,
-        barCornerRadius,
-        handleWidth,
-        rtl,
-        barProgressColor,
-        barProgressSelectedColor,
-        barBackgroundColor,
-        barBackgroundSelectedColor,
-        projectProgressColor,
-        projectProgressSelectedColor,
-        projectBackgroundColor,
-        projectBackgroundSelectedColor,
-        milestoneBackgroundColor,
-        milestoneBackgroundSelectedColor
-      )
-    );
-  }, [
-    tasks,
-    viewMode,
-    rowHeight,
-    barCornerRadius,
-    columnWidth,
-    taskHeight,
-    handleWidth,
-    barProgressColor,
-    barProgressSelectedColor,
-    barBackgroundColor,
-    barBackgroundSelectedColor,
-    projectProgressColor,
-    projectProgressSelectedColor,
-    projectBackgroundColor,
-    projectBackgroundSelectedColor,
-    milestoneBackgroundColor,
-    milestoneBackgroundSelectedColor,
-    rtl,
-    scrollX,
-    onExpanderClick,
-  ]);
 
   useEffect(() => {
     const { changedTask, action } = ganttEvent;
@@ -296,6 +225,14 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       }
     }
     setSelectedTask(newSelectedTask);
+
+    const rect = verticalGanttContainerRef.current.getBoundingClientRect();
+    if (newSelectedTask?.x1) {
+      verticalGanttContainerRef.current.scrollLeft =
+        newSelectedTask?.x1 -
+        rect.width / 2 +
+        (newSelectedTask.x2 - newSelectedTask.x1) / 2;
+    }
   };
   const handleExpanderClick = (task: Task) => {
     if (onExpanderClick && task.hideChildren !== undefined) {
@@ -364,7 +301,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       milestoneBackgroundColor,
       milestoneBackgroundSelectedColor,
       rtl,
-      scrollX,
       dateSetup,
       onExpanderClick,
     ]
@@ -407,6 +343,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
         const width = Math.floor((boxDOM?.width || 0) / 2);
         let linex = Number(x) - width;
         if (linex < 0) linex = 0;
+        verticalGanttContainerRef.current.scrollLeft = linex;
       }, 10);
     }
   }, [first, end, coefficientRef, viewMode, scrollX, changeDates]);
@@ -419,6 +356,13 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       }, 100);
     }
   }, [isFirstLoaded.current, barTasks]);
+
+  const defaultWidth = useMemo(() => {
+    if (taskListRef.current) {
+      return taskListRef.current?.offsetWidth;
+    }
+    return 443;
+  }, [taskListRef.current, taskListRef.current?.offsetWidth]);
 
   const gridProps: GridProps = useMemo(() => {
     return {
@@ -539,6 +483,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       TaskListTable,
       columns,
       themeConfig,
+      defaultWidth,
+      dragRef,
       setSelectedTask: handleSelectedTask,
       onExpanderClick: handleExpanderClick,
       onChangeColumnWidth,
@@ -560,6 +506,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     TaskListTable,
     columns,
     themeConfig,
+    defaultWidth,
+    dragRef,
     handleSelectedTask,
     handleExpanderClick,
     onChangeColumnWidth,
@@ -595,18 +543,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     </div>
   );
 
-  // const handleScrollY = (event: SyntheticEvent<HTMLDivElement>) => {
-  //   console.log("123 event", event);
-  //   console.log("123 event", event.currentTarget.scrollHeight);
-  //   console.log("123 event", event.currentTarget.clientHeight);
-
-  //   const scrollHeight =
-  //     event.currentTarget.scrollHeight - event.currentTarget.clientHeight; // 总可滑动高度
-  //   if (scrollY >= scrollHeight * 0.8) {
-  //     onScrollBottom && onScrollBottom();
-  //   }
-  // };
-
   useEffect(() => {
     const func = () => {
       const wrapDOM = verticalGanttContainerRef.current;
@@ -622,6 +558,233 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     };
   }, [childrenRef, verticalGanttContainerRef]);
 
+  const scrollRight = useScroll(verticalGanttContainerRef);
+  const scrollLeftMaps = { day: 1500, month: 792, week: 400 };
+
+  useEffect(() => {
+    if (scrollRight.top !== taskListRef.current?.scrollTop) {
+      if (taskListRef.current) {
+        taskListRef.current.scrollTop = scrollRight.top;
+      }
+    }
+  }, [scrollRight, taskListRef]);
+
+  useEffect(() => {
+    if (
+      wrapperRef &&
+      wrapperRef.current &&
+      horizontalContainerRef &&
+      horizontalContainerRef.current
+    ) {
+      if (
+        !scrollRight.top ||
+        !(
+          horizontalContainerRef.current.offsetHeight -
+          (wrapperRef.current?.offsetHeight - 78)
+        )
+      ) {
+        return;
+      }
+
+      if (
+        scrollRight.top >=
+        horizontalContainerRef.current.offsetHeight -
+          (wrapperRef.current?.offsetHeight - 78)
+      ) {
+        onScrollBottom && onScrollBottom();
+      }
+    }
+  }, [onScrollBottom, horizontalContainerRef, wrapperRef, scrollRight]);
+
+  // task change events
+  useEffect(() => {
+    if (
+      scrollRight.left >=
+      svgWidth - verticalGanttContainerRef.current.offsetWidth
+    ) {
+      coefficientRef.current[`${viewMode}Right`] =
+        coefficientRef.current[`${viewMode}Right`] + 1;
+    } else if (scrollRight.left <= 50) {
+      coefficientRef.current[`${viewMode}Left`] =
+        coefficientRef.current[`${viewMode}Left`] + 1;
+      verticalGanttContainerRef.current.scrollLeft = scrollLeftMaps[viewMode];
+    }
+    let filteredTasks: Task[];
+    if (onExpanderClick) {
+      filteredTasks = removeHiddenTasks(tasks);
+    } else {
+      filteredTasks = tasks;
+    }
+    const [startDate, endDate] = ganttDateRange(
+      filteredTasks,
+      viewMode,
+      coefficientRef.current[`${viewMode}Right`],
+      coefficientRef.current[`${viewMode}Left`]
+    );
+
+    let newDates = seedDates(startDate, endDate, viewMode);
+    setDateSetup({ dates: newDates, viewMode });
+
+    setBarTasks(
+      convertToBarTasks(
+        filteredTasks,
+        newDates,
+        columnWidth,
+        rowHeight,
+        taskHeight,
+        barCornerRadius,
+        handleWidth,
+        rtl,
+        barProgressColor,
+        barProgressSelectedColor,
+        barBackgroundColor,
+        barBackgroundSelectedColor,
+        projectProgressColor,
+        projectProgressSelectedColor,
+        projectBackgroundColor,
+        projectBackgroundSelectedColor,
+        milestoneBackgroundColor,
+        milestoneBackgroundSelectedColor
+      )
+    );
+  }, [
+    tasks,
+    viewMode,
+    rowHeight,
+    barCornerRadius,
+    columnWidth,
+    taskHeight,
+    handleWidth,
+    barProgressColor,
+    barProgressSelectedColor,
+    barBackgroundColor,
+    barBackgroundSelectedColor,
+    projectProgressColor,
+    projectProgressSelectedColor,
+    projectBackgroundColor,
+    projectBackgroundSelectedColor,
+    milestoneBackgroundColor,
+    milestoneBackgroundSelectedColor,
+    rtl,
+    scrollRight,
+    verticalGanttContainerRef,
+    onExpanderClick,
+    removeHiddenTasks,
+  ]);
+
+  const onMouseDown = useCallback(
+    (e: any): void => {
+      const target = e.target;
+      e.stopPropagation();
+      e.preventDefault();
+
+      // 记录拖动的列及起始位置
+      const name = target.getAttribute("data-id");
+
+      if (name === "column-header") {
+        setDragRef({
+          draging: true,
+          dragStart: e.clientX,
+          dragMove: 0,
+        });
+        // dragRef.current.draging = true;
+        // dragRef.current.dragStart = e.clientX; // 获取鼠标按下时光标x的值
+        // dragRef.current.dragMove = e.clientX; // 获取鼠标按下时光标x的值
+      }
+    },
+    [dragRef, setDragRef]
+  );
+
+  const onMouseUp = useCallback(
+    (e): void => {
+      e.stopPropagation();
+      e.preventDefault();
+      // 获取当前鼠标位置，与起始位置的差为最新的列宽
+      if (dragRef.draging) {
+        setDragRef({
+          draging: false,
+          dragStart: 0,
+          dragMove: 0,
+        });
+        // dragRef.current.draging = false;
+        // dragRef.current.dragStart = 0; // 获取鼠标按下时光标x的值
+        // dragRef.current.dragMove = 0; // 获取鼠标按下时光标x的值
+      }
+    },
+    [dragRef, setDragRef]
+  );
+
+  const onMouseMove = useCallback(
+    async (e: any): Promise<void> => {
+      e.stopPropagation();
+      e.preventDefault();
+      // 实时改变列宽
+      // TODO 防抖
+      if (dragRef.draging) {
+        const moveX = e.clientX;
+        const diffX = moveX - (dragRef.dragStart as number);
+        setDragRef({
+          ...dragRef,
+          dragStart: (dragRef.dragStart += diffX),
+          dragMove: diffX,
+        });
+      }
+      // if (dragRef.current.draging) {
+      //   const moveX = e.clientX;
+      //   const diffX = moveX - (dragRef.current.dragMove as number);
+      //   dragRef.current.dragMove = dragRef.current.dragMove + diffX; // 获取鼠标按下时光标x的值
+      // }
+    },
+    [dragRef]
+  );
+
+  const useThrottle = (fn: (e: any) => void, delay: number, dep = []) => {
+    const { current }: any = useRef({ fn, timer: null });
+    useEffect(
+      function () {
+        current.fn = fn;
+      },
+      [fn]
+    );
+    return useCallback((...args) => {
+      if (!current.timer) {
+        current.timer = setTimeout(() => {
+          delete current.timer;
+        }, delay);
+        current.fn(...args);
+      }
+    }, dep);
+  };
+
+  // useEffect(() => {
+  //   if (taskListRef.current) {
+  //     if (!dragRef.current?.dragStart) {
+  //       listwidth1 = taskListRef.current?.offsetWidth;
+  //     } else {
+  //       const newW =
+  //         taskListRef.current?.offsetWidth +
+  //         (dragRef.current?.dragMove - dragRef.current?.dragStart);
+  //       listwidth1 = newW;
+  //     }
+  //   } else {
+  //     listwidth1 = 443;
+  //   }
+  // }, [taskListRef.current, dragRef.current]);
+  // const listWidth = () => {
+  //   if (taskListRef.current) {
+  //     if (!dragRef.current?.dragStart) {
+  //       return taskListRef.current?.offsetWidth;
+  //     } else {
+  //       const newW =
+  //         taskListRef.current?.offsetWidth +
+  //         (dragRef.current?.dragMove - dragRef.current?.dragStart);
+  //       return newW;
+  //     }
+  //   } else {
+  //     return 443;
+  //   }
+  // };
+
   return (
     <div style={{ width: "100%", height: "100%", position: "relative" }}>
       <div
@@ -630,8 +793,19 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
         onKeyDown={handleKeyDown}
         tabIndex={0}
         ref={wrapperRef}
+        onMouseDown={onMouseDown}
+        onMouseUp={onMouseUp}
+        onMouseLeave={onMouseUp}
+        onMouseMove={useThrottle(onMouseMove, 100)}
       >
-        {listCellWidth && <TaskList {...tableProps} />}
+        {listCellWidth && <TaskList {...tableProps} dragRef={dragRef} />}
+        {listCellWidth && (
+          <div
+            className={styles.headerDrag}
+            data-id="column-header"
+            style={{ left: `${defaultWidth - 6}px` }}
+          ></div>
+        )}
         <TaskGantt
           verticalGanttContainerRef={verticalGanttContainerRef}
           listCellWidth={listCellWidth}
@@ -645,6 +819,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
           ganttFullHeight={ganttFullHeight}
           svgWidth={svgWidth}
           taskListRef={taskListRef}
+          horizontalContainerRef={horizontalContainerRef}
         />
         {ganttEvent.changedTask && (
           <Tooltip
@@ -660,6 +835,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
             TooltipContent={TooltipContent}
             rtl={rtl}
             svgWidth={svgWidth}
+            scrollX={scrollRight.left}
+            scrollY={scrollRight.top}
           />
         )}
       </div>

@@ -1,11 +1,8 @@
 .task {
-  overflow: overlay;
+  position: relative;
+  overflow: overlay hidden;
   width: 443px;
   height: 100%;
-}
-
-.tableWrap {
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
+  min-width: 20%;
+  max-width: 50%;
 }

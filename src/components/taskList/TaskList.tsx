@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { BarTask } from "../../types/BarTask";
 import { Task } from "../../types/PublicTypes";
 import styles from "./task.css";
@@ -25,6 +25,7 @@ export type TaskListProps = {
     columns: any[];
     themeConfig: any;
     headRef: any;
+    newWidth: number;
     onChangeColumnWidth: (columnId: string, width: number) => void;
   }>;
   TaskListTable: React.FC<{
@@ -38,11 +39,13 @@ export type TaskListProps = {
     columns: any[];
     themeConfig: any;
     ganttHeight: number;
+    newWidth: number;
     setSelectedTask: (taskId: string) => void;
     onExpanderClick: (task: Task) => void;
     onDoubleClick?: (task: Task) => void;
   }>;
   themeConfig: any;
+  dragRef: any;
   setSelectedTask: (task: string) => void;
   onExpanderClick: (task: Task) => void;
   onChangeColumnWidth: (columnId: string, width: number) => void;
@@ -65,6 +68,7 @@ export const TaskList: React.FC<TaskListProps> = ({
   TaskListTable,
   columns,
   themeConfig,
+  dragRef,
   setSelectedTask,
   onExpanderClick,
   onChangeColumnWidth,
@@ -109,18 +113,36 @@ export const TaskList: React.FC<TaskListProps> = ({
     }
   }, [tasks, columns, horizontalContainerRef, widthRef.current, heaStyles]);
 
+  const width = useMemo(() => {
+    if (taskListRef.current) {
+      if (!dragRef?.dragStart) {
+        return taskListRef.current?.offsetWidth;
+      } else {
+        const newW = taskListRef.current?.offsetWidth + dragRef?.dragMove;
+        return newW;
+      }
+    } else {
+      return 443;
+    }
+  }, [dragRef, taskListRef.current]);
+
   return (
-    <div ref={taskListRef} className={styles.task}>
-      <TaskListHeader {...headerProps} />
-      {/* <div className={styles.tableWrap}> */}
+    <div
+      ref={taskListRef}
+      className={styles.task}
+      style={{ width: `${width}px` }}
+    >
+      <TaskListHeader {...headerProps} newWidth={width} />
       <div
         ref={horizontalContainerRef}
         className={horizontalContainerClass}
         style={{
-          width: widthRef.current,
+          width:
+            width > widthRef.current ? `${width}px` : `${widthRef.current}px`,
+          userSelect: "none",
         }}
       >
-        <TaskListTable {...tableProps} />
+        <TaskListTable {...tableProps} newWidth={width} />
       </div>
       {/* </div> */}
     </div>

@@ -12,6 +12,7 @@
   /* width: 443px; */
   /* border-bottom: 1px solid rgba(189, 198, 217, 0.5); */
   background-color: transparent;
+  border-bottom: 1px solid #eff2f6;
 }
 /* .taskListTableRow:hover {
   background-color: var(--header-hover-color);
@@ -19,10 +20,7 @@
 .taskListTableRow:last-child {
   border-bottom: none;
 }
-.taskListTableRow:last-child .taskListCell {
-  border-bottom-color: transparent;
-}
-.taskListTableRow:hover .taskListCell {
+.taskListTableRow:hover {
   background-color: var(--header-hover-color);
 }
 
@@ -33,7 +31,6 @@
   height: 100%;
   padding-left: 10px;
   border-right: 1px solid #eff2f6;
-  border-bottom: 1px solid #eff2f6;
   vertical-align: middle;
   white-space: nowrap;
   overflow: hidden;

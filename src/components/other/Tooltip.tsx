@@ -15,6 +15,8 @@ export type TooltipProps = {
   rowHeight: number;
   fontSize: string;
   fontFamily: string;
+  scrollX: number;
+  scrollY: number;
   TooltipContent: React.FC<{
     task: Task;
     fontSize: string;
@@ -33,6 +35,8 @@ export const Tooltip: React.FC<TooltipProps> = ({
   headerHeight,
   taskListWidth,
   TooltipContent,
+  scrollX,
+  scrollY,
 }) => {
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const [relatedY, setRelatedY] = useState(0);

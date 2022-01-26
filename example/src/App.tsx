@@ -239,6 +239,7 @@ const App = () => {
       "--header-hover-color": "red",
       "--tools-background": "red",
       "--tools-text-color": "red",
+      "--gantt-header-background": "#fff",
       height: "400px",
     };
   }, []);

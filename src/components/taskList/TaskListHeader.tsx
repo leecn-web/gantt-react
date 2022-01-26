@@ -9,6 +9,7 @@ export const TaskListHeaderDefault: React.FC<{
   columns: any[];
   themeConfig: any;
   headRef: any;
+  newWidth: number;
   onChangeColumnWidth: (columnId: string, width: number) => void;
 }> = ({
   headerHeight,
@@ -17,6 +18,7 @@ export const TaskListHeaderDefault: React.FC<{
   columns,
   themeConfig,
   headRef,
+  newWidth,
   onChangeColumnWidth,
 }) => {
   const showAlignValue = (item: { align: any }) => {
@@ -114,6 +116,7 @@ export const TaskListHeaderDefault: React.FC<{
       ref={headRef}
       className={styles.ganttTable}
       style={{
+        width: `${newWidth}px`,
         fontFamily: fontFamily,
         fontSize: fontSize,
         userSelect: "none",
