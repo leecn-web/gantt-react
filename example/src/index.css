@@ -15,12 +15,10 @@
   text-decoration: none;
   margin: 4px 2px;
   cursor: pointer;
-  font-size: 14px;
   text-align: center;
 }
 .Switch {
   margin: 4px 15px;
-  font-size: 14px;
   font-family: "Arial, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue";
   display: flex;
   justify-content: center;

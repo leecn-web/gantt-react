@@ -122,19 +122,19 @@ const App = () => {
     //     return <div>{new Date(item.data.end).getTime()}</div>;
     //   },
     // },
-    // {
-    //   name: "more",
-    //   label: () => <i className="iconfont iconMoreVertical'"></i>,
-    //   align: "center",
-    //   onrender: () => {
-    //     const isBtnShow = true;
-    //     return isBtnShow ? <div>2</div> : <div></div>;
-    //   },
-    //   width: 50,
-    //   maxWidth: 50,
-    //   minWidth: 50,
-    //   resize: false,
-    // },
+    {
+      name: "more",
+      label: () => <i className="iconfont iconMoreVertical'"></i>,
+      align: "center",
+      onrender: () => {
+        const isBtnShow = true;
+        return isBtnShow ? <div>2</div> : <div></div>;
+      },
+      width: 50,
+      maxWidth: 50,
+      minWidth: 50,
+      resize: false,
+    },
   ]);
   let columnWidth = 50;
   if (view === ViewMode.Hour) {
@@ -227,17 +227,17 @@ const App = () => {
   const themeConfig: any = useMemo(() => {
     return {
       bgColor: "transparent",
-      tableHeaderColor: "red",
-      tableHeaderBg: "red",
-      tableBorderColor: "red",
+      tableHeaderColor: "#cccs",
+      tableHeaderBg: "#ccc",
+      tableBorderColor: "#ccc",
     };
   }, []);
 
   const reLoadVarClass: any = useMemo(() => {
     return {
-      "--table-border-color": "red",
-      "--header-hover-color": "red",
-      "--tools-background": "red",
+      "--table-border-color": "#ccc",
+      "--header-hover-color": "#ccc",
+      "--tools-background": "#ccc",
       "--tools-text-color": "red",
       "--gantt-header-background": "#fff",
       height: "400px",
