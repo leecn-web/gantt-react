@@ -23,3 +23,7 @@
   width: 2px;
   height: 100%;
 }
+
+.weekendClass {
+  stroke: #eff2f6;
+}

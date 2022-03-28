@@ -10,7 +10,7 @@ export const TaskListHeaderDefault: React.FC<{
   themeConfig: any;
   headRef: any;
   newWidth: number;
-  onChangeColumnWidth: (columnId: string, width: number) => void;
+  onChangeColumnWidth: (columnId: string, width: number, headRef: any) => void;
 }> = ({
   headerHeight,
   fontFamily,
@@ -71,8 +71,15 @@ export const TaskListHeaderDefault: React.FC<{
     if (dragRef.current.draging) {
       const moveX = e.clientX;
       const diffX = moveX - (dragRef.current.dragStart as number);
+
+      console.log("123 headRef", headRef.current?.offsetWidth);
+
       if (onChangeColumnWidth) {
-        await onChangeColumnWidth(dragRef.current.dragColumn as string, diffX);
+        await onChangeColumnWidth(
+          dragRef.current.dragColumn as string,
+          diffX,
+          headRef
+        );
         dragRef.current.dragStart += diffX;
       }
     }
@@ -121,6 +128,7 @@ export const TaskListHeaderDefault: React.FC<{
         fontSize: fontSize,
         userSelect: "none",
         borderColor: themeConfig.tableBorderColor,
+        backgroundColor: themeConfig.tableHeaderBg,
       }}
       onMouseDown={onMouseDown}
       onMouseUp={onMouseUp}
@@ -132,6 +140,7 @@ export const TaskListHeaderDefault: React.FC<{
         className={styles.ganttTable_Header}
         style={{
           height: headerHeight,
+          backgroundColor: themeConfig.tableHeaderBg,
         }}
       >
         {columns.map((item, index) => {

@@ -31,7 +31,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     headerHeight = 75,
     columnWidth = 60,
     listCellWidth = "155px",
-    rowHeight = 32,
+    rowHeight = 40,
     ganttHeight = 0,
     viewMode = ViewMode.Day,
     locale = "en-GB",
@@ -52,7 +52,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     timeStep = 300000,
     arrowColor = "grey",
     fontFamily = "Arial, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue",
-    fontSize = "14px",
+    fontSize = "13px",
     arrowIndent = 20,
     todayColor = "rgba(252, 248, 227, 0.5)",
     TooltipContent = StandardTooltipContent,
@@ -62,6 +62,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     themeConfig = {},
     lineId = "currentLine",
     hiddenPercent = false,
+    ganttHeaderWidth = 443,
     onDateChange,
     onProgressChange,
     onDoubleClick,
@@ -70,6 +71,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     onExpanderClick,
     onChangeColumnWidth,
     onScrollBottom,
+    onChangeColumnAllWidth,
   } = props;
   const wrapperRef = useRef<HTMLDivElement>(null);
   const taskListRef = useRef<HTMLDivElement>(null);
@@ -377,6 +379,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       selectedTask,
       themeConfig,
       lineId,
+      verticalGanttContainerRef,
     };
   }, [
     ganttHeight,
@@ -390,6 +393,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     selectedTask,
     themeConfig,
     lineId,
+    verticalGanttContainerRef,
   ]);
   const calendarProps: CalendarProps = useMemo(() => {
     return {
@@ -439,6 +443,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       onProgressChange,
       onDoubleClick,
       onDelete,
+      onChangeColumnWidth,
     };
   }, [
     barTasks,
@@ -485,6 +490,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       themeConfig,
       defaultWidth,
       dragRef,
+      verticalGanttContainerRef,
+      ganttHeaderWidth,
       setSelectedTask: handleSelectedTask,
       onExpanderClick: handleExpanderClick,
       onChangeColumnWidth,
@@ -508,6 +515,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     themeConfig,
     defaultWidth,
     dragRef,
+    verticalGanttContainerRef,
+    ganttHeaderWidth,
     handleSelectedTask,
     handleExpanderClick,
     onChangeColumnWidth,
@@ -515,14 +524,16 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
   ]);
 
   const childrenRef = useRef<any>();
-  const [width, setWidth] = useState<number>(0);
+  // const [width, setWidth] = useState<number>(0);
 
   const Children = (
     <div
       ref={childrenRef}
       className={styles.toolsBar}
       style={{
-        maxWidth: `${width}px`,
+        maxWidth: verticalGanttContainerRef?.current?.offsetWidth
+          ? `${verticalGanttContainerRef?.current?.offsetWidth}px`
+          : "100%",
       }}
     >
       {
@@ -543,20 +554,20 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     </div>
   );
 
-  useEffect(() => {
-    const func = () => {
-      const wrapDOM = verticalGanttContainerRef.current;
-      const rect = wrapDOM?.getBoundingClientRect();
-      setWidth(rect?.width ? rect?.width - 10 : 0);
-    };
-    setTimeout(() => {
-      func();
-    }, 500);
-    window.addEventListener("resize", func, false);
-    return () => {
-      window.removeEventListener("resize", func, false);
-    };
-  }, [childrenRef, verticalGanttContainerRef]);
+  // useEffect(() => {
+  //   const func = () => {
+  //     const wrapDOM = verticalGanttContainerRef.current;
+  //     const rect = wrapDOM?.getBoundingClientRect();
+  //     setWidth(rect?.width ? rect?.width - 10 : 0);
+  //   };
+  //   setTimeout(() => {
+  //     func();
+  //   }, 500);
+  //   window.addEventListener("resize", func, false);
+  //   return () => {
+  //     window.removeEventListener("resize", func, false);
+  //   };
+  // }, [childrenRef, verticalGanttContainerRef]);
 
   const scrollRight = useScroll(verticalGanttContainerRef);
   const scrollLeftMaps = { day: 1500, month: 792, week: 400 };
@@ -728,6 +739,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
           dragStart: (dragRef.dragStart += diffX),
           dragMove: diffX,
         });
+        onChangeColumnAllWidth &&
+          onChangeColumnAllWidth(diffX, verticalGanttContainerRef, taskListRef);
       }
       // if (dragRef.current.draging) {
       //   const moveX = e.clientX;

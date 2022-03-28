@@ -32,7 +32,7 @@ export type TaskGanttContentProps = {
   setGanttEvent: (value: GanttEvent) => void;
   setFailedTask: (value: BarTask | null) => void;
   setSelectedTask: (taskId: string) => void;
-  onChangeColumnWidth?: (columnId: string, width: number) => void;
+  onChangeColumnWidth: (columnId: string, width: number, headRef: any) => void;
 } & EventOption;
 
 export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({

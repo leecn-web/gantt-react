@@ -26,7 +26,11 @@ export type TaskListProps = {
     themeConfig: any;
     headRef: any;
     newWidth: number;
-    onChangeColumnWidth: (columnId: string, width: number) => void;
+    onChangeColumnWidth: (
+      columnId: string,
+      width: number,
+      headRef: any
+    ) => void;
   }>;
   TaskListTable: React.FC<{
     rowHeight: number;
@@ -40,15 +44,19 @@ export type TaskListProps = {
     themeConfig: any;
     ganttHeight: number;
     newWidth: number;
+    verticalGanttContainerRef: React.RefObject<HTMLDivElement>;
+    headRef: React.RefObject<HTMLDivElement>;
     setSelectedTask: (taskId: string) => void;
     onExpanderClick: (task: Task) => void;
     onDoubleClick?: (task: Task) => void;
   }>;
   themeConfig: any;
   dragRef: any;
+  verticalGanttContainerRef: React.RefObject<HTMLDivElement>;
+  ganttHeaderWidth: string | number;
   setSelectedTask: (task: string) => void;
   onExpanderClick: (task: Task) => void;
-  onChangeColumnWidth: (columnId: string, width: number) => void;
+  onChangeColumnWidth: (columnId: string, width: number, headRef: any) => void;
   onDoubleClick?: (task: Task) => void;
 };
 
@@ -69,6 +77,8 @@ export const TaskList: React.FC<TaskListProps> = ({
   columns,
   themeConfig,
   dragRef,
+  verticalGanttContainerRef,
+  ganttHeaderWidth,
   setSelectedTask,
   onExpanderClick,
   onChangeColumnWidth,
@@ -99,6 +109,7 @@ export const TaskList: React.FC<TaskListProps> = ({
     columns,
     themeConfig,
     ganttHeight,
+    verticalGanttContainerRef,
     setSelectedTask,
     onExpanderClick,
     onDoubleClick: onDoubleClick,
@@ -121,6 +132,8 @@ export const TaskList: React.FC<TaskListProps> = ({
         const newW = taskListRef.current?.offsetWidth + dragRef?.dragMove;
         return newW;
       }
+    } else if (ganttHeaderWidth) {
+      return ganttHeaderWidth;
     } else {
       return 443;
     }
@@ -142,7 +155,11 @@ export const TaskList: React.FC<TaskListProps> = ({
           userSelect: "none",
         }}
       >
-        <TaskListTable {...tableProps} newWidth={width} />
+        <TaskListTable
+          {...tableProps}
+          newWidth={width}
+          headRef={headRef.current}
+        />
       </div>
       {/* </div> */}
     </div>

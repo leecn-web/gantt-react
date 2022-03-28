@@ -374,7 +374,7 @@ export const Calendar: React.FC<CalendarProps> = ({
         y={42}
         width={columnWidth * dateSetup.dates.length}
         height={32}
-        style={{ fill: themeConfig.tableHeaderBg || "transparent" }}
+        style={{ fill: "#fff" }}
       />
       {bottomValues}
       <line

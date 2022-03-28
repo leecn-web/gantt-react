@@ -1,7 +1,8 @@
-import React, { ReactChild } from "react";
+import React, { ReactChild, useMemo } from "react";
 import { Task } from "../../types/PublicTypes";
 import { BarTask } from "../../types/BarTask";
 import { addToDate } from "../../helpers/DateHelper";
+import { checkWeekend } from "../../helpers/OtherHelper";
 import styles from "./grid.module.css";
 
 export type GridBodyProps = {
@@ -16,6 +17,7 @@ export type GridBodyProps = {
   selectedTask: BarTask | undefined;
   themeConfig: any;
   lineId: string;
+  verticalGanttContainerRef: any;
 };
 export const GridBody: React.FC<GridBodyProps> = ({
   tasks,
@@ -29,6 +31,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
   selectedTask,
   themeConfig,
   lineId,
+  verticalGanttContainerRef,
 }) => {
   const selectedTaskId = selectedTask ? selectedTask.id : "";
   let y = 0;
@@ -77,7 +80,21 @@ export const GridBody: React.FC<GridBodyProps> = ({
   const ticks: ReactChild[] = [];
   let today: ReactChild = <rect />;
   let todayLine: ReactChild = <rect />;
-  const rectHeight = y > ganttHeight ? y : ganttHeight;
+  let weekend: ReactChild[] = [];
+  const rectHeight = useMemo(() => {
+    if (verticalGanttContainerRef && verticalGanttContainerRef.current) {
+      const height =
+        verticalGanttContainerRef?.current?.getBoundingClientRect().height - 76;
+      return y > height ? y : height;
+    } else {
+      return y > ganttHeight ? y : ganttHeight;
+    }
+  }, [
+    verticalGanttContainerRef,
+    verticalGanttContainerRef.current,
+    ganttHeight,
+    y,
+  ]);
   for (let i = 0; i < dates.length; i++) {
     const date = dates[i] ?? new Date();
     ticks.push(
@@ -116,13 +133,18 @@ export const GridBody: React.FC<GridBodyProps> = ({
           "millisecond"
         ).getTime() >= now.getTime())
     ) {
+      // const tempSvg = (
+
+      // );
       today = (
         <rect
           x={tickX}
           y={0}
           width={columnWidth}
           height={rectHeight}
-          fill="transparent"
+          // fill="transparent"
+          fill="url(#pinstripe)"
+          className={styles.weekendClass}
         />
       );
       todayLine = (
@@ -134,6 +156,44 @@ export const GridBody: React.FC<GridBodyProps> = ({
           height={rectHeight}
           style={{ fill: "var(--primary-3)" }}
         />
+      );
+    } else if (checkWeekend(date)) {
+      const nId = date.getTime().toString();
+      weekend.push(
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="100%"
+          height="100%"
+          key={nId}
+        >
+          <defs>
+            <pattern
+              id={nId}
+              patternUnits="userSpaceOnUse"
+              width="3"
+              height="50"
+              patternTransform="rotate(35)"
+            >
+              <line
+                x1="3"
+                y="0"
+                x2="3"
+                y2="50"
+                strokeWidth="2"
+                stroke={themeConfig.tableBorderColor}
+                style={{ stroke: themeConfig.tableBorderColor }}
+                className={styles.weekendClass}
+              />
+            </pattern>
+          </defs>
+          <rect
+            x={tickX}
+            y={0}
+            width={columnWidth}
+            height={rectHeight}
+            fill={`url(#${nId})`}
+          />
+        </svg>
       );
     }
     // rtl for today
@@ -176,6 +236,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
         {today}
         {todayLine}
       </g>
+      <g className="weekend">{weekend}</g>
     </g>
   );
 };

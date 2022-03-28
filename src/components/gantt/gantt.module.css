@@ -26,6 +26,7 @@
   outline: none;
   border: 1px solid #eff2f6;
   border-radius: 4px;
+  font-size: 13px;
 }
 .ganttToolsContainer {
   display: flex;
@@ -39,7 +40,7 @@
   justify-content: flex-end;
   height: 42px;
   top: 0;
-  right: 6px;
+  right: 0px;
   text-align: right;
   overflow: hidden;
   background: transparent;
@@ -52,9 +53,10 @@
   position: absolute;
   top: 0;
   left: 437px;
-  width: 1px;
+  width: 10px;
   padding: 0 6px;
   height: 76px;
   cursor: col-resize;
+  z-index: 2;
   /* user-select: none; */
 }

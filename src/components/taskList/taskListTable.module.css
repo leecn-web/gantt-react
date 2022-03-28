@@ -17,9 +17,9 @@
 /* .taskListTableRow:hover {
   background-color: var(--header-hover-color);
 } */
-.taskListTableRow:last-child {
+/* .taskListTableRow:last-child {
   border-bottom: none;
-}
+} */
 .taskListTableRow:hover {
   background-color: var(--header-hover-color);
 }

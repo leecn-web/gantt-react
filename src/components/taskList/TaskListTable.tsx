@@ -1,5 +1,5 @@
 // import React, { useMemo } from "react";
-import React, { ReactElement } from "react";
+import React, { ReactElement, useMemo } from "react";
 import styles from "./taskListTable.module.css";
 import { Task } from "../../types/PublicTypes";
 // const { HDYIcon } = window.PlatformSDK?.Widget || null;
@@ -36,6 +36,8 @@ export const TaskListTableDefault: React.FC<{
   themeConfig: any;
   ganttHeight: number;
   newWidth: number;
+  verticalGanttContainerRef: React.RefObject<HTMLDivElement>;
+  headRef: React.RefObject<HTMLDivElement>;
   setSelectedTask: (taskId: string) => void;
   onExpanderClick: (task: Task) => void;
   onDoubleClick?: (task: Task) => void;
@@ -51,6 +53,7 @@ export const TaskListTableDefault: React.FC<{
   themeConfig,
   ganttHeight,
   // newWidth,
+  verticalGanttContainerRef,
   setSelectedTask,
   onExpanderClick,
   onDoubleClick,
@@ -71,8 +74,22 @@ export const TaskListTableDefault: React.FC<{
     }
   };
 
-  const clientHeight = tasks.length * 32;
-  const isFull = clientHeight < ganttHeight;
+  const clientHeight = tasks.length * 40;
+  const isFull = useMemo(() => {
+    if (verticalGanttContainerRef && verticalGanttContainerRef.current) {
+      return (
+        clientHeight <
+        verticalGanttContainerRef.current.getBoundingClientRect().height - 76
+      );
+    } else {
+      return clientHeight < ganttHeight - 76;
+    }
+  }, [
+    verticalGanttContainerRef,
+    verticalGanttContainerRef.current,
+    clientHeight,
+  ]);
+
   let otherColor = "#eff2f6";
   let lastColor = "#eff2f6";
 
@@ -153,6 +170,9 @@ export const TaskListTableDefault: React.FC<{
                     paddingLeft:
                       idx === columns.length - 1 && !item.resize ? 0 : "10px",
                     borderColor: themeConfig.tableBorderColor,
+                    position:
+                      idx === columns.length - 1 ? "sticky" : "relative",
+                    right: idx === columns.length - 1 ? 0 : "none",
                   }}
                 >
                   <div className={styles.taskListNameWrapper}>

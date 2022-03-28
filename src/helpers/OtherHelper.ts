@@ -48,3 +48,11 @@ function getChildren(taskList: Task[], task: Task) {
   tasks = tasks.concat(tasks, taskChildren);
   return tasks;
 }
+
+// 判断日期是不是周末
+export function checkWeekend(now: Date) {
+  if(now.getDay() % 7 === 6 || now.getDay() % 6 === 0) {// 开始日期必须小于结束日期，防止死循环
+      return true
+  }
+  return false
+}

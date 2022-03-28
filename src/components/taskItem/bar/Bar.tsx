@@ -79,7 +79,7 @@ export const Bar: React.FC<TaskItemProps> = ({
             <BarDateHandle
               x={
                 isMinWidth
-                  ? task.x2 + barWidth - task.handleWidth - 1
+                  ? task.x1 + barWidth - task.handleWidth - 1
                   : task.x2 - task.handleWidth - 1
               }
               y={task.y + 1}

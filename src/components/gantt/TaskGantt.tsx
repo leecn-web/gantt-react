@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import { GridProps, Grid } from "../grid/Grid";
 import { CalendarProps, Calendar } from "../calendar/Calendar";
 import { TaskGanttContentProps, TaskGanttContent } from "./TaskGanttContent";
@@ -33,12 +33,31 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
 }) => {
   const ganttSVGRef = useRef<SVGSVGElement>(null);
   const newBarProps = { ...barProps, svg: ganttSVGRef };
-  const newGridProps = { ...gridProps, ganttHeight, lineId };
+  const newGridProps = {
+    ...gridProps,
+    ganttHeight,
+    lineId,
+    verticalGanttContainerRef,
+  };
+
+  const verticalGanttContainerHeight = useMemo(() => {
+    if (verticalGanttContainerRef && verticalGanttContainerRef?.current) {
+      return (
+        verticalGanttContainerRef?.current?.getBoundingClientRect().height - 76
+      );
+    } else {
+      return ganttHeight - 76;
+    }
+  }, [
+    verticalGanttContainerRef,
+    verticalGanttContainerRef.current,
+    ganttHeight,
+  ]);
 
   const svgHeight =
-    barProps.rowHeight * barProps.tasks.length > ganttHeight
+    barProps.rowHeight * barProps.tasks.length > verticalGanttContainerHeight
       ? barProps.rowHeight * barProps.tasks.length
-      : ganttHeight;
+      : verticalGanttContainerHeight;
 
   return (
     <div
