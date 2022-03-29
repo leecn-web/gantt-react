@@ -25,8 +25,9 @@
   list-style: none;
   outline: none;
   border: 1px solid #eff2f6;
-  border-radius: 4px;
+  border-radius: 8px;
   font-size: 13px;
+  overflow: hidden;
 }
 .ganttToolsContainer {
   display: flex;

@@ -10,6 +10,7 @@ export const TaskListHeaderDefault: React.FC<{
   themeConfig: any;
   headRef: any;
   newWidth: number;
+  type: string;
   onChangeColumnWidth: (columnId: string, width: number, headRef: any) => void;
 }> = ({
   headerHeight,
@@ -18,7 +19,8 @@ export const TaskListHeaderDefault: React.FC<{
   columns,
   themeConfig,
   headRef,
-  newWidth,
+  // newWidth,
+  type,
   onChangeColumnWidth,
 }) => {
   const showAlignValue = (item: { align: any }) => {
@@ -72,8 +74,6 @@ export const TaskListHeaderDefault: React.FC<{
       const moveX = e.clientX;
       const diffX = moveX - (dragRef.current.dragStart as number);
 
-      console.log("123 headRef", headRef.current?.offsetWidth);
-
       if (onChangeColumnWidth) {
         await onChangeColumnWidth(
           dragRef.current.dragColumn as string,
@@ -123,7 +123,7 @@ export const TaskListHeaderDefault: React.FC<{
       ref={headRef}
       className={styles.ganttTable}
       style={{
-        width: `${newWidth}px`,
+        // width: `${newWidth}px`,
         fontFamily: fontFamily,
         fontSize: fontSize,
         userSelect: "none",
@@ -157,6 +157,7 @@ export const TaskListHeaderDefault: React.FC<{
               item={item}
               alignValue={alignValue}
               themeConfig={themeConfig}
+              type={type}
             >
               <Label />
             </TaskListHeaderItem>

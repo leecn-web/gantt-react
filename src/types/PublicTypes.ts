@@ -149,4 +149,5 @@ export interface GanttProps extends EventOption, DisplayOption, StylingOption {
   onChangeColumnWidth: (columnId: string, width: number, headRef: any) => void;
   onScrollBottom?: () => void;
   onChangeColumnAllWidth?: (diff: number, ref: any, listRef: any) => void;
+  type?: string;
 }

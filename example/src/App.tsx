@@ -14,7 +14,7 @@ const App = () => {
   const [columns, setColumns] = React.useState<any[]>([
     {
       name: "stext2e010ce8-cbfd-4fc4-bece-3c03eed17214",
-      label: "姓名",
+      label: "姓名姓名",
       align: "left",
       minWidth: 80,
       width: 130,
@@ -25,7 +25,7 @@ const App = () => {
     },
     {
       name: "stext46d4fbfc-0b65-4193-a436-d24f27401e34",
-      label: "性别",
+      label: "性别性别",
       align: "left",
       width: 130,
       minWidth: 80,
@@ -36,7 +36,7 @@ const App = () => {
     },
     {
       name: "stextbff8d155-826c-4ffa-b221-2",
-      label: "字段",
+      label: "字段字段",
       align: "left",
       width: 130,
       minWidth: 80,
@@ -47,7 +47,29 @@ const App = () => {
     },
     {
       name: "stextbff8d155-826c-4ffa-b221-3",
-      label: "字段",
+      label: "字段1字段1",
+      align: "left",
+      width: 130,
+      minWidth: 80,
+      resize: true,
+      onrender: (item: any) => {
+        return <div>{new Date(item.data.end).getTime()}</div>;
+      },
+    },
+    {
+      name: "stextbff8d155-826c-4ffa-b221-3",
+      label: "字段2字段2",
+      align: "left",
+      width: 130,
+      minWidth: 80,
+      resize: true,
+      onrender: (item: any) => {
+        return <div>{new Date(item.data.end).getTime()}</div>;
+      },
+    },
+    {
+      name: "stextbff8d155-826c-4ffa-b221-3",
+      label: "字段3字段3",
       align: "left",
       width: 130,
       minWidth: 80,
@@ -263,6 +285,8 @@ const App = () => {
         onScrollBottom={run}
         themeConfig={themeConfig}
         hiddenPercent={false}
+        rowHeight={44}
+        type="mobile"
       >
         <ViewSwitcher
           onViewModeChange={viewMode => setView(viewMode)}

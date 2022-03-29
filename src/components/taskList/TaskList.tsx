@@ -26,6 +26,7 @@ export type TaskListProps = {
     themeConfig: any;
     headRef: any;
     newWidth: number;
+    type: string;
     onChangeColumnWidth: (
       columnId: string,
       width: number,
@@ -46,6 +47,7 @@ export type TaskListProps = {
     newWidth: number;
     verticalGanttContainerRef: React.RefObject<HTMLDivElement>;
     headRef: React.RefObject<HTMLDivElement>;
+    type: string;
     setSelectedTask: (taskId: string) => void;
     onExpanderClick: (task: Task) => void;
     onDoubleClick?: (task: Task) => void;
@@ -54,6 +56,7 @@ export type TaskListProps = {
   dragRef: any;
   verticalGanttContainerRef: React.RefObject<HTMLDivElement>;
   ganttHeaderWidth: string | number;
+  type: string;
   setSelectedTask: (task: string) => void;
   onExpanderClick: (task: Task) => void;
   onChangeColumnWidth: (columnId: string, width: number, headRef: any) => void;
@@ -79,6 +82,7 @@ export const TaskList: React.FC<TaskListProps> = ({
   dragRef,
   verticalGanttContainerRef,
   ganttHeaderWidth,
+  type,
   setSelectedTask,
   onExpanderClick,
   onChangeColumnWidth,
@@ -95,6 +99,7 @@ export const TaskList: React.FC<TaskListProps> = ({
     columns,
     themeConfig,
     headRef,
+    type,
     onChangeColumnWidth,
   };
   const selectedTaskId = selectedTask ? selectedTask.id : "";
@@ -110,6 +115,7 @@ export const TaskList: React.FC<TaskListProps> = ({
     themeConfig,
     ganttHeight,
     verticalGanttContainerRef,
+    type,
     setSelectedTask,
     onExpanderClick,
     onDoubleClick: onDoubleClick,
@@ -125,7 +131,9 @@ export const TaskList: React.FC<TaskListProps> = ({
   }, [tasks, columns, horizontalContainerRef, widthRef.current, heaStyles]);
 
   const width = useMemo(() => {
-    if (taskListRef.current) {
+    if (type === "mobile") {
+      return headRef.current?.offsetWidth ?? 0;
+    } else if (taskListRef.current) {
       if (!dragRef?.dragStart) {
         return taskListRef.current?.offsetWidth;
       } else {
@@ -143,15 +151,14 @@ export const TaskList: React.FC<TaskListProps> = ({
     <div
       ref={taskListRef}
       className={styles.task}
-      style={{ width: `${width}px` }}
+      // style={{ width: `${width}px` }}
     >
       <TaskListHeader {...headerProps} newWidth={width} />
       <div
         ref={horizontalContainerRef}
         className={horizontalContainerClass}
         style={{
-          width:
-            width > widthRef.current ? `${width}px` : `${widthRef.current}px`,
+          width: `${width}px`,
           userSelect: "none",
         }}
       >

@@ -38,6 +38,7 @@ export const TaskListTableDefault: React.FC<{
   newWidth: number;
   verticalGanttContainerRef: React.RefObject<HTMLDivElement>;
   headRef: React.RefObject<HTMLDivElement>;
+  type: string;
   setSelectedTask: (taskId: string) => void;
   onExpanderClick: (task: Task) => void;
   onDoubleClick?: (task: Task) => void;
@@ -54,6 +55,7 @@ export const TaskListTableDefault: React.FC<{
   ganttHeight,
   // newWidth,
   verticalGanttContainerRef,
+  type,
   setSelectedTask,
   onExpanderClick,
   onDoubleClick,
@@ -158,14 +160,18 @@ export const TaskListTableDefault: React.FC<{
             {columns.map((item, idx) => {
               const Render = item.onrender;
               const alignValue = showAlignValue(item);
+              const columnId = `column${item.name}-${idx}`;
+              const columnDOM = document.getElementById(columnId);
+              const columnWidth =
+                type === "mobile" ? columnDOM?.offsetWidth ?? 100 : item.width;
               return (
                 <div
                   key={`${item.name}-${idx}`}
                   className={styles.taskListCell}
                   style={{
-                    minWidth: item.minWidth,
-                    maxWidth: item.maxWidth,
-                    width: item.width || item.maxWidth,
+                    // minWidth: item.minWidth,
+                    // maxWidth: item.maxWidth,
+                    width: columnWidth || item.maxWidth,
                     justifyContent: alignValue,
                     paddingLeft:
                       idx === columns.length - 1 && !item.resize ? 0 : "10px",

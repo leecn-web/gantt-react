@@ -65,6 +65,7 @@ export const convertToBarTasks = (
     }
     return task;
   });
+
   return barTasks;
 };
 
@@ -184,7 +185,7 @@ const convertToBar = (
     task.progress,
     rtl
   );
-  const y = taskYCoordinate(index, rowHeight, taskHeight);
+  const y = taskYCoordinate1(index, rowHeight);
   const hideChildren = task.type === "project" ? task.hideChildren : undefined;
 
   const styles = {
@@ -306,6 +307,16 @@ const taskYCoordinate = (
   const y = index * rowHeight + (rowHeight - taskHeight) / 2;
   return y;
 };
+
+const taskYCoordinate1 = (
+  index: number,
+  rowHeight: number,
+  // taskHeight: number
+) => {
+  const y = index * rowHeight + 6;
+  return y;
+};
+
 
 export const progressWithByParams = (
   taskX1: number,

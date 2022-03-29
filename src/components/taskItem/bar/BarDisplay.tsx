@@ -24,7 +24,7 @@ export const BarDisplay: React.FC<BarDisplayProps> = ({
   x,
   y,
   width,
-  height,
+  // height,
   // isSelected,
   progressX,
   progressWidth,
@@ -50,8 +50,8 @@ export const BarDisplay: React.FC<BarDisplayProps> = ({
       <rect
         x={x}
         width={width}
-        y={y - 2}
-        height={height}
+        y={y}
+        height={32}
         ry={barCornerRadius}
         rx={barCornerRadius}
         // fill={getBarColor()}
@@ -60,8 +60,8 @@ export const BarDisplay: React.FC<BarDisplayProps> = ({
       <rect
         x={progressX}
         width={pWidth}
-        y={y - 2}
-        height={height}
+        y={y}
+        height={32}
         ry={barCornerRadius}
         rx={barCornerRadius}
         // fill={getProcessColor()}
