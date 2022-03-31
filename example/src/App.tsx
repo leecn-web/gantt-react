@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 import { useDebounceFn } from "ahooks";
 import { Task, ViewMode, Gantt } from "gantt-task-react";
 import { ViewSwitcher } from "./components/view-switcher";
@@ -8,7 +8,7 @@ import "gantt-task-react/dist/index.css";
 
 //Init
 const App = () => {
-  const [view, setView] = React.useState<ViewMode>(ViewMode.Day);
+  const [view, setView] = React.useState<ViewMode>(ViewMode.Week);
   const [tasks, setTasks] = React.useState<Task[]>(initTasks());
   const [isChecked, setIsChecked] = React.useState(true);
   const [columns, setColumns] = React.useState<any[]>([
@@ -158,6 +158,7 @@ const App = () => {
       resize: false,
     },
   ]);
+  const ganttRef = useRef<any>();
   let columnWidth = 50;
   if (view === ViewMode.Hour) {
     columnWidth = 50;
@@ -266,8 +267,46 @@ const App = () => {
     };
   }, []);
 
+  const getHorizontalStyle = useMemo(() => {
+    if (ganttRef.current) {
+      const d = ganttRef.current;
+
+      const w = d.clientWidth;
+      const h = d.clientHeight;
+
+      let length = (h - w) / 2;
+      let width = w;
+      let height = h;
+      switch ("90") {
+        // case "-90":
+        //   length = -length;
+        // case "0":
+        //   length = 0;
+        case "90":
+          width = h;
+          height = w;
+          // length = -length;
+          // length = 0;
+          break;
+        default:
+          width = w;
+          height = h;
+          length = 0;
+          break;
+      }
+      return {
+        transform: `rotate(${90}deg) translate(${length}px,${length}px)`,
+        width: `${width}px`,
+        height: `${height}px`,
+        transformOrigin: "center center",
+      };
+    } else {
+      return {};
+    }
+  }, [ganttRef.current]);
+
   return (
-    <div style={reLoadVarClass}>
+    <div ref={ganttRef} style={{ ...reLoadVarClass, ...getHorizontalStyle }}>
       <Gantt
         tasks={tasks}
         viewMode={view}
@@ -287,6 +326,7 @@ const App = () => {
         hiddenPercent={false}
         rowHeight={44}
         type="mobile"
+        floatIcon={<i className="iconfont iconjiantou-copy-copy-copy-copy"></i>}
       >
         <ViewSwitcher
           onViewModeChange={viewMode => setView(viewMode)}

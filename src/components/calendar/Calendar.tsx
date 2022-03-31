@@ -26,6 +26,8 @@ export type CalendarProps = {
   fontFamily: string;
   fontSize: string;
   themeConfig: any;
+  scrollRight: { left: number; top: number };
+  setSDate: any;
 };
 
 export const Calendar: React.FC<CalendarProps> = ({
@@ -38,6 +40,8 @@ export const Calendar: React.FC<CalendarProps> = ({
   fontFamily,
   fontSize,
   themeConfig,
+  scrollRight,
+  setSDate,
 }) => {
   const getCalendarValuesForMonth = () => {
     const topValues: ReactChild[] = [];
@@ -79,6 +83,10 @@ export const Calendar: React.FC<CalendarProps> = ({
         </text>
       );
 
+      if (scrollRight.left > columnWidth * i) {
+        setSDate(`${date.getFullYear()}年`);
+      }
+
       if (
         i === 0 ||
         date.getFullYear() !== dateSetup.dates[i - 1].getFullYear()
@@ -113,13 +121,10 @@ export const Calendar: React.FC<CalendarProps> = ({
     let weeksCount: number = 1;
     const topDefaultHeight = headerHeight * 0.35;
     const dates = dateSetup.dates;
+    let month = null;
     for (let i = dates.length - 1; i >= 0; i--) {
       const date = dates[i];
       let topValue = "";
-      if (i === 0 || date.getMonth() !== dates[i - 1].getMonth()) {
-        // top
-        topValue = `${date.getFullYear()}年${date.getMonth() + 1}月`;
-      }
 
       // bottom
       const bottomValue = `第${dayjs(date.valueOf()).isoWeek()}周`;
@@ -160,23 +165,32 @@ export const Calendar: React.FC<CalendarProps> = ({
           {bottomValue}
         </text>
       );
-      if (topValue) {
-        // if last day is new month
-        if (i !== dates.length - 1) {
-          topValues.push(
-            <TopPartOfCalendar
-              key={topValue}
-              value={topValue}
-              x1Line={columnWidth * i + weeksCount * columnWidth}
-              y1Line={0}
-              xText={columnWidth * i + columnWidth * 0.5}
-              y2Line={42}
-              yText={topDefaultHeight}
-              themeConfig={themeConfig}
-            />
-          );
-        }
+
+      // if last day is new month
+      if (
+        i === 0 ||
+        month !== `${date.getFullYear()}年${date.getMonth() + 1}月`
+      ) {
+        // top
+        topValue = `${date.getFullYear()}年${date.getMonth() + 1}月`;
+        month = `${date.getFullYear()}年${date.getMonth() + 1}月`;
+        topValues.push(
+          <TopPartOfCalendar
+            key={topValue}
+            value={topValue}
+            x1Line={columnWidth * i + weeksCount * columnWidth}
+            y1Line={0}
+            xText={columnWidth * i + columnWidth * 0.5}
+            y2Line={42}
+            yText={topDefaultHeight}
+            themeConfig={themeConfig}
+          />
+        );
         weeksCount = 0;
+      }
+
+      if (columnWidth * i + weeksCount * columnWidth > scrollRight.left) {
+        setSDate(`${date.getFullYear()}年${date.getMonth() + 1}月`);
       }
       weeksCount++;
     }
@@ -228,6 +242,11 @@ export const Calendar: React.FC<CalendarProps> = ({
           {bottomValue}
         </text>
       );
+
+      if (scrollRight.left > columnWidth * (i + 1)) {
+        setSDate(`${date.getFullYear()}年${date.getMonth() + 1}月`);
+      }
+
       if (
         i + 1 !== dates.length &&
         date.getMonth() !== dates[i + 1].getMonth()
@@ -374,7 +393,7 @@ export const Calendar: React.FC<CalendarProps> = ({
         y={42}
         width={columnWidth * dateSetup.dates.length}
         height={32}
-        style={{ fill: "#fff" }}
+        style={{ fill: "transparent" }}
       />
       {bottomValues}
       <line

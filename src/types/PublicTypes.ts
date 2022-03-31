@@ -150,4 +150,6 @@ export interface GanttProps extends EventOption, DisplayOption, StylingOption {
   onScrollBottom?: () => void;
   onChangeColumnAllWidth?: (diff: number, ref: any, listRef: any) => void;
   type?: string;
+  floatIcon?: JSX.Element;
+  degree?: string;
 }

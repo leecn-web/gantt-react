@@ -36,18 +36,27 @@
 }
 .toolsBar {
   position: absolute;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  height: 42px;
   top: 0;
   right: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 42px;
+  padding-left: 10px;
   text-align: right;
   overflow: hidden;
   background: transparent;
   background: var(--tools-background);
   z-index: 2;
   user-select: none;
+}
+.toolsBarLeft {
+  font-size: 14px;
+  font-family: PingFang SC, PingFang SC-Regular;
+  font-weight: 400;
+  text-align: LEFT;
+  color: #142653;
+  line-height: 22px;
 }
 
 .headerDrag {
@@ -60,4 +69,40 @@
   cursor: col-resize;
   z-index: 2;
   /* user-select: none; */
+}
+
+.barScrollFloat {
+  position: absolute;
+  top: 76px;
+  right: 0;
+  width: 100%;
+  height: 100%;
+}
+.barScrollFloatItem {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  /* width: 100%; */
+}
+.barScrollFloatItemLeft,
+.barScrollFloatItemRight {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  background: var(--border-color1);
+  border-radius: 4px;
+  box-shadow: 0px 2px 6px 0px rgba(189, 198, 217, 0.12);
+  pointer-events: painted;
+}
+.barScrollFloatItemLeft {
+  left: 12px;
+  transform: rotate(180deg);
+}
+.barScrollFloatItemRight {
+  right: 12px;
 }

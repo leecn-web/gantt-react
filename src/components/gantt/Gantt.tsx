@@ -64,6 +64,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     hiddenPercent = false,
     ganttHeaderWidth = 443,
     type = "web",
+    floatIcon,
+    degree = "0",
     onDateChange,
     onProgressChange,
     onDoubleClick,
@@ -103,6 +105,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
 
   const [selectedTask, setSelectedTask] = useState<BarTask>();
   const [failedTask, setFailedTask] = useState<BarTask | null>(null);
+  const [sDate, setSDate] = useState<string>("");
 
   const svgWidth = dateSetup.dates.length * columnWidth;
   const ganttFullHeight = barTasks.length * rowHeight;
@@ -128,6 +131,120 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     weekLeft: 1,
     monthLeft: 1,
   });
+
+  const scrollRight = useScroll(verticalGanttContainerRef);
+  const scrollLeftMaps = { day: 1500, month: 792, week: 400 };
+
+  useEffect(() => {
+    if (scrollRight.top !== taskListRef.current?.scrollTop) {
+      if (taskListRef.current) {
+        taskListRef.current.scrollTop = scrollRight.top;
+      }
+    }
+  }, [scrollRight, taskListRef]);
+
+  useEffect(() => {
+    if (
+      wrapperRef &&
+      wrapperRef.current &&
+      horizontalContainerRef &&
+      horizontalContainerRef.current
+    ) {
+      if (
+        !scrollRight.top ||
+        !(
+          horizontalContainerRef.current.offsetHeight -
+          (wrapperRef.current?.offsetHeight - 78)
+        )
+      ) {
+        return;
+      }
+
+      if (
+        scrollRight.top >=
+        horizontalContainerRef.current.offsetHeight -
+          (wrapperRef.current?.offsetHeight - 78)
+      ) {
+        onScrollBottom && onScrollBottom();
+      }
+    }
+  }, [onScrollBottom, horizontalContainerRef, wrapperRef, scrollRight]);
+
+  // task change events
+  useEffect(() => {
+    if (
+      scrollRight.left >=
+      svgWidth - verticalGanttContainerRef.current.offsetWidth
+    ) {
+      coefficientRef.current[`${viewMode}Right`] =
+        coefficientRef.current[`${viewMode}Right`] + 1;
+    } else if (scrollRight.left <= 50) {
+      coefficientRef.current[`${viewMode}Left`] =
+        coefficientRef.current[`${viewMode}Left`] + 1;
+      verticalGanttContainerRef.current.scrollLeft = scrollLeftMaps[viewMode];
+    }
+    let filteredTasks: Task[];
+    if (onExpanderClick) {
+      filteredTasks = removeHiddenTasks(tasks);
+    } else {
+      filteredTasks = tasks;
+    }
+    const [startDate, endDate] = ganttDateRange(
+      filteredTasks,
+      viewMode,
+      coefficientRef.current[`${viewMode}Right`],
+      coefficientRef.current[`${viewMode}Left`]
+    );
+
+    let newDates = seedDates(startDate, endDate, viewMode);
+    setDateSetup({ dates: newDates, viewMode });
+
+    setBarTasks(
+      convertToBarTasks(
+        filteredTasks,
+        newDates,
+        columnWidth,
+        rowHeight,
+        taskHeight,
+        barCornerRadius,
+        handleWidth,
+        rtl,
+        barProgressColor,
+        barProgressSelectedColor,
+        barBackgroundColor,
+        barBackgroundSelectedColor,
+        projectProgressColor,
+        projectProgressSelectedColor,
+        projectBackgroundColor,
+        projectBackgroundSelectedColor,
+        milestoneBackgroundColor,
+        milestoneBackgroundSelectedColor
+      )
+    );
+  }, [
+    tasks,
+    viewMode,
+    rowHeight,
+    barCornerRadius,
+    columnWidth,
+    taskHeight,
+    handleWidth,
+    barProgressColor,
+    barProgressSelectedColor,
+    barBackgroundColor,
+    barBackgroundSelectedColor,
+    projectProgressColor,
+    projectProgressSelectedColor,
+    projectBackgroundColor,
+    projectBackgroundSelectedColor,
+    milestoneBackgroundColor,
+    milestoneBackgroundSelectedColor,
+    rtl,
+    scrollRight,
+    verticalGanttContainerRef,
+    onExpanderClick,
+    removeHiddenTasks,
+  ]);
 
   useEffect(() => {
     const { changedTask, action } = ganttEvent;
@@ -407,6 +524,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       fontSize,
       rtl,
       themeConfig,
+      scrollRight,
+      setSDate,
     };
   }, [
     dateSetup,
@@ -418,6 +537,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     fontSize,
     rtl,
     themeConfig,
+    scrollRight,
+    setSDate,
   ]);
   const barProps: TaskGanttContentProps = useMemo(() => {
     return {
@@ -537,8 +658,12 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
         maxWidth: verticalGanttContainerRef?.current?.offsetWidth
           ? `${verticalGanttContainerRef?.current?.offsetWidth}px`
           : "100%",
+        width: verticalGanttContainerRef?.current?.offsetWidth
+          ? `${verticalGanttContainerRef?.current?.offsetWidth}px`
+          : "100%",
       }}
     >
+      <div className={styles.toolsBarLeft}>{sDate ?? ""}</div>
       {
         // children 不是数组我们需要用 React.Children.map 来遍历
         // 或者把它转成数组
@@ -571,120 +696,6 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
   //     window.removeEventListener("resize", func, false);
   //   };
   // }, [childrenRef, verticalGanttContainerRef]);
-
-  const scrollRight = useScroll(verticalGanttContainerRef);
-  const scrollLeftMaps = { day: 1500, month: 792, week: 400 };
-
-  useEffect(() => {
-    if (scrollRight.top !== taskListRef.current?.scrollTop) {
-      if (taskListRef.current) {
-        taskListRef.current.scrollTop = scrollRight.top;
-      }
-    }
-  }, [scrollRight, taskListRef]);
-
-  useEffect(() => {
-    if (
-      wrapperRef &&
-      wrapperRef.current &&
-      horizontalContainerRef &&
-      horizontalContainerRef.current
-    ) {
-      if (
-        !scrollRight.top ||
-        !(
-          horizontalContainerRef.current.offsetHeight -
-          (wrapperRef.current?.offsetHeight - 78)
-        )
-      ) {
-        return;
-      }
-
-      if (
-        scrollRight.top >=
-        horizontalContainerRef.current.offsetHeight -
-          (wrapperRef.current?.offsetHeight - 78)
-      ) {
-        onScrollBottom && onScrollBottom();
-      }
-    }
-  }, [onScrollBottom, horizontalContainerRef, wrapperRef, scrollRight]);
-
-  // task change events
-  useEffect(() => {
-    if (
-      scrollRight.left >=
-      svgWidth - verticalGanttContainerRef.current.offsetWidth
-    ) {
-      coefficientRef.current[`${viewMode}Right`] =
-        coefficientRef.current[`${viewMode}Right`] + 1;
-    } else if (scrollRight.left <= 50) {
-      coefficientRef.current[`${viewMode}Left`] =
-        coefficientRef.current[`${viewMode}Left`] + 1;
-      verticalGanttContainerRef.current.scrollLeft = scrollLeftMaps[viewMode];
-    }
-    let filteredTasks: Task[];
-    if (onExpanderClick) {
-      filteredTasks = removeHiddenTasks(tasks);
-    } else {
-      filteredTasks = tasks;
-    }
-    const [startDate, endDate] = ganttDateRange(
-      filteredTasks,
-      viewMode,
-      coefficientRef.current[`${viewMode}Right`],
-      coefficientRef.current[`${viewMode}Left`]
-    );
-
-    let newDates = seedDates(startDate, endDate, viewMode);
-    setDateSetup({ dates: newDates, viewMode });
-
-    setBarTasks(
-      convertToBarTasks(
-        filteredTasks,
-        newDates,
-        columnWidth,
-        rowHeight,
-        taskHeight,
-        barCornerRadius,
-        handleWidth,
-        rtl,
-        barProgressColor,
-        barProgressSelectedColor,
-        barBackgroundColor,
-        barBackgroundSelectedColor,
-        projectProgressColor,
-        projectProgressSelectedColor,
-        projectBackgroundColor,
-        projectBackgroundSelectedColor,
-        milestoneBackgroundColor,
-        milestoneBackgroundSelectedColor
-      )
-    );
-  }, [
-    tasks,
-    viewMode,
-    rowHeight,
-    barCornerRadius,
-    columnWidth,
-    taskHeight,
-    handleWidth,
-    barProgressColor,
-    barProgressSelectedColor,
-    barBackgroundColor,
-    barBackgroundSelectedColor,
-    projectProgressColor,
-    projectProgressSelectedColor,
-    projectBackgroundColor,
-    projectBackgroundSelectedColor,
-    milestoneBackgroundColor,
-    milestoneBackgroundSelectedColor,
-    rtl,
-    scrollRight,
-    verticalGanttContainerRef,
-    onExpanderClick,
-    removeHiddenTasks,
-  ]);
 
   const onMouseDown = useCallback(
     (e: any): void => {
@@ -836,6 +847,12 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
           svgWidth={svgWidth}
           taskListRef={taskListRef}
           horizontalContainerRef={horizontalContainerRef}
+          scrollRight={scrollRight}
+          tasks={barTasks}
+          rowHeight={rowHeight}
+          floatIcon={floatIcon}
+          degree={degree}
+          setSDate={setSDate}
         />
         {ganttEvent.changedTask && (
           <Tooltip

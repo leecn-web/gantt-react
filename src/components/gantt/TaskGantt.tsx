@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import React, { ReactChild, useMemo, useRef } from "react";
 import { GridProps, Grid } from "../grid/Grid";
 import { CalendarProps, Calendar } from "../calendar/Calendar";
 import { TaskGanttContentProps, TaskGanttContent } from "./TaskGanttContent";
@@ -18,6 +18,12 @@ export type TaskGanttProps = {
   ganttFullHeight: number;
   svgWidth: number;
   taskListRef: any;
+  scrollRight: { left: number; top: number };
+  tasks: any[];
+  rowHeight: number;
+  degree?: string;
+  floatIcon?: JSX.Element;
+  setSDate: any;
 };
 export const TaskGantt: React.FC<TaskGanttProps> = ({
   gridProps,
@@ -30,6 +36,12 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
   listCellWidth,
   verticalGanttContainerRef,
   horizontalContainerRef,
+  scrollRight,
+  tasks,
+  rowHeight,
+  floatIcon,
+  degree,
+  setSDate,
 }) => {
   const ganttSVGRef = useRef<SVGSVGElement>(null);
   const newBarProps = { ...barProps, svg: ganttSVGRef };
@@ -54,6 +66,73 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
     ganttHeight,
   ]);
 
+  const handleScroll = (e: any, task: any) => {
+    e.stopPropagation();
+    if (task?.x1 || task?.x2) {
+      verticalGanttContainerRef.current.scrollLeft = task.x1 ?? task.x2;
+    }
+  };
+
+  const handleScrollRight = (e: any, task: any) => {
+    e.stopPropagation();
+    if (task?.x1 || task?.x2) {
+      verticalGanttContainerRef.current.scrollLeft =
+        (task?.x1 ?? 0) -
+        verticalGanttContainerRef.current?.offsetWidth +
+        (task?.x2 - task?.x1 ? task?.x2 - task?.x1 : 18);
+    }
+  };
+
+  const floatBar = useMemo(() => {
+    const gridRows: ReactChild[] = [];
+
+    for (const task of tasks) {
+      let isLeftShow = false;
+      let isRightShow = false;
+
+      if ((scrollRight.left || 0) > (task?.x1 || task?.x2 || 0)) {
+        isLeftShow = true;
+      }
+
+      const rightDiff =
+        (scrollRight.left || 0) +
+        (verticalGanttContainerRef.current?.offsetWidth || 0) -
+        ((task?.x2 || 0) - (task?.x1 || 0));
+
+      if (rightDiff < (task?.x1 || task?.x2 || 0)) {
+        isRightShow = true;
+      }
+
+      gridRows.push(
+        <div
+          className={styles.barScrollFloatItem}
+          style={{ height: rowHeight }}
+        >
+          <div
+            className={styles.barScrollFloatItemLeft}
+            style={{
+              display: isLeftShow ? "flex" : "none",
+            }}
+            onClick={e => handleScroll(e, task)}
+          >
+            {floatIcon ?? ""}
+          </div>
+          <div
+            className={styles.barScrollFloatItemRight}
+            style={{
+              display: isRightShow ? "flex" : "none",
+            }}
+            onClick={e => handleScrollRight(e, task)}
+          >
+            {floatIcon ?? ""}
+          </div>
+        </div>
+      );
+    }
+
+    return gridRows;
+  }, [tasks, scrollRight]);
+
   const svgHeight =
     barProps.rowHeight * barProps.tasks.length > verticalGanttContainerHeight
       ? barProps.rowHeight * barProps.tasks.length
@@ -69,7 +148,7 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
       ref={verticalGanttContainerRef}
       dir="ltr"
     >
-      <div>{ChildrenDom}</div>
+      {ChildrenDom}
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width={gridProps.svgWidth}
@@ -83,17 +162,38 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
           top: 0,
           left: 0,
           backgroundColor: "var(--gantt-header-background)",
+          zIndex: 1,
         }}
       >
-        <Calendar {...calendarProps} />
+        <Calendar
+          {...calendarProps}
+          scrollRight={scrollRight}
+          setSDate={setSDate}
+        />
       </svg>
       <div
         ref={horizontalContainerRef}
         className={styles.horizontalContainer}
         style={{
           width: gridProps.svgWidth,
+          pointerEvents: "none",
         }}
       >
+        <div
+          className={styles.barScrollFloat}
+          style={{
+            width: verticalGanttContainerRef.current
+              ? verticalGanttContainerRef.current.offsetWidth
+              : "100%",
+            height: horizontalContainerRef.current
+              ? horizontalContainerRef.current.scrollHeight
+              : "100%",
+            transform: `translateY(-${scrollRight.top ?? 0}px)`,
+            display: degree === "90" ? "none" : "block",
+          }}
+        >
+          {floatBar}
+        </div>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           width={gridProps.svgWidth}
