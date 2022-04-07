@@ -18,6 +18,8 @@ export type TaskGanttProps = {
   ganttFullHeight: number;
   svgWidth: number;
   taskListRef: any;
+  scrollRight: { left: number; top: number };
+  setSDate: any;
 };
 export const TaskGantt: React.FC<TaskGanttProps> = ({
   gridProps,
@@ -30,6 +32,8 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
   listCellWidth,
   verticalGanttContainerRef,
   horizontalContainerRef,
+  scrollRight,
+  setSDate,
 }) => {
   const ganttSVGRef = useRef<SVGSVGElement>(null);
   const newBarProps = { ...barProps, svg: ganttSVGRef };
@@ -85,7 +89,11 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
           backgroundColor: "var(--gantt-header-background)",
         }}
       >
-        <Calendar {...calendarProps} />
+        <Calendar
+          {...calendarProps}
+          scrollRight={scrollRight}
+          setSDate={setSDate}
+        />
       </svg>
       <div
         ref={horizontalContainerRef}

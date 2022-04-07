@@ -126,9 +126,11 @@ export const StandardTooltipContent: React.FC<{
       <p className={styles.tooltipDefaultContainerTitle}>
         {!!task.name && `${task.name}`}
       </p>
-      <p className={styles.tooltipDefaultContainerParagraph}>
-        {`当前进度: ${task.progress} %`}
-      </p>
+      {task.progress !== null || task.progress !== undefined ? (
+        <p className={styles.tooltipDefaultContainerParagraph}>
+          {`当前进度: ${task.progress} %`}
+        </p>
+      ) : null}
       <p className={styles.tooltipDefaultContainerParagraph}>
         {!!task.start &&
           `开始时间: ${task.start.getFullYear()}年${
