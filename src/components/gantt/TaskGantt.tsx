@@ -90,7 +90,9 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
       let isLeftShow = false;
       let isRightShow = false;
 
-      if ((scrollRight.left || 0) > (task?.x1 || task?.x2 || 0)) {
+      if (new Date(task?.start).getTime() === new Date(task?.end).getTime()) {
+        isLeftShow = false;
+      } else if ((scrollRight.left || 0) > (task?.x1 || task?.x2 || 0)) {
         isLeftShow = true;
       }
 
@@ -99,7 +101,9 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
         (verticalGanttContainerRef.current?.offsetWidth || 0) -
         ((task?.x2 || 0) - (task?.x1 || 0));
 
-      if (rightDiff < (task?.x1 || task?.x2 || 0)) {
+      if (new Date(task?.start).getTime() === new Date(task?.end).getTime()) {
+        isRightShow = false;
+      } else if (rightDiff < (task?.x1 || task?.x2 || 0)) {
         isRightShow = true;
       }
 

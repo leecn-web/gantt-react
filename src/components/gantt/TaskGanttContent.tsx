@@ -414,6 +414,7 @@ export const TaskGanttContent: React.FC<TaskGanttContentProps> = ({
               rtl={rtl}
               themeConfig={themeConfig}
               hiddenPercent={hiddenPercent}
+              onDoubleClick={onDoubleClick}
             />
           );
         })}

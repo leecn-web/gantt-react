@@ -34,7 +34,14 @@ export const Bar: React.FC<TaskItemProps> = ({
   }, [task]);
 
   return (
-    <g className={styles.barWrapper}>
+    <g
+      className={styles.barWrapper}
+      onDoubleClick={e => {
+        e.preventDefault();
+        e.stopPropagation();
+        onEventStart("dblclick", task, e);
+      }}
+    >
       <BarDisplay
         x={task.x1}
         y={task.y}

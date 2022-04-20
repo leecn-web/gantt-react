@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { BarTask } from "../../types/BarTask";
 import { GanttContentMoveAction } from "../../types/GanttTaskActions";
+import { Task } from "../../types/PublicTypes";
 import { Bar } from "./bar/Bar";
 import { BarSmall } from "./bar/BarSmall";
 import { Milestone } from "./milestone/Milestone";
@@ -28,6 +29,7 @@ export type TaskItemProps = {
     selectedTask: BarTask,
     event?: React.TouchEvent
   ) => any;
+  onDoubleClick?: (task: Task) => void;
 };
 
 export const TaskItem: React.FC<TaskItemProps> = props => {
