@@ -27,7 +27,7 @@ export function initTasks() {
       end: new Date("2021-12-30"),
       name: "sadfsadfsadfasdfasf",
       id: "ProjectSample",
-      progress: 50,
+      progress: null,
       type: "project",
       hideChildren: false,
       level: 0,
