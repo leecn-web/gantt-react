@@ -1,5 +1,5 @@
 import React, { ReactChild, useMemo } from "react";
-import { Task } from "../../types/PublicTypes";
+import { Task, ViewMode } from "../../types/PublicTypes";
 import { BarTask } from "../../types/BarTask";
 import { addToDate } from "../../helpers/DateHelper";
 import { checkWeekend } from "../../helpers/OtherHelper";
@@ -18,6 +18,7 @@ export type GridBodyProps = {
   themeConfig: any;
   lineId: string;
   verticalGanttContainerRef: any;
+  viewMode: ViewMode;
 };
 export const GridBody: React.FC<GridBodyProps> = ({
   tasks,
@@ -32,6 +33,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
   themeConfig,
   lineId,
   verticalGanttContainerRef,
+  viewMode,
 }) => {
   const selectedTaskId = selectedTask ? selectedTask.id : "";
   let y = 0;
@@ -142,8 +144,7 @@ export const GridBody: React.FC<GridBodyProps> = ({
           y={0}
           width={columnWidth}
           height={rectHeight}
-          // fill="transparent"
-          fill="url(#pinstripe)"
+          fill="transparent"
           className={styles.weekendClass}
         />
       );
@@ -157,15 +158,10 @@ export const GridBody: React.FC<GridBodyProps> = ({
           style={{ fill: "var(--primary-3)" }}
         />
       );
-    } else if (checkWeekend(date)) {
+    } else if (checkWeekend(date) && viewMode === ViewMode.Day) {
       const nId = date.getTime().toString();
       weekend.push(
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="100%"
-          height="100%"
-          key={nId}
-        >
+        <svg xmlns="http://www.w3.org/2000/svg" key={nId}>
           <defs>
             <pattern
               id={nId}

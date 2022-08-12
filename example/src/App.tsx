@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { useDebounceFn } from "ahooks";
 import { Task, ViewMode, Gantt } from "gantt-task-react";
 import { ViewSwitcher } from "./components/view-switcher";
@@ -8,7 +8,7 @@ import "gantt-task-react/dist/index.css";
 
 //Init
 const App = () => {
-  const [view, setView] = React.useState<ViewMode>(ViewMode.Week);
+  const [view, setView] = React.useState<ViewMode>(ViewMode.Day);
   const [tasks, setTasks] = React.useState<Task[]>(initTasks());
   const [isChecked, setIsChecked] = React.useState(false);
   const [columns, setColumns] = React.useState<any[]>([
@@ -303,10 +303,28 @@ const App = () => {
     } else {
       return {};
     }
-  }, [ganttRef.current]);
+  }, [ganttRef, ganttRef.current]);
+
+  const [degree, setDegree] = useState("0");
 
   return (
-    <div ref={ganttRef} style={{ ...reLoadVarClass, ...getHorizontalStyle }}>
+    <div
+      ref={ganttRef}
+      style={{
+        ...reLoadVarClass,
+        ...getHorizontalStyle,
+        transform: `rotate(${degree}deg) translate(${
+          (ganttRef?.current?.clientHeight - ganttRef?.current?.clientWidth) / 2
+        }px,${
+          (ganttRef?.current?.clientHeight - ganttRef?.current?.clientWidth) / 2
+        }px)`,
+      }}
+    >
+      <div>
+        <button onClick={() => setDegree(degree === "0" ? "90" : "0")}>
+          旋转
+        </button>
+      </div>
       <Gantt
         tasks={tasks}
         viewMode={view}
@@ -327,6 +345,7 @@ const App = () => {
         rowHeight={44}
         type="mobile"
         floatIcon={<i className="iconfont iconjiantou-copy-copy-copy-copy"></i>}
+        degree={degree}
       >
         <ViewSwitcher
           onViewModeChange={viewMode => setView(viewMode)}

@@ -176,9 +176,11 @@ export const TaskListTableDefault: React.FC<{
                     paddingLeft:
                       idx === columns.length - 1 && !item.resize ? 0 : "10px",
                     borderColor: themeConfig.tableBorderColor,
-                    position:
-                      idx === columns.length - 1 ? "sticky" : "relative",
-                    right: idx === columns.length - 1 ? 0 : "none",
+                    // position:
+                    //   idx === columns.length - 1 && !item.resize
+                    //     ? "sticky"
+                    //     : "relative",
+                    // right: idx === columns.length - 1 ? 0 : "none",
                   }}
                 >
                   <div className={styles.taskListNameWrapper}>

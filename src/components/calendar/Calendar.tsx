@@ -73,7 +73,7 @@ export const Calendar: React.FC<CalendarProps> = ({
       }
       bottomValues.push(
         <text
-          key={bottomValue + date.getFullYear()}
+          key={`${bottomValue}-${date.getFullYear()}`}
           y={headerHeight * 0.846}
           x={columnWidth * i + columnWidth * 0.5}
           className={styles.calendarBottomText}
@@ -129,13 +129,25 @@ export const Calendar: React.FC<CalendarProps> = ({
       // bottom
       const bottomValue = `第${dayjs(date.valueOf()).isoWeek()}周`;
 
+      bottomValues.push(
+        <text
+          key={`${bottomValue}-${date.getFullYear()}`}
+          y={headerHeight * 0.846}
+          x={columnWidth * i - columnWidth * 0.5}
+          // x={columnWidth * (i + +rtl)}
+          className={styles.calendarBottomText}
+          style={{ fill: themeConfig.h2Color }}
+        >
+          {bottomValue}
+        </text>
+      );
+
       const now = new Date();
       let isNow = false;
       if (
         date.getFullYear() === now.getFullYear() &&
         date.getMonth() + 1 === now.getMonth() + 1 &&
         dayjs(date.valueOf()).isoWeek() === dayjs(now.getTime()).isoWeek()
-        //  && date.getDate().toString() === now.getDate().toString()
       ) {
         isNow = true;
       }
@@ -146,25 +158,24 @@ export const Calendar: React.FC<CalendarProps> = ({
             width={60}
             height={26}
             rx="13"
-            x={columnWidth * (i + +rtl) - columnWidth * 0.5 - 30}
+            x={columnWidth * i + (columnWidth * 0.5 - 30)}
             y={45}
             style={{ fill: "var(--primary-color)" }}
           />
         );
+        bottomValues.push(
+          <text
+            key={`${bottomValue}-${date.getFullYear()}`}
+            y={headerHeight * 0.846}
+            x={columnWidth * i + columnWidth * 0.5}
+            // x={columnWidth * (i + +rtl)}
+            className={styles.calendarBottomText}
+            style={{ fill: "#fff" }}
+          >
+            {`第${dayjs(dates[i + 1].valueOf()).isoWeek()}周`}
+          </text>
+        );
       }
-
-      bottomValues.push(
-        <text
-          key={`${bottomValue}-${date.getFullYear()}`}
-          y={headerHeight * 0.846}
-          x={columnWidth * (i + +rtl) - columnWidth * 0.5}
-          // x={columnWidth * (i + +rtl)}
-          className={styles.calendarBottomText}
-          style={{ fill: isNow ? "#fff" : themeConfig.h2Color }}
-        >
-          {bottomValue}
-        </text>
-      );
 
       // if last day is new month
       if (
@@ -176,7 +187,7 @@ export const Calendar: React.FC<CalendarProps> = ({
         month = `${date.getFullYear()}年${date.getMonth() + 1}月`;
         topValues.push(
           <TopPartOfCalendar
-            key={topValue}
+            key={`${bottomValue}-${date.getFullYear()}`}
             value={topValue}
             x1Line={columnWidth * i + weeksCount * columnWidth}
             y1Line={0}

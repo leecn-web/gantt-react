@@ -3,6 +3,7 @@ import { GridProps, Grid } from "../grid/Grid";
 import { CalendarProps, Calendar } from "../calendar/Calendar";
 import { TaskGanttContentProps, TaskGanttContent } from "./TaskGanttContent";
 import styles from "./gantt.module.css";
+import { ViewMode } from "../../types/PublicTypes";
 
 export type TaskGanttProps = {
   gridProps: GridProps;
@@ -24,6 +25,7 @@ export type TaskGanttProps = {
   degree?: string;
   floatIcon?: JSX.Element;
   setSDate: any;
+  viewMode: ViewMode;
 };
 export const TaskGantt: React.FC<TaskGanttProps> = ({
   gridProps,
@@ -42,6 +44,7 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
   floatIcon,
   degree,
   setSDate,
+  viewMode,
 }) => {
   const ganttSVGRef = useRef<SVGSVGElement>(null);
   const newBarProps = { ...barProps, svg: ganttSVGRef };
@@ -50,6 +53,7 @@ export const TaskGantt: React.FC<TaskGanttProps> = ({
     ganttHeight,
     lineId,
     verticalGanttContainerRef,
+    viewMode,
   };
 
   const verticalGanttContainerHeight = useMemo(() => {

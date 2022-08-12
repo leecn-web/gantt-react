@@ -440,8 +440,8 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       coefficientRef.current[`${viewMode}Left`] =
         coefficientRef.current[`${viewMode}Left`] + 1;
       changeDates(() => {
+        if (timer) clearTimeout(timer);
         timer = setTimeout(() => {
-          if (timer) clearTimeout(timer);
           onChangeScrollX8Current();
         }, 1);
       });
@@ -449,14 +449,13 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       coefficientRef.current[`${viewMode}Right`] =
         coefficientRef.current[`${viewMode}Right`] + 1;
       changeDates();
+      if (timer) clearTimeout(timer);
       timer = setTimeout(() => {
-        if (timer) clearTimeout(timer);
         onChangeScrollX8Current();
       }, 1);
     } else {
       if (timer) clearTimeout(timer);
       timer = setTimeout(() => {
-        if (timer) clearTimeout(timer);
         const todayDOM = document.getElementById(lineId);
         const boxDOM: any = verticalGanttContainerRef.current?.getBoundingClientRect();
         const x = todayDOM?.getAttribute("x");
@@ -498,6 +497,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
       themeConfig,
       lineId,
       verticalGanttContainerRef,
+      viewMode,
     };
   }, [
     ganttHeight,
@@ -512,6 +512,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
     themeConfig,
     lineId,
     verticalGanttContainerRef,
+    viewMode,
   ]);
   const calendarProps: CalendarProps = useMemo(() => {
     return {
@@ -853,6 +854,7 @@ export const Gantt: React.FunctionComponent<GanttProps> = props => {
           floatIcon={floatIcon}
           degree={degree}
           setSDate={setSDate}
+          viewMode={viewMode}
         />
         {ganttEvent.changedTask && (
           <Tooltip

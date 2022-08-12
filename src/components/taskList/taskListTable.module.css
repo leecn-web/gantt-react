@@ -36,6 +36,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   box-sizing: border-box;
+  position: -webkit-sticky;
 }
 .taskListCell:last-child {
   border-right: none !important;

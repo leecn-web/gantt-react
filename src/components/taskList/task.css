@@ -1,6 +1,6 @@
 .task {
   position: relative;
-  overflow: overlay hidden;
+  overflow: scroll hidden;
   /* width: 443px; */
   height: 100%;
   min-width: 20%;

@@ -310,21 +310,20 @@ const taskYCoordinate = (
 
 const taskYCoordinate1 = (
   index: number,
-  rowHeight: number,
+  rowHeight: number
   // taskHeight: number
 ) => {
   const y = index * rowHeight + 6;
   return y;
 };
 
-
 export const progressWithByParams = (
   taskX1: number,
   taskX2: number,
-  progress: number,
+  progress: number | null,
   rtl: boolean
 ) => {
-  const progressWidth = (taskX2 - taskX1) * progress * 0.01;
+  const progressWidth = (taskX2 - taskX1) * (progress || 0) * 0.01;
   // if (progressWidth > 100) progressWidth = 100;
   // if (progressWidth < 0) progressWidth = 0;
   let progressX: number;
